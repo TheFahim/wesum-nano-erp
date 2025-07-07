@@ -18,7 +18,7 @@ class SessionController extends Controller
     public function signIn(Request $request)
     {
         $loginAttr = $request->validate([
-            "email" => ["required", "email"],
+            "username" => ["required"],
             'password' => ["required"],
         ]);
 
@@ -28,31 +28,31 @@ class SessionController extends Controller
             return redirect()->route('dashboard.index');
         }else {
             throw ValidationException::withMessages([
-                "email" => 'Invalid Credentials'
+                "username" => 'Invalid Credentials'
             ]);
         }
     }
 
-    public function register()
-    {
-        return view('auth.register');
-    }
-    public function store(Request $request)
-    {
-        // return $request;
+    // public function register()
+    // {
+    //     return view('auth.register');
+    // }
+    // public function store(Request $request)
+    // {
+    //     // return $request;
 
-        $userAttributes = $request->validate([
-            'name' => ['required', 'min:3', 'unique:users,name'],
-            'email' => ['required','email'],
-            'password' => ['required', 'confirmed', Password::min(6)]
-        ]);
+    //     $userAttributes = $request->validate([
+    //         'name' => ['required', 'min:3', 'unique:users,name'],
+    //         'email' => ['required','email'],
+    //         'password' => ['required', 'confirmed', Password::min(6)]
+    //     ]);
 
-        $user = User::create($userAttributes);
+    //     $user = User::create($userAttributes);
 
-        Auth::login($user);
+    //     Auth::login($user);
 
-        return redirect()->route('dashboard.index');
-    }
+    //     return redirect()->route('dashboard.index');
+    // }
 
     public function logout()
     {

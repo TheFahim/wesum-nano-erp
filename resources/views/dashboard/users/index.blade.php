@@ -35,13 +35,13 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
-                                Email
+                                Username
                                 <x-ui.svg.sort-column class="w-4 h-4 ms-1" />
                             </span>
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
-                                Roles
+                                Role
                                 <x-ui.svg.sort-column class="w-4 h-4 ms-1" />
                             </span>
                         </th>
@@ -60,14 +60,14 @@
                                 {{ $loop->iteration }}
                             </td>
                             <td class="px-6 py-4">
-                                <div class="image-placeholder" data-src="{{ $item->image }}"></div>
+                                <div class="image-placeholder" data-src="{{ $item->photo }}"></div>
                             </td>
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->name }}
                             </th>
                             <td class="px-6 py-4">
-                                {{ $item->email }}
+                                {{ $item->username }}
                             </td>
 
                             <td class="px-6 py-4">

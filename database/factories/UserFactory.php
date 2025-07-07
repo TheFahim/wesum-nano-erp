@@ -26,12 +26,7 @@ class UserFactory extends Factory
     {
         return [
             // 'id' => fake()->unique()->numberBetween(1,11),
-            'name' => fake()->name(),
-            'role_id' => Role::factory(),
-            'username' => fake()->userName(),
-            'password' => static::$password ??= Hash::make('password'),
-            'uni_id' => fake()->unique()->numberBetween(100,1000),
-            'photo' => fake()->imageUrl(),
+
         ];
     }
 

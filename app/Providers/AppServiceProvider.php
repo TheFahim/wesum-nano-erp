@@ -31,7 +31,10 @@ class AppServiceProvider extends ServiceProvider
 
 
         Gate::before(function ($user, $ability) {
-            return $user->email == 'dev@testmail.com' ? true : null;
+            if ($user->username === 'developer') {
+                return true; // grant all abilities
+            }
+            
         });
 
     }
