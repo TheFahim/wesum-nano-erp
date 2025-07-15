@@ -42,10 +42,18 @@ class User extends Authenticatable implements MustVerifyEmail
          if ($this->username === 'developer') {
              return true;
          }
-         // When roles is an array, or a single role string, defer to the trait's implementation.
-         return parent::hasRole($roles, $guard);
-     }
 
+         if (is_array($roles)) {
+             foreach ($roles as $role) {
+                 if ($this->roles()->where('name', $role)->exists()) {
+                     return true;
+                 }
+             }
+             return false;
+         }
+
+         return $this->roles()->where('name', $roles)->exists();
+     }
 
     protected function casts(): array
     {

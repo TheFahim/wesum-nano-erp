@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PermissionController;
@@ -9,12 +10,14 @@ use App\Http\Controllers\PublicationAreaController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SaleTargetController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SessionController;
-use App\Http\Controllers\SiteController;
 use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\TechnologyController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\CheckUserIsActive;
+use App\Http\Middleware\CheckUserIsAdmin;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,13 +26,17 @@ Route::get('/', function () {
     ->name('dashboard.index')
     ->middleware('auth');
 
-Route::middleware('auth')
+Route::middleware(['auth',CheckUserIsActive::class])
     ->prefix('dashboard')
     ->group(function () {
         Route::view('/', 'dashboard.index')->name('dashboard.index');
-        Route::get('users/{user}/roles', [UserController::class, 'roles'])->name('users.roles');
-        Route::patch('users/{user}/role-assign', [UserController::class, 'assignRole'])->name('users.assign');
-        Route::resource('users', UserController::class);
+
+
+        Route::get('users/{user}/disable', [UserController::class, 'disable'])->name('users.disable')->middleware(CheckUserIsAdmin::class);
+        Route::resource('users', UserController::class)->middleware(CheckUserIsAdmin::class);
+
+        Route::resource('expense', ExpenseController::class);
+        Route::resource('targets', SaleTargetController::class);
 
         Route::resource('permissions', PermissionController::class);
         Route::resource('roles', RoleController::class);

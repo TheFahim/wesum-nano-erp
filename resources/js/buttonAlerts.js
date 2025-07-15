@@ -74,6 +74,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    const disableButton = document.getElementById('disable');
+
+    if (disableButton) {
+        const dataUrl = disableButton.getAttribute('data-url');
+
+        disableButton.addEventListener('click', function(event){
+            event.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to disable the User!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes',
+                background: 'rgb(55 65 81)',
+                customClass: {
+                    title: 'text-white',
+                    htmlContainer: '!text-white',
+                },
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to a certain URL
+                    window.location.href = dataUrl;
+                }
+            });
+        });
+    }
+
     const blogFormButton =  document.getElementById('blog-save');
 
     if (blogFormButton) {

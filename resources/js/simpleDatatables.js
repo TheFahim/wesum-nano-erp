@@ -88,6 +88,17 @@ if (document.getElementById("services") && typeof DataTable !== 'undefined') {
 
 }
 
+if (document.getElementById("users") && typeof DataTable !== 'undefined') {
+    const userTable = new DataTable("#users", {
+        searchable: true,
+        // perPageSelect: false
+    });
+
+    imageObserver(userTable, 'users');
+
+
+}
+
 if (document.getElementById("tech-table") && typeof DataTable !== 'undefined') {
     const techTable = new DataTable("#tech-table", {
         searchable: true,

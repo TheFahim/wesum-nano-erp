@@ -3,7 +3,7 @@
 <x-dashboard.common.sidebar-wrapper>
     <ul class="space-y-2 font-medium">
 
-        {{-- @role('admin') --}}
+        @role('admin')
         <li>
             <button type="button"
                 class="flex items-center w-full p-2 text-base text-gray-900 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
@@ -19,6 +19,12 @@
                 <li>
                     <x-dashboard.common.sidebar-link url="{{ route('users.index') }}" class="pl-12">
                         <span class="flex-1 ms-3 whitespace-nowrap">Users</span>
+                    </x-dashboard.common.sidebar-link>
+
+                </li>
+                <li>
+                    <x-dashboard.common.sidebar-link url="{{ route('targets.index') }}" class="pl-12">
+                        <span class="flex-1 ms-3 whitespace-nowrap">Target</span>
                     </x-dashboard.common.sidebar-link>
 
                 </li>
@@ -38,8 +44,19 @@
 
             </ul>
         </li>
-        {{-- @endrole --}}
+        @endrole
 
+
+        <li>
+            <x-dashboard.common.sidebar-link url="{{ route('expense.index') }}">
+
+                <x-ui.svg.expense class="h-5 w-5" />
+                <span class="flex-1 ms-3 whitespace-nowrap">Expense</span>
+            </x-dashboard.common.sidebar-link>
+        </li>
+
+
+        @role('dev')
 
         <li>
             <x-dashboard.common.sidebar-link url="{{ route('technologies.index') }}">
@@ -138,6 +155,8 @@
                 <span class="flex-1 ms-3 whitespace-nowrap">Galleries</span>
             </x-dashboard.common.sidebar-link>
         </li>
+
+        @endrole
 
 
     </ul>

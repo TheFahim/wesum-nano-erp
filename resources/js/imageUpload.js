@@ -9,7 +9,7 @@ document.addEventListener('alpine:init', () => {
 
         init() {
             this.id = this.$el.getAttribute('data-id') || this.id;
-            this.inputElement =  document.querySelector(`#${this.id}`);
+            this.inputElement = document.querySelector(`#${this.id}`);
 
             document.addEventListener('paste', (event) => {
                 if (event.clipboardData && event.clipboardData.files.length > 0) {
@@ -19,7 +19,7 @@ document.addEventListener('alpine:init', () => {
 
             const oldFilePath = this.inputElement.getAttribute('data-old');
 
-            console.log(oldFilePath);
+            // console.log(oldFilePath);
 
 
             if (oldFilePath) {
@@ -43,7 +43,7 @@ document.addEventListener('alpine:init', () => {
                     oldFileArray = [oldFilePath];
                 }
 
-                console.log(oldFileArray);
+                // console.log(oldFileArray);
 
 
                 // Process the array
@@ -80,22 +80,23 @@ document.addEventListener('alpine:init', () => {
         },
 
         addFiles(newFiles) {
-
             const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg', 'application/zip'];
-            const filesToAdd = Array.from(newFiles).filter(file =>{
-                    // console.log(file.type);
-                    return allowedTypes.includes(file.type)
-                }
-            );
+            const filesToAdd = Array.from(newFiles).filter(file => allowedTypes.includes(file.type));
 
-            if (!this.inputElement.hasAttribute('multiple') && this.files.length > 0) {
+
+
+            if (filesToAdd.length === 0) {
+                // If no valid files are selected, do not remove old files
+                this.updateNativeInput();
+                return;
+            }
+
+            if (!this.inputElement.hasAttribute('multiple')) {
                 this.files = [...filesToAdd];
-            }else{
-
+            } else {
                 this.files = [...this.files, ...filesToAdd];
             }
 
-            // Update the native file input
             this.updateNativeInput();
         },
 
@@ -119,7 +120,7 @@ document.addEventListener('alpine:init', () => {
 
         },
 
-        fileAddNotAllowed(msg){
+        fileAddNotAllowed(msg) {
 
             Swal.fire({
                 title: msg,
@@ -131,7 +132,7 @@ document.addEventListener('alpine:init', () => {
                 },
                 showConfirmButton: false,
                 timer: 1500
-              })
+            })
         }
     }));
 });

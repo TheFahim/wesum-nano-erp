@@ -21,3 +21,5 @@ import './simpleDatatables';
 import './sunEditor';
 
 import './buttonAlerts';
+
+import './datepicker';
