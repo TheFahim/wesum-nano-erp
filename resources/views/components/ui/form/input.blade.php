@@ -17,7 +17,7 @@
             'block w-full text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
     ]) }}
     @if ($attributes->get('name') ?? false) value="{{ old($attributes->get('name')) }}" @endif>
-    
+
 @if ($attributes->get('name') ?? false)
     @error($attributes->get('name'))
         <p class="text-xs text-red-500 font-semibold mt-1">{{ $message }}</p>

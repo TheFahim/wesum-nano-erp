@@ -65,12 +65,14 @@ abstract class Controller
 
     }
 
-    public function checkUserPermission($permission)
+    public function checkUserPermission($table)
     {
 
-        if (!(Auth::user()->can($permission))) {
+
+        if (Auth::user()->role !== 'admin' && $table->user_id !== Auth::id()) {
             abort(403);
         }
+
 
     }
 }

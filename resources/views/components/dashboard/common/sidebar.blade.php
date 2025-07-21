@@ -28,7 +28,7 @@
                     </x-dashboard.common.sidebar-link>
 
                 </li>
-                @role('dev')
+                {{-- @role('dev')
                     <li>
                         <x-dashboard.common.sidebar-link url="{{ route('roles.index') }}" class="pl-12">
                             <span class="flex-1 ms-3 whitespace-nowrap">Roles</span>
@@ -40,7 +40,7 @@
                             <span class="flex-1 ms-3 whitespace-nowrap">Permissions</span>
                         </x-dashboard.common.sidebar-link>
                     </li>
-                @endrole
+                @endrole --}}
 
             </ul>
         </li>
@@ -55,108 +55,16 @@
             </x-dashboard.common.sidebar-link>
         </li>
 
-
-        @role('dev')
-
         <li>
-            <x-dashboard.common.sidebar-link url="{{ route('technologies.index') }}">
+            <x-dashboard.common.sidebar-link url="{{ route('quotations.index') }}">
 
-                <x-ui.svg.flask class="h-5 w-5" />
-                <span class="flex-1 ms-3 whitespace-nowrap">Technologies</span>
-            </x-dashboard.common.sidebar-link>
-        </li>
-
-        <li>
-            <x-dashboard.common.sidebar-link url="{{ route('services.index') }}">
-
-                <x-ui.svg.flask class="h-5 w-5" />
-                <span class="flex-1 ms-3 whitespace-nowrap">Services</span>
+                <x-ui.svg.qutation class="h-6 w-6" />
+                <span class="flex-1 ms-3 whitespace-nowrap">Quotation</span>
             </x-dashboard.common.sidebar-link>
         </li>
 
 
-        <li>
-            <x-dashboard.common.sidebar-link url="{{ route('resource.index') }}">
 
-                <x-ui.svg.flask class="h-5 w-5" />
-                <span class="flex-1 ms-3 whitespace-nowrap">Resource</span>
-            </x-dashboard.common.sidebar-link>
-        </li>
-
-
-        <li>
-
-            <button type="button"
-                class="flex items-center w-full p-2 text-base text-gray-900 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                aria-controls="sidebar-dropdown-1" data-collapse-toggle="sidebar-dropdown-2">
-                <x-ui.svg.book class="h-5 w-5" />
-
-                <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Publication</span>
-
-                <x-ui.svg.down-arrow class="h-3 w-3" />
-            </button>
-
-            <ul id="sidebar-dropdown-2" class="hidden py-2 space-y-2 transition duration-300">
-                <li>
-                    <x-dashboard.common.sidebar-link url="{{ route('publication-areas.index') }}" class="pl-12">
-                        <span class="flex-1 ms-3 whitespace-nowrap">Publication Area</span>
-                    </x-dashboard.common.sidebar-link>
-
-                </li>
-                <li>
-                    <x-dashboard.common.sidebar-link url="{{ route('publications.index') }}" class="pl-12">
-                        <span class="flex-1 ms-3 whitespace-nowrap">Publications</span>
-                    </x-dashboard.common.sidebar-link>
-                </li>
-
-            </ul>
-
-        </li>
-
-
-        <li>
-            <x-dashboard.common.sidebar-link url="{{ route('news.index') }}">
-
-                <x-ui.svg.newspaper class="h-5 w-5" />
-                <span class="flex-1 ms-3 whitespace-nowrap">News</span>
-            </x-dashboard.common.sidebar-link>
-        </li>
-
-
-        <li>
-            <x-dashboard.common.sidebar-link url="{{ route('blogs.index') }}">
-
-                <x-ui.svg.flask class="h-5 w-5" />
-                <span class="flex-1 ms-3 whitespace-nowrap">Blogs</span>
-            </x-dashboard.common.sidebar-link>
-        </li>
-
-
-        <li>
-            <x-dashboard.common.sidebar-link url="{{ route('contacts.index') }}">
-
-                <x-ui.svg.envelope class="h-5 w-5" />
-                <span class="flex-1 ms-3 whitespace-nowrap">Contacts</span>
-            </x-dashboard.common.sidebar-link>
-        </li>
-
-        <li>
-            <x-dashboard.common.sidebar-link url="{{ route('teams.index') }}">
-
-                <x-ui.svg.users-group class="h-5 w-5" />
-                <span class="flex-1 ms-3 whitespace-nowrap">Team Members</span>
-            </x-dashboard.common.sidebar-link>
-        </li>
-
-        <li>
-            <x-dashboard.common.sidebar-link url="{{ route('galleries.index') }}">
-
-                <x-ui.svg.image class="h-5 w-5" />
-                <span class="flex-1 ms-3 whitespace-nowrap">Galleries</span>
-            </x-dashboard.common.sidebar-link>
-        </li>
-
-        @endrole
 
 
     </ul>

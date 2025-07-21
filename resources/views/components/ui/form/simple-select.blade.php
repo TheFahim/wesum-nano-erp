@@ -1,7 +1,7 @@
 @props(['label'])
 
 @if ($label ?? false)
-    <label for="{{ $attributes->get('id') }}" class="block mb-3 text-sm font-medium text-gray-900 dark:text-white">
+    <label for="{{ $attributes->get('id') }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
         {{ $label }}
 
         @if ($attributes['required'] ?? false)

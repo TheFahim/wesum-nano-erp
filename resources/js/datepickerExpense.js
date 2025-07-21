@@ -10,7 +10,7 @@ function formatDateToDDMMYYYY(dateString) {
 
 
 
-const $datepickerEl = document.getElementById('datepicker');
+const $datepickerEl = document.getElementById('expense-datepicker');
 const today = new Date();
 
 const formattedDateToday = [
@@ -32,25 +32,30 @@ if ($datepickerEl && $datepickerEl.value) {
  $datepickerEl.value = formatDateToDDMMYYYY($datepickerEl.value);
 }
 
-// if ($datepickerEl && !$datepickerEl.value) {
-//     $datepickerEl.value = formattedDateToday;
-// }
+if ($datepickerEl && !$datepickerEl.value) {
+    $datepickerEl.value = formattedDateToday;
+}
 
 
 // optional options with default values and callback functions
-const options = {
+const expenseOptions = {
     autohide: true,
     format: 'dd/mm/yyyy',
+    maxDate: formattedDateToday,
+    minDate: formattedDateWeekBefore,
     orientation: 'bottom',
     title: null,
     rangePicker: false,
-    autoSelectToday: false,
     onShow: () => {},
     onHide: () => {},
 };
 
+const instanceOptions = {
+  id: 'datepicker-custom-example',
+  override: true
+};
 
 
 if ($datepickerEl) {
-    const datepicker = new Datepicker($datepickerEl, options);
+    const expenseDatepicker = new Datepicker($datepickerEl, expenseOptions);
 }

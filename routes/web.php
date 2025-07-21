@@ -8,6 +8,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PublicationAreaController;
 use App\Http\Controllers\PublicationController;
+use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaleTargetController;
@@ -38,27 +39,19 @@ Route::middleware(['auth',CheckUserIsActive::class])
         Route::resource('expense', ExpenseController::class);
         Route::resource('targets', SaleTargetController::class);
 
-        Route::resource('permissions', PermissionController::class);
-        Route::resource('roles', RoleController::class);
 
-        Route::resource('publication-areas', PublicationAreaController::class);
-        Route::resource('publications', PublicationController::class);
+        Route::get('/customers/search', [QuotationController::class, 'searchCustomer'])->name('customers.search');
 
-        Route::resource('galleries', GalleryController::class);
-        Route::resource('teams', TeamMemberController::class);
 
-        Route::resource('contacts', ContactController::class);
-        Route::resource('news', NewsController::class);
-        Route::resource('blogs', BlogController::class);
 
-        Route::resource('technologies', TechnologyController::class);
-        Route::resource('services', ServiceController::class);
-        Route::resource('resource', ResourceController::class);
+        Route::resource('quotations', QuotationController::class);
 
+        // Route::resource('permissions', PermissionController::class);
+        // Route::resource('roles', RoleController::class);
         Route::delete('logout', [SessionController::class, 'logout'])->name('logout');
     });
 
 Route::get('login', [SessionController::class, 'login'])->name('login');
 Route::post('signin', [SessionController::class, 'signIn'])->name('signIn');
-Route::get('register', [SessionController::class, 'register'])->name('register');
-Route::post('register', [SessionController::class, 'store'])->name('register.store');
+// Route::get('register', [SessionController::class, 'register'])->name('register');
+// Route::post('register', [SessionController::class, 'store'])->name('register.store');

@@ -3,6 +3,8 @@
 
 <head>
     <script src="{{ asset('js/dark-theme.js') }}"></script>
+    <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('js/printThis.js') }}"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'NSU HPC Research Lab' }}</title>

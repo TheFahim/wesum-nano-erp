@@ -1,0 +1,421 @@
+<x-dashboard.layout.default title="Edit Quotation ">
+    <x-dashboard.ui.bread-crumb>
+        <li class="inline-flex items-center">
+            <a href="{{ route('quotations.index') }}"
+                class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                <x-ui.svg.users-group class="h-3 w-3 me-2" />
+                Quotations
+            </a>
+        </li>
+        <x-dashboard.ui.bread-crumb-list name="Edit" />
+    </x-dashboard.ui.bread-crumb>
+
+    <div>
+
+        <h2 class="mx-5 text-xl font-extrabold dark:text-white">Edit Quotation - {{ $quotation->quotation_no }}</h2>
+
+        {{-- The main Alpine component is initialized on the form tag --}}
+        <form class="space-y-3" x-data="quotationForm"
+            @customer-selected.window="populateCustomer($event.detail.customer)"
+            action="{{ route('quotations.update', $quotation->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PATCH')
+
+            <x-ui.card>
+                @php
+                    // echo '<pre>';
+                    //     print_r(session()->all());
+                    // echo '</pre>';
+                @endphp
+                <div class="mx-2 grid grid-cols-3">
+                    <div class="mx-2">
+                        <input type="hidden" name="quotation[id]" value="{{ $quotation->id }}" />
+                        <x-ui.form.input name="quotation[quotation_no]" label="Quotation No." placeholder="Ex. WC-03029"
+                            class="w-full p-2 text-lg" required
+                            value="{{ old('quotation.quotation_no', $quotation->quotation_no) }}" />
+                    </div>
+                    <div class="mx-2">
+                        <div class="relative max-w-sm">
+                            <label for="datepicker"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Due Date
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                                    <x-ui.svg.calendar class="h-4 w-4" />
+                                </div>
+                                {{-- Format the date for the datepicker if it exists --}}
+                                <input id="datepicker" name="quotation[due_date]" type="text"
+                                    value="{{ old('quotation.due_date', $quotation->due_date) }}"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Select date">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </x-ui.card>
+
+
+            {{-- ================================================================= --}}
+            {{--                        START OF CUSTOMER SECTION                    --}}
+            {{--     (This section is now identical to the create page's logic)    --}}
+            {{-- ================================================================= --}}
+            <div
+                class="mx-2 p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 space-y-2">
+
+                <div class="flex items-center justify-between">
+                    <h2
+                        class="mb-4 p-4 text-xl font-extrabold leading-none tracking-tight text-gray-900 md:text-xl dark:text-white">
+                        Customer
+                    </h2>
+
+                    {{-- Search bar remains unchanged, it has its own separate component --}}
+                    <div x-data="searchBar" @click.outside="showSuggestions = false" class="relative max-w-sm">
+                        <div class="flex items-start">
+                            <label for="simple-search" class="sr-only">Search</label>
+                            <div class="relative w-full">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="simple-search" x-model.debounce.300ms="searchQuery"
+                                    @focus="showSuggestions = true" @keydown.escape.prevent="showSuggestions = false"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Search to change customer..." autocomplete="off" />
+                            </div>
+                        </div>
+                        <div x-show="showSuggestions && suggestions.length > 0" x-transition
+                            class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg dark:bg-gray-700 dark:border-gray-600">
+                            <ul class="py-1 text-sm text-gray-700 dark:text-gray-200">
+                                <template x-for="customer in suggestions" :key="customer.id">
+                                    <li>
+                                        <a href="#" @click.prevent="selectCustomer(customer)"
+                                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                            <span class="font-bold" x-text="customer.customer_name"></span>
+                                            <span class="block text-xs text-gray-500 dark:text-gray-400"
+                                                x-text="customer.company_name + ' (ID: ' + customer.customer_no + ')'"></span>
+                                        </a>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="min-w-max border-b bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                </div>
+
+                <template x-if="!isCustomerSelected">
+                    <div x-transition class="mx-2 grid grid-cols-3 space-y-3">
+                        <div class="mx-2">
+                            {{-- We bind the 'disabled' attribute to isCustomerSelected --}}
+                            <x-ui.form.input x-model="customerNo" name="customer[customer_no]" label="Customer ID"
+                                placeholder="Ex. WC-0001" class="w-full p-2 text-lg" required />
+                        </div>
+                        <div class="mx-2">
+                            <x-ui.form.input x-model="customerName" name="customer[customer_name]" label="Customer Name"
+                                placeholder="Ex. Abdullah" class="w-full p-2 text-lg" required />
+                        </div>
+                        <div class="mx-2">
+                            <x-ui.form.input x-model="customerDesignation" name="customer[designation]"
+                                label="Designation" placeholder="Ex. Sales Executive" class="w-full p-2 text-lg" />
+                        </div>
+                        <div class="mx-2">
+                            <x-ui.form.input x-model="customerCompanyName" name="customer[company_name]"
+                                label="Company Name" placeholder="Ex. XYZ Corporation" class="w-full p-2 text-lg"
+                                required />
+                        </div>
+                        <div class="mx-2">
+                            <x-ui.form.input x-model="customerAddess" name="customer[address]" label="Address"
+                                placeholder="House/Road/Village..." class="w-full p-2 text-lg" />
+                        </div>
+                        <div class="mx-2">
+                            <x-ui.form.input x-model="customerPhone" name="customer[phone]" label="Phone"
+                                placeholder="Ex. 018XXXXXXXX" class="w-full p-2 text-lg" />
+                        </div>
+                    </div>
+                </template>
+
+
+                <template x-if="isCustomerSelected">
+                    <div x-transition
+                        class="p-4 my-4 text-sm text-gray-800 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300"
+                        role="alert">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <input type="hidden" name="customer[id]" x-model="customerId">
+
+                            <div>
+                                <span class="font-medium">Customer No:</span>
+                                <span x-text="selectedCustomerDetails.customer_no"></span>
+                            </div>
+                            <div>
+                                <span class="font-medium">Company:</span>
+                                <span x-text="selectedCustomerDetails.company_name"></span>
+                            </div>
+
+                            <div>
+                                <span class="font-medium">Customer Name:</span>
+                                <span x-text="selectedCustomerDetails.customer_name"></span>
+                            </div>
+                            <div>
+                                <span class="font-medium">Phone:</span>
+                                <span x-text="selectedCustomerDetails.phone"></span>
+                            </div>
+                            <div>
+                                <span class="font-medium">Designation:</span>
+                                <span x-text="selectedCustomerDetails.designation"></span>
+                            </div>
+                            <div>
+                                <span class="font-medium">Address:</span>
+                                <span x-text="selectedCustomerDetails.address"></span>
+                            </div>
+
+                        </div>
+                        <button @click.prevent="changeCustomer" type="button"
+                            class="mt-4 px-3 py-3 text-xs font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800">
+                            Enter New customer
+                        </button>
+                    </div>
+                </template>
+            </div>
+
+            <x-ui.card heading="Products">
+                <div class="p-2 col-span-3 mx-2">
+                    <div class="grid grid-cols-1">
+                        <div class="w-full space-y-4">
+                            <div class="flex items-center my-4">
+                                <h1 class="text-xl font-bold dark:text-white">Products</h1>
+                                <button type="button"
+                                    class="px-2 py-1 mx-2 hover:text-white rounded hover:bg-gray-600" @click="addRow">
+                                    <x-ui.svg.circle-plus class="w-6 h-6 " />
+                                </button>
+                            </div>
+                            <template x-for="(row, index) in rows" :key="index">
+                                <div class="grid items-center gap-4"
+                                    style="grid-template-columns: repeat(10, minmax(0, 1fr));">
+                                    <input type="hidden" x-bind:name="'product[' + index + '][id]'"
+                                        x-model="row.id" />
+                                    <div class="col-span-2">
+                                        <x-ui.form.input x-bind:name="'product[' + index + '][name]'"
+                                            x-model="row.name" placeholder="Product Name"
+                                            class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100"
+                                            required />
+                                    </div>
+                                    <div class="col-span-2">
+                                        <x-ui.form.input x-bind:name="'product[' + index + '][unit]'"
+                                            x-model="row.unit" placeholder="Unit (pcs)"
+                                            class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100"
+                                            required />
+                                    </div>
+                                    <div class="col-span-2">
+                                        <x-ui.form.input type="number" step="0.01"
+                                            x-bind:name="'product[' + index + '][price]'" x-model.number="row.price"
+                                            placeholder="Price (1000)"
+                                            class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100"
+                                            required />
+                                    </div>
+                                    <div class="col-span-2">
+                                        <x-ui.form.input type="number" step="1"
+                                            x-bind:name="'product[' + index + '][quantity]'"
+                                            x-model.number="row.quantity" placeholder="Quantity (3)"
+                                            class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100"
+                                            required />
+                                    </div>
+                                    <div class="col-span-2">
+                                        <x-ui.form.input x-bind:name="'product[' + index + '][amount]'"
+                                            x-bind:value="(row.price * row.quantity).toFixed(2)" placeholder="Amount"
+                                            class="px-4 py-2 border rounded bg-gray-200 dark:bg-gray-700 dark:text-gray-100 cursor-not-allowed"
+                                            readonly required />
+                                    </div>
+                                    <div class="col-span-9">
+                                        <textarea id="specs" rows="4" x-bind:name="'product[' + index + '][specs]'" x-model="row.specs"
+                                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:bg-inherit dark:text-white"
+                                            placeholder="Product Specifications"></textarea>
+                                    </div>
+                                    <div class="px-1 justify-items-end">
+                                        <button type="button"
+                                            class="col-span-2 flex items-center justify-center p-2 bg-red-500 text-white rounded hover:bg-red-600"
+                                            @click="rows.splice(index, 1)" x-show="rows.length > 0">
+                                            <x-ui.svg.close class="h-6 w-6" />
+                                        </button>
+                                    </div>
+                                    <div
+                                        class="min-w-max border-b bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mt-4 col-span-10">
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </x-ui.card>
+
+            <x-ui.card title="Total">
+                <div class="mx-2 grid grid-cols-3">
+                    <div class="mx-2">
+                        <x-ui.form.input name="quotation[subtotal]" label="Subtotal" x-model="subtotal"
+                            class="w-full p-2 text-lg bg-gray-200 dark:bg-gray-700 cursor-not-allowed" readonly
+                            required />
+                    </div>
+                    <div class="mx-2">
+                        <x-ui.form.simple-select name="quotation[vat]" label="VAT" x-model.number="vat"
+                            class="w-full p-2 text-lg" required>
+                            <option value="10">10%</option>
+                            <option value="15">15%</option>
+                        </x-ui.form.simple-select>
+                    </div>
+                    <div class="mx-2">
+                        <x-ui.form.input name="quotation[total]" label="Total" x-model="total"
+                            class="w-full p-2 text-lg bg-gray-200 dark:bg-gray-700 cursor-not-allowed" readonly
+                            required />
+                    </div>
+                    <div class="mx-2 my-10">
+                        <textarea id="text-area" rows="4" name="quotation[terms_conditions]"
+                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:bg-inherit dark:text-white"
+                            placeholder="Terms And Conditions">
+                            {!! old('quotation.terms_conditions', $quotation->terms_conditions) !!}
+                        </textarea>
+                    </div>
+                </div>
+            </x-ui.card>
+
+            <x-ui.card>
+                <button type="submit"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 my-2 mx-5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 save-button">
+                    Update Quotation
+                </button>
+            </x-ui.card>
+
+        </form>
+    </div>
+</x-dashboard.layout.default>
+
+{{-- The searchBar script can be shared, so you might move it to a layout file eventually --}}
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('searchBar', () => ({
+            searchQuery: '',
+            suggestions: [],
+            showSuggestions: false,
+            loading: false,
+            init() {
+                this.$watch('searchQuery', (query) => {
+                    if (query.length < 2) {
+                        this.suggestions = [];
+                        this.showSuggestions = false;
+                        return;
+                    }
+                    this.loading = true;
+                    fetch(`{{ route('customers.search') }}?q=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            this.suggestions = data;
+                            this.showSuggestions = true;
+                            this.loading = false;
+                        });
+                });
+            },
+            selectCustomer(customer) {
+                this.$dispatch('customer-selected', {
+                    customer: customer
+                });
+                this.searchQuery = customer.customer_name;
+                this.showSuggestions = false;
+                this.suggestions = [];
+            }
+        }));
+    });
+</script>
+
+{{-- This Alpine script is now populated with the existing model data --}}
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('quotationForm', () => ({
+            // Default to 'selected' view on edit page.
+            isCustomerSelected: true,
+
+            // Pre-populate details for the display view. `optional()` prevents errors if customer is null.
+            selectedCustomerDetails: {!! json_encode(
+                old('customer', [
+                    'customer_no' => optional($quotation->customer)->customer_no,
+                    'company_name' => optional($quotation->customer)->company_name,
+                    'customer_name' => optional($quotation->customer)->customer_name,
+                    'phone' => optional($quotation->customer)->phone,
+                    'designation' => optional($quotation->customer)->designation,
+                    'address' => optional($quotation->customer)->address,
+                    'id' => optional($quotation->customer)->id,
+                ]),
+            ) !!},
+
+
+
+            // Pre-populate the hidden customer ID input
+            customerId: {!! json_encode(old('customer.id', $quotation->customer->id)) !!},
+
+
+            // Pre-populate the form fields for when the user clicks "Edit This Customer's Details"
+            customerNo: '',
+            customerName: '',
+            customerDesignation: '',
+            customerCompanyName: '',
+            customerAddess: '',
+            customerPhone: '',
+
+
+            // This function is identical to the create page's version
+            populateCustomer(customer) {
+                this.customerId = customer.id;
+                this.selectedCustomerDetails = customer;
+                this.isCustomerSelected = true;
+                // We clear the form fields in case they were being edited
+                this.customerNo = '';
+                this.customerName = '';
+                this.customerDesignation = '';
+                this.customerCompanyName = '';
+                this.customerAddess = '';
+                this.customerPhone = '';
+            },
+
+            // This function is identical to the create page's version
+            changeCustomer() {
+                this.isCustomerSelected = false;
+                this.customerId = null; // Clear the ID so the full form is submitted
+            },
+
+            // --- Product and Total logic is pre-populated from the model ---
+            rows: {!! json_encode(old('product', $quotation->products)) !!},
+            vat: {{ old('quotation.vat', $quotation->vat) }},
+
+            addRow() {
+                this.rows.push({
+                    id: null,
+                    name: '',
+                    unit: 'pcs',
+                    price: '',
+                    quantity: '',
+                    specs: ''
+                });
+            },
+
+            get subtotal() {
+                let total = this.rows.reduce((sum, row) => {
+                    const price = parseFloat(row.price) || 0;
+                    const quantity = parseFloat(row.quantity) || 0;
+                    return sum + (price * quantity);
+                }, 0);
+                return total.toFixed(2);
+            },
+
+            get total() {
+                const subtotal = parseFloat(this.subtotal) || 0;
+                const vatAmount = subtotal * (this.vat / 100);
+                const finalTotal = subtotal + vatAmount;
+                return finalTotal.toFixed(2);
+            }
+        }));
+    });
+</script>

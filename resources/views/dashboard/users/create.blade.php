@@ -22,7 +22,7 @@
                     </div>
 
                     <div class="px-2">
-                        <x-ui.form.input id="username" name="username" label="Username (No Space)" placeholder="Enter Username"
+                        <x-ui.form.input id="ID" name="username" label="User ID (No Space)" placeholder="Enter User ID"
                             class="w-full p-2 text-lg" required />
                     </div>
 
