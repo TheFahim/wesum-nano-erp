@@ -12,7 +12,9 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        //
+        $customers = Customer::latest()->get();
+
+        return view('dashboard.customers.index', compact('customers'));
     }
 
     /**
@@ -44,7 +46,7 @@ class CustomerController extends Controller
      */
     public function edit(Customer $customer)
     {
-        //
+        return view('dashboard.customers.edit', compact('customer'));
     }
 
     /**
@@ -52,7 +54,19 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        //
+        $validated = $request->validate([
+            'customer_no' => 'required|string|max:255|unique:customers,customer_no,' . $customer->id,
+            'customer_name' => 'required|string|max:255',
+            'designation' => 'nullable|string|max:255',
+            'company_name' => 'required|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'bin_no' => 'nullable|string|max:255',
+        ]);
+
+        $customer->update($validated);
+
+        return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
     }
 
     /**

@@ -50,6 +50,7 @@ class BillController extends Controller
             ->quotation->total;
 
         $validated['payable'] = $total;
+        $validated['paid'] = 0;
         $validated['due'] = $total;
 
         $bill = Bill::create($validated);

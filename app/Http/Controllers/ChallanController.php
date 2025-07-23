@@ -26,7 +26,13 @@ class ChallanController extends Controller
 
         $quotationId = $request->query('quotation_id');
 
-        $quotation = Quotation::find($quotationId)->load(['products', 'customer']);
+        $quotation = Quotation::find($quotationId)->load(['products', 'customer', 'challan']);
+
+        $hasChallan = $quotation->challan ? true : false;
+
+        if ($hasChallan) {
+            abort(403);
+        }
 
         return view('dashboard.challans.create', compact('quotation'));
     }
@@ -60,7 +66,11 @@ class ChallanController extends Controller
     {
         $challan->load(['quotation', 'quotation.products', 'quotation.customer']);
 
-        return view('dashboard.challans.show', compact('challan'));
+
+        $hasBill = $challan->bill ? true : false;
+
+
+        return view('dashboard.challans.show', compact('challan', 'hasBill'));
     }
 
     /**
@@ -68,7 +78,8 @@ class ChallanController extends Controller
      */
     public function edit(Challan $challan)
     {
-        $challan->load(['quotation', 'quotation.customer']);
+        $challan->load(['quotation', 'quotation.customer', 'bill']);
+
 
         return view('dashboard.challans.edit', compact('challan'));
     }

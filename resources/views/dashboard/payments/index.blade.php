@@ -30,8 +30,6 @@
                                 <x-ui.svg.sort-column class="w-4 h-4 ms-1" />
                             </span>
                         </th>
-
-
                         <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
                                 Bill No
@@ -81,40 +79,40 @@
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->bill_no }}
                             </th>
-
-
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->challan->quotation->customer->company_name }}
                             </td>
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
-                                {{ $item->payable }} &#2547;
+                                {{ $item->payable }} ৳
                             </td>
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
-                                {{ $item->paid }} &#2547;
+                                {{ $item->paid }} ৳
                             </td>
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
-                                {{ $item->due }} &#2547;
+                                {{ $item->due }} ৳
                             </td>
-
 
                             @role('admin')
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->challan->quotation->user->username }}
                             </td>
                             @endrole
-                            <th scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ date('d/m/Y H:i', strtotime($item->receivedBills->last()->created_at)) }}
-                            </th>
-                            <td class="grid grid-cols-2 px-2 py-4 gap-x-10">
-                                {{-- <div>
-                                    <a href="{{ route('received-bills.show', $item->id) }}"
-                                        class="font-medium text-blue-600 dark:text-green-500 hover:underline">View</a>
-                                </div> --}}
-                                <div>
-                                    <a href="{{ route('received-bills.edit', $item->id) }}"
-                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Update</a>
-                                </div>
+
+                            {{-- FIX 1: Added an @else to ensure the column is always rendered --}}
+                            @if ($item->receivedBills->last()->received_date ?? false)
+                                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ date('d/m/Y', strtotime($item->receivedBills->last()->created_at)) }}
+                                </td>
+                            @else
+                                <td class="px-6 py-4"></td> {{-- Render empty cell if no date --}}
+                            @endif
+
+                            {{-- FIX 2: Removed the extra, unnecessary <td> that was here --}}
+
+                            {{-- FIX 3: Placed the action in the correct final column with consistent padding --}}
+                            <td class="px-6 py-4">
+                                <a href="{{ route('received-bills.edit', $item->id) }}"
+                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Update</a>
                             </td>
                         </tr>
                     @endforeach

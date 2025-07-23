@@ -4,6 +4,7 @@ use App\Http\Controllers\BillController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ChallanController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\NewsController;
@@ -52,6 +53,7 @@ Route::middleware(['auth',CheckUserIsActive::class])
         Route::get('/customers/search', [QuotationController::class, 'searchCustomer'])->name('customers.search');
 
         Route::resource('quotations', QuotationController::class);
+        Route::resource('customers', CustomerController::class);
 
         // Route::resource('permissions', PermissionController::class);
         // Route::resource('roles', RoleController::class);

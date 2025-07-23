@@ -4,31 +4,31 @@
     <ul class="space-y-2 font-medium">
 
         @role('admin')
-        <li>
-            <button type="button"
-                class="flex items-center w-full p-2 text-base text-gray-900 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                aria-controls="sidebar-dropdown-1" data-collapse-toggle="sidebar-dropdown-1">
-                <x-ui.svg.admin-settings class="h-5 w-5" />
+            <li>
+                <button type="button"
+                    class="flex items-center w-full p-2 text-base text-gray-900 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                    aria-controls="sidebar-dropdown-1" data-collapse-toggle="sidebar-dropdown-1">
+                    <x-ui.svg.admin-settings class="h-5 w-5" />
 
-                <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Admin</span>
+                    <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Admin</span>
 
-                <x-ui.svg.down-arrow class="h-3 w-3" />
-            </button>
+                    <x-ui.svg.down-arrow class="h-3 w-3" />
+                </button>
 
-            <ul id="sidebar-dropdown-1" class="hidden py-2 space-y-2 transition duration-300">
-                <li>
-                    <x-dashboard.common.sidebar-link url="{{ route('users.index') }}" class="pl-12">
-                        <span class="flex-1 ms-3 whitespace-nowrap">Users</span>
-                    </x-dashboard.common.sidebar-link>
+                <ul id="sidebar-dropdown-1" class="hidden py-2 space-y-2 transition duration-300">
+                    <li>
+                        <x-dashboard.common.sidebar-link url="{{ route('users.index') }}" class="pl-12">
+                            <span class="flex-1 ms-3 whitespace-nowrap">Users</span>
+                        </x-dashboard.common.sidebar-link>
 
-                </li>
-                <li>
-                    <x-dashboard.common.sidebar-link url="{{ route('targets.index') }}" class="pl-12">
-                        <span class="flex-1 ms-3 whitespace-nowrap">Target</span>
-                    </x-dashboard.common.sidebar-link>
+                    </li>
+                    <li>
+                        <x-dashboard.common.sidebar-link url="{{ route('targets.index') }}" class="pl-12">
+                            <span class="flex-1 ms-3 whitespace-nowrap">Target</span>
+                        </x-dashboard.common.sidebar-link>
 
-                </li>
-                {{-- @role('dev')
+                    </li>
+                    {{-- @role('dev')
                     <li>
                         <x-dashboard.common.sidebar-link url="{{ route('roles.index') }}" class="pl-12">
                             <span class="flex-1 ms-3 whitespace-nowrap">Roles</span>
@@ -42,8 +42,8 @@
                     </li>
                 @endrole --}}
 
-            </ul>
-        </li>
+                </ul>
+            </li>
         @endrole
 
 
@@ -56,12 +56,21 @@
         </li>
 
         <li>
+            <x-dashboard.common.sidebar-link url="{{ route('customers.index') }}">
+
+                <x-ui.svg.customer class="h-6 w-6" />
+                <span class="flex-1 ms-3 whitespace-nowrap">Customer</span>
+            </x-dashboard.common.sidebar-link>
+        </li>
+
+        <li>
             <x-dashboard.common.sidebar-link url="{{ route('quotations.index') }}">
 
                 <x-ui.svg.qutation class="h-6 w-6" />
                 <span class="flex-1 ms-3 whitespace-nowrap">Quotation</span>
             </x-dashboard.common.sidebar-link>
         </li>
+
 
         <li>
             <x-dashboard.common.sidebar-link url="{{ route('challans.index') }}">

@@ -10,4 +10,9 @@ class Challan extends Model
     {
         return $this->belongsTo(Quotation::class);
     }
+
+    public function bill()
+    {
+        return $this->hasOne(Bill::class);
+    }
 }

@@ -102,9 +102,11 @@ class QuotationController extends Controller
         }
 
         // Load the customer and products relationships for the quotation
-        $quotation->load(['customer', 'products']);
+        $quotation->load(['customer', 'products', 'challan']);
 
-        return view('dashboard.qoutations.show', compact('quotation'));
+        $hasChallan = $quotation->challan ? true : false;
+
+        return view('dashboard.qoutations.show', compact('quotation', 'hasChallan'));
     }
 
     /**
