@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ChallanController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\GalleryController;
@@ -9,6 +11,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PublicationAreaController;
 use App\Http\Controllers\PublicationController;
 use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\ReceivedBillController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaleTargetController;
@@ -38,16 +41,21 @@ Route::middleware(['auth',CheckUserIsActive::class])
 
         Route::resource('expense', ExpenseController::class);
         Route::resource('targets', SaleTargetController::class);
+        Route::resource('challans', ChallanController::class);
+
+        Route::get('/search/bills', [BillController::class, 'search'])->name('bills.search');
+
+        Route::resource('bills', BillController::class);
+        Route::resource('received-bills', ReceivedBillController::class);
 
 
         Route::get('/customers/search', [QuotationController::class, 'searchCustomer'])->name('customers.search');
-
-
 
         Route::resource('quotations', QuotationController::class);
 
         // Route::resource('permissions', PermissionController::class);
         // Route::resource('roles', RoleController::class);
+
         Route::delete('logout', [SessionController::class, 'logout'])->name('logout');
     });
 

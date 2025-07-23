@@ -22,6 +22,7 @@ return new class extends Migration
             $table->double('buying_price')->nullable();
             $table->integer('quantity');
             $table->double('amount');
+            $table->string('remarks')->nullable();
             $table->timestamps();
         });
     }

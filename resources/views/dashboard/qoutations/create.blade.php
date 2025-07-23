@@ -1,4 +1,4 @@
-<x-dashboard.layout.default title="New Qoutation">
+<x-dashboard.layout.default title="New Quotation">
     <x-dashboard.ui.bread-crumb>
         <li class="inline-flex items-center">
             <a href="{{ route('quotations.index') }}"
@@ -20,9 +20,7 @@
             @csrf
 
             <x-ui.card>
-                {{-- @php
-                    print_r(session()->all());
-                @endphp --}}
+
                 <div>
                     <div class="mx-2 grid grid-cols-3">
                         <div class="mx-2">
@@ -40,8 +38,8 @@
                                         class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                         <x-ui.svg.calendar class="h-4 w-4" />
                                     </div>
-                                    <input id="datepicker" name="quotation[due_date]" type="text"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    <input x-model="dueDate" id="datepicker" name="quotation[due_date]" type="text"
+                                        class="flowbite-datepicker bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         placeholder="Select date">
 
                                 </div>
@@ -134,6 +132,10 @@
                             <x-ui.form.input x-model="customerPhone" name="customer[phone]" label="Phone"
                                 placeholder="Ex. 018XXXXXXXX" class="w-full p-2 text-lg" />
                         </div>
+                        <div class="mx-2">
+                            <x-ui.form.input x-model="customerBIN" name="customer[bin_no]" label="BIN No."
+                                placeholder="Customer BIN no." class="w-full p-2 text-lg" />
+                        </div>
                     </div>
                 </template>
 
@@ -209,7 +211,7 @@
                                             required />
                                     </div>
                                     <div class="col-span-2">
-                                        <x-ui.form.input type="number" step="0.01"
+                                        <x-ui.form.input type="number"
                                             x-bind:name="'product[' + index + '][price]'" x-model.number="row.price"
                                             placeholder="Price (1000)"
                                             class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100"
@@ -228,7 +230,13 @@
                                             class="px-4 py-2 border rounded bg-gray-200 dark:bg-gray-700 dark:text-gray-100 cursor-not-allowed"
                                             readonly required />
                                     </div>
-                                    <div class="col-span-9">
+                                    <div class="col-span-2">
+                                        <x-ui.form.input x-bind:name="'product[' + index + '][remarks]'"
+                                            x-model="row.remarks" placeholder="Remakrs"
+                                            class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100"
+                                        />
+                                    </div>
+                                    <div class="col-span-7">
                                         <textarea x-bind:id="'specs-' + index" rows="4" x-bind:name="'product[' + index + '][specs]'" x-model="row.specs"
                                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:bg-inherit dark:text-white"
                                             placeholder="Product Specifications"></textarea>
@@ -330,8 +338,10 @@
             customerCompanyName: '{{ old('customer.company_name') }}',
             customerAddess: '{{ old('customer.address') }}',
             customerPhone: '{{ old('customer.phone') }}',
+            customerBIN: '{{ old('customer.bin_no') }}',
 
             quotation_no: '{{ old('quotation.quotation_no') }}',
+            dueDate: '{{ old('quotation.due_date') }}',
 
             // UPDATED: This function is called when a customer is selected from the search results
             populateCustomer(customer) {
@@ -341,7 +351,7 @@
                 // Store the full customer object for read-only display
                 this.selectedCustomerDetails = customer;
 
-                console.log(this.selectedCustomerDetails);
+                // console.log(this.selectedCustomerDetails);
 
 
                 // Switch the UI to show the selected customer info
@@ -368,7 +378,7 @@
 
             // --- Product and Total logic remains the same ---
             rows: {!! json_encode(
-                old('product', [['name' => '', 'unit' => 'pcs', 'price' => '', 'quantity' => '', 'specs' => '']]),
+                old('product', [['name' => '', 'unit' => 'pcs', 'price' => '', 'quantity' => '', 'specs' => '', 'remarks' => '']]),
             ) !!},
             vat: {{ old('quotation.vat', 10) }},
 
@@ -378,7 +388,8 @@
                     unit: 'pcs',
                     price: '',
                     quantity: '',
-                    specs: ''
+                    specs: '',
+                    remarks: ''
                 });
             },
 

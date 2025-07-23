@@ -1,5 +1,10 @@
 import { Datepicker } from "flowbite";
 
+/**
+ * A helper function to format a date string or Date object to 'dd/mm/yyyy'.
+ * @param {string | Date} dateString - The date to format.
+ * @returns {string} The formatted date.
+ */
 function formatDateToDDMMYYYY(dateString) {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -8,36 +13,13 @@ function formatDateToDDMMYYYY(dateString) {
     return `${day}/${month}/${year}`;
 }
 
+// --- Start of Changes ---
 
+// 1. Select all elements with the class 'flowbite-datepicker'
+// This returns a NodeList, which is like an array of elements.
+const datepickerElements = document.querySelectorAll('.flowbite-datepicker');
 
-const $datepickerEl = document.getElementById('datepicker');
-const today = new Date();
-
-const formattedDateToday = [
-    String(today.getDate()).padStart(2, '0'),
-    String(today.getMonth() + 1).padStart(2, '0'),
-    today.getFullYear()
-].join('/');
-
-const weekBefore = new Date(today);
-weekBefore.setDate(today.getDate() - 30);
-
-const formattedDateWeekBefore = [
-    String(weekBefore.getDate()).padStart(2, '0'),
-    String(weekBefore.getMonth() + 1).padStart(2, '0'),
-    weekBefore.getFullYear()
-].join('/');
-
-if ($datepickerEl && $datepickerEl.value) {
- $datepickerEl.value = formatDateToDDMMYYYY($datepickerEl.value);
-}
-
-// if ($datepickerEl && !$datepickerEl.value) {
-//     $datepickerEl.value = formattedDateToday;
-// }
-
-
-// optional options with default values and callback functions
+// Define the options that will be used for all datepicker instances
 const options = {
     autohide: true,
     format: 'dd/mm/yyyy',
@@ -45,12 +27,29 @@ const options = {
     title: null,
     rangePicker: false,
     autoSelectToday: false,
-    onShow: () => {},
-    onHide: () => {},
 };
 
+// 2. Loop through each selected element and initialize a Datepicker on it
+datepickerElements.forEach($datepickerEl => {
+    // This code block runs for each individual element found
 
+    // If the input has a pre-existing value (e.g., from a server),
+    // make sure it's formatted correctly on page load.
+    if ($datepickerEl.value) {
+        $datepickerEl.value = formatDateToDDMMYYYY($datepickerEl.value);
+    }
 
-if ($datepickerEl) {
-    const datepicker = new Datepicker($datepickerEl, options);
-}
+    // Optional: If you want to set a default value for empty fields,
+    // you can uncomment the block below.
+    /*
+    const today = new Date();
+    const formattedDateToday = formatDateToDDMMYYYY(today);
+    if (!$datepickerEl.value) {
+        $datepickerEl.value = formattedDateToday;
+    }
+    */
+
+    // 3. Initialize a new Datepicker instance for the current element
+    // passing the element and the shared options.
+    new Datepicker($datepickerEl, options);
+});

@@ -1,22 +1,42 @@
 <x-dashboard.layout.default :title="'Quotation - ' . $quotation->quotation_no">
 
-    {{-- NEW: Action Bar for Print Button --}}
+    <x-dashboard.ui.bread-crumb>
+        <li class="inline-flex items-center">
+            <a href="{{ route('quotations.index') }}"
+                class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                <x-ui.svg.users-group class="h-3 w-3 me-2" />
+                Quotation List
+            </a>
+        </li>
 
-    {{-- We add a gray background to the page to make the white "paper" stand out --}}
+        <x-dashboard.ui.bread-crumb-list name="Quotation" />
+    </x-dashboard.ui.bread-crumb>
+
     <div class="bg-gray-100 p-8 font-sans">
 
         {{-- The main container for the quotation, styled to look like a sheet of paper --}}
-        <div class="flex justify-end p-4">
+        <div class="flex justify-between p-4">
+
             <button id="printBtn" type="button"
-                class="print:hidden inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                class="inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                    height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linejoin="round" stroke-width="2"
                         d="M16.444 18H19a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2.556M17 11V5a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v6h10ZM7 15h10v4a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-4Z" />
                 </svg>
 
                 <span>&nbsp;&nbsp;Print</span>
             </button>
+            <a href="{{ route('challans.create', ['quotation_id' => $quotation->id]) }}"
+                class="inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                Proceed To Challan
+
+                <svg class="w-6 h-6 text-gray-800 dark:text-white ml-1" aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 12H5m14 0-4 4m4-4-4-4" />
+                </svg>
+            </a>
         </div>
         <div id="q-invoice" class="max-w-4xl mx-auto bg-white p-8 shadow-lg">
 
@@ -70,7 +90,8 @@
                         <p><strong class="w-16 inline-block">Name</strong> : {{ $quotation->user->name }}</p>
                         <p><strong class="w-16 inline-block">Phone</strong> : {{ $quotation->user->phone }}</p>
                         <p><strong class="w-16 inline-block">Web Site</strong> <a href="https://wesumcorporation.com/"
-                                class="text-blue-600 hover:underline"> : https://wesumcorporation.com</a></p>
+                                class="text-blue-600 hover:underline" target="_blank"> :
+                                https://wesumcorporation.com</a></p>
                         <p><strong class="w-16 inline-block">Address</strong> : 78/1, Hasanlen, Dattapara, Tongi,
                             Gazipur.</p>
                         <p> </p>
@@ -155,12 +176,12 @@
                 <div class="w-1/3 justify-end">
                     <div class="grid grid-cols-2">
                         <div class="font-bold p-2">SUBTOTAL</div>
-                        <div class="text-right p-2 font-semibold">{{ number_format($quotation->subtotal, 2) }}</div>
+                        <div class="text-right p-2 font-semibold">{{ number_format($quotation->subtotal, 2) }} &#2547;</div>
                         <div class="font-bold p-2">VAT ({{ (int) $quotation->vat }}%)</div>
                         <div class="text-right p-2 font-semibold">
-                            {{ number_format($quotation->subtotal * ($quotation->vat / 100), 2) }}</div>
+                            {{ number_format($quotation->subtotal * ($quotation->vat / 100), 2) }} &#2547;</div>
                         <div class="font-bold p-2 bg-gray-200">GRAND TOTAL</div>
-                        <div class="text-right p-2 bg-gray-200 font-bold">{{ number_format($quotation->total, 2) }}
+                        <div class="text-right p-2 bg-gray-200 font-bold">{{ number_format($quotation->total, 2) }} &#2547;
                         </div>
                     </div>
                 </div>
@@ -180,7 +201,8 @@
             </section>
 
             <!-- Section 7: Document Footer -->
-            <footer class="mt-12 pt-4 border-t border-gray-300 text-xs text-gray-600 flex justify-between items-center">
+            <footer
+                class="mt-12 pt-4 border-t border-gray-300 text-xs text-gray-600 flex justify-between items-center">
                 <div class="mx-auto space-x-4">
                     <div class="text-center">
                         <div>

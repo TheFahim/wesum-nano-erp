@@ -44,8 +44,6 @@ class QuotationController extends Controller
      */
     public function store(QuotationRequest $request)
     {
-        return $request;
-
         $validatedData = $request->validated();
 
         DB::beginTransaction();

@@ -63,6 +63,28 @@
             </x-dashboard.common.sidebar-link>
         </li>
 
+        <li>
+            <x-dashboard.common.sidebar-link url="{{ route('challans.index') }}">
+
+                <x-ui.svg.chalan class="h-6 w-6" />
+                <span class="flex-1 ms-3 whitespace-nowrap">Chalan</span>
+            </x-dashboard.common.sidebar-link>
+        </li>
+        <li>
+            <x-dashboard.common.sidebar-link url="{{ route('bills.index') }}">
+
+                <x-ui.svg.bill class="h-6 w-6" />
+                <span class="flex-1 ms-3 whitespace-nowrap">Bill</span>
+            </x-dashboard.common.sidebar-link>
+        </li>
+        <li>
+            <x-dashboard.common.sidebar-link url="{{ route('received-bills.index') }}">
+
+                <x-ui.svg.payment class="h-6 w-6" />
+                <span class="flex-1 ms-3 whitespace-nowrap">Payment</span>
+            </x-dashboard.common.sidebar-link>
+        </li>
+
 
 
 

@@ -57,6 +57,7 @@ class QuotationRequest extends FormRequest
             'product.*.quantity' => ['required', 'integer', 'min:1'],
             'product.*.amount' => ['required', 'numeric', 'min:0'],
             'product.*.specs' => ['nullable', 'string'],
+            'product.*.remarks' => ['nullable', 'string'],
         ];
 
         if ($quotationId) {
@@ -87,6 +88,7 @@ class QuotationRequest extends FormRequest
                 'customer.company_name' => ['required', 'string', 'max:255'],
                 'customer.address' => ['required', 'string', 'max:1000'],
                 'customer.phone' => ['required', 'string', 'max:255'],
+                'customer.bin_no' => ['nullable', 'string', 'max:255'],
             ];
         }
 

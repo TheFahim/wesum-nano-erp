@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('company_name');
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
+            $table->string('bin_no')->nullable();
             $table->timestamps();
         });
     }

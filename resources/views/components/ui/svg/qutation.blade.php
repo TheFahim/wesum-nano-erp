@@ -1,13 +1,9 @@
-<svg {{ $attributes(['class' => 'text-gray-800 dark:text-white']) }} xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve">
+<svg {{ $attributes(['class' => 'text-gray-800 dark:text-white']) }} xmlns="http://www.w3.org/2000/svg" version="1.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" viewBox="0 0 100 100" style="enable-background:new 0 0 512 512"
+    xml:space="preserve" class="">
     <g>
         <path
-            d="M56 488a8 8 0 0 0 8 8h384a8 8 0 0 0 8-8V56a40.045 40.045 0 0 0-40-40H64a8 8 0 0 0-8 8zM440 56v24h-32V48a31.8 31.8 0 0 0-4.3-16H416a24.028 24.028 0 0 1 24 24zM72 32h304a16.019 16.019 0 0 1 16 16v40a8 8 0 0 0 8 8h40v384H72z"
-            fill="currentColor" opacity="1" data-original="currentColor" class=""></path>
-        <path
-            d="M400 416h-64a8 8 0 0 0 0 16h64a8 8 0 0 0 0-16zM400 448H272a8 8 0 0 0 0 16h128a8 8 0 0 0 0-16zM168 104a8.009 8.009 0 0 1 8 8 8 8 0 0 0 16 0 24.039 24.039 0 0 0-16-22.624V88a8 8 0 0 0-16 0v1.376A24 24 0 0 0 168 136a8 8 0 1 1-8 8 8 8 0 0 0-16 0 24.039 24.039 0 0 0 16 22.624V168a8 8 0 0 0 16 0v-1.376A24 24 0 0 0 168 120a8 8 0 0 1 0-16z"
-            fill="currentColor" opacity="1" data-original="currentColor" class=""></path>
-        <path
-            d="M248 128a80 80 0 1 0-80 80 80.091 80.091 0 0 0 80-80zm-80 64a64 64 0 1 1 64-64 64.072 64.072 0 0 1-64 64zM144 240h-32a8 8 0 0 0 0 16h32a8 8 0 0 0 0-16zM320 240H192a8 8 0 0 0 0 16h128a8 8 0 0 0 0-16zM400 240h-16a8 8 0 0 0 0 16h16a8 8 0 0 0 0-16zM144 272h-32a8 8 0 0 0 0 16h32a8 8 0 0 0 0-16zM320 272H192a8 8 0 0 0 0 16h128a8 8 0 0 0 0-16zM400 272h-16a8 8 0 0 0 0 16h16a8 8 0 0 0 0-16zM144 304h-32a8 8 0 0 0 0 16h32a8 8 0 0 0 0-16zM320 304H192a8 8 0 0 0 0 16h128a8 8 0 0 0 0-16zM400 304h-16a8 8 0 0 0 0 16h16a8 8 0 0 0 0-16zM144 336h-32a8 8 0 0 0 0 16h32a8 8 0 0 0 0-16zM320 336H192a8 8 0 0 0 0 16h128a8 8 0 0 0 0-16zM400 336h-16a8 8 0 0 0 0 16h16a8 8 0 0 0 0-16zM144 368h-32a8 8 0 0 0 0 16h32a8 8 0 0 0 0-16zM328 376a8 8 0 0 0-8-8H192a8 8 0 0 0 0 16h128a8 8 0 0 0 8-8zM400 368h-16a8 8 0 0 0 0 16h16a8 8 0 0 0 0-16zM400 128h-80a8 8 0 0 0 0 16h80a8 8 0 0 0 0-16zM400 160H280a8 8 0 0 0 0 16h120a8 8 0 0 0 0-16zM400 192H280a8 8 0 0 0 0 16h120a8 8 0 0 0 0-16z"
+            d="M91.8 16.75h-7.6c-.475 0-.95.475-.95.95V88H21.5c-2.85 0-4.75-1.9-4.75-4.75s1.9-4.75 4.75-4.75h51.3c.475 0 .95-.475.95-.95V3.45c0-.475-.475-.95-.95-.95H16.75c-5.225 0-9.5 4.275-9.5 9.5v70.775c0 2.85.475 5.7 2.85 8.55 2.85 3.8 7.6 6.175 12.35 6.175H88c2.85 0 4.75-1.9 4.75-4.75V17.7c0-.475-.475-.95-.95-.95z"
             fill="currentColor" opacity="1" data-original="currentColor" class=""></path>
     </g>
 </svg>
