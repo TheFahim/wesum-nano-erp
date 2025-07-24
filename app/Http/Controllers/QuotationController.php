@@ -63,10 +63,6 @@ class QuotationController extends Controller
             $quotationData['user_id'] = Auth::id();
             $quotationData['customer_id'] = $customer->id;
 
-            if (!empty($quotationData['due_date'])) {
-                $quotationData['due_date'] = Carbon::createFromFormat('d/m/Y', $quotationData['due_date'])->format('Y-m-d');
-            }
-
             $quotation = Quotation::create($quotationData);
 
 
@@ -120,7 +116,11 @@ class QuotationController extends Controller
 
         $quotation->load(['customer', 'products']);
 
-        return view('dashboard.qoutations.edit', compact('quotation'));
+
+        $hasChallan = $quotation->challan ? true : false;
+
+
+        return view('dashboard.qoutations.edit', compact('quotation', 'hasChallan'));
 
     }
 
@@ -152,13 +152,6 @@ class QuotationController extends Controller
             // --- QUOTATION UPDATE LOGIC ---
             $quotationUpdateData = $validatedData['quotation'];
             $quotationUpdateData['customer_id'] = $customerId; // Assign the resolved customer ID
-
-            // Handle date formatting
-            if (!empty($quotationUpdateData['due_date'])) {
-                $quotationUpdateData['due_date'] = Carbon::createFromFormat('d/m/Y', $quotationUpdateData['due_date'])->format('Y-m-d');
-            } else {
-                $quotationUpdateData['due_date'] = null;
-            }
 
             // Step 1: Update the parent Quotation model
             $quotation->update($quotationUpdateData);
@@ -208,6 +201,18 @@ class QuotationController extends Controller
     public function destroy(Quotation $quotation)
     {
         $this->checkUserPermission($quotation);
+        $quotation->load(['challan']);
+
+        $hasChallan = $quotation->challan ? true : false;
+
+        if ($hasChallan) {
+            abort(403);
+        }
+
+        $quotation->delete();
+
+
+        return redirect()->route('quotations.index')->with('success', 'Quotation Deleted successfully!');
 
     }
 

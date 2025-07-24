@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Challan;
+use App\Models\Product;
 use App\Models\Quotation;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ChallanController extends Controller
 {
@@ -81,7 +83,10 @@ class ChallanController extends Controller
         $challan->load(['quotation', 'quotation.customer', 'bill']);
 
 
-        return view('dashboard.challans.edit', compact('challan'));
+        $hasBill = $challan->bill ? true : false;
+
+
+        return view('dashboard.challans.edit', compact('challan', 'hasBill'));
     }
 
     /**
@@ -89,7 +94,30 @@ class ChallanController extends Controller
      */
     public function update(Request $request, Challan $challan)
     {
-        //
+        $validated = $request->validate([
+            'challan_no' => ['required', Rule::unique('challans', 'challan_no')->ignore($challan->id)],
+            'po_no' => ['required', Rule::unique('challans', 'po_no')->ignore($challan->id)],
+            'delivery_date' => 'required|date_format:d/m/Y',
+            'product' => 'required|array',
+            'product.*.id' => 'required|exists:products,id',
+            'product.*.buying_price' => 'nullable|numeric',
+            'product.*.remarks' => 'nullable|string|max:255',
+        ]);
+
+        $challan->update([
+            'challan_no' => $validated['challan_no'],
+            'po_no' => $validated['po_no'],
+            'delivery_date' => $validated['delivery_date'] ? \Carbon\Carbon::createFromFormat('d/m/Y', $validated['delivery_date'])->format('Y-m-d') : null,
+        ]);
+
+        foreach ($validated['product'] as $productData) {
+            Product::where('id', $productData['id'])->update([
+                'buying_price' => $productData['buying_price'] ?? null,
+                'remarks' => $productData['remarks'] ?? null,
+            ]);
+        }
+
+        return redirect()->route('challans.show', $challan->id)->with('success', 'Challan updated successfully.');
     }
 
     /**
@@ -97,6 +125,18 @@ class ChallanController extends Controller
      */
     public function destroy(Challan $challan)
     {
-        //
+        $challan->load(['bill']);
+
+        $hasBill = $challan->bill ? true : false;
+
+        if ($hasBill) {
+            abort(403);
+        }
+
+        $challan->delete();
+
+        return redirect()->route('challans.index')->with('success', 'Challan Deleted successfully.');
+
+
     }
 }

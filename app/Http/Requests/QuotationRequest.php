@@ -43,7 +43,6 @@ class QuotationRequest extends FormRequest
                 Rule::unique('quotations', 'quotation_no')->ignore($quotationId),
             ],
 
-            'quotation.due_date' => ['nullable', 'date_format:d/m/Y'],
             'quotation.subtotal' => ['required', 'numeric', 'min:0'],
             'quotation.vat' => ['required', 'numeric', Rule::in([10, 15])],
             'quotation.total' => ['required', 'numeric', 'min:0'],

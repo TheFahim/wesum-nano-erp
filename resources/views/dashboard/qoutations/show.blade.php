@@ -4,8 +4,8 @@
         <li class="inline-flex items-center">
             <a href="{{ route('quotations.index') }}"
                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-                <x-ui.svg.users-group class="h-3 w-3 me-2" />
-                Quotation List
+                <x-ui.svg.book class="h-3 w-3 me-2" />
+                Quotations
             </a>
         </li>
 
@@ -90,10 +90,6 @@
                         <div class="font-bold p-1 text-left">CUSTOMER ID</div>
                         <div class="border border-gray-400 p-1">{{ $quotation->customer->customer_no }}</div>
 
-                        <div class="font-bold p-1 text-left">DUE DATE</div>
-                        <div class="border border-gray-400 p-1">
-                            {{ $quotation->due_date ? \Carbon\Carbon::parse($quotation->due_date)->format('d/m/Y') : 'N/A' }}
-                        </div>
                     </div>
                 </div>
             </header>

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Customer::class);
             $table->string('quotation_no')->unique();
-            $table->string('due_date');
             $table->double('subtotal');
             $table->enum('vat',['10', '15']);
             $table->double('total');

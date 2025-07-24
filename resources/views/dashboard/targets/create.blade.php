@@ -3,8 +3,8 @@
         <li class="inline-flex items-center">
             <a href="{{ route('targets.index') }}"
                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-                <x-ui.svg.users-group class="h-3 w-3 me-2" />
-                User Sale Target
+                <x-ui.svg.book class="h-3 w-3 me-2" />
+                User Targets
             </a>
         </li>
         <x-dashboard.ui.bread-crumb-list name="Create" />

@@ -13,14 +13,10 @@ Alpine.start();
 
 
 import './imageUpload';
-
 import 'flowbite';
-
 import './simpleDatatables';
-
 import './sunEditor';
-
 import './buttonAlerts';
-
 import './datepickerExpense';
 import './datepicker';
+import './targetChart';

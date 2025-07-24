@@ -3,11 +3,11 @@
         <li class="inline-flex items-center">
             <a href="{{ route('bills.index') }}"
                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-                <x-ui.svg.users-group class="h-3 w-3 me-2" />
-                Bill List
+                <x-ui.svg.book class="h-3 w-3 me-2" />
+                Bills
             </a>
         </li>
-        <x-dashboard.ui.bread-crumb-list name="Edit Bill" />
+        <x-dashboard.ui.bread-crumb-list name="Edit Bill No." />
     </x-dashboard.ui.bread-crumb>
 
     <div>

@@ -7,7 +7,7 @@
                 Users
             </a>
         </li>
-        <x-dashboard.ui.bread-crumb-list name="Create" />
+        <x-dashboard.ui.bread-crumb-list name="Edit" />
     </x-dashboard.ui.bread-crumb>
 
     <x-ui.card heading="Edit User">

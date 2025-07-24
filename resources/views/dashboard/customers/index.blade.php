@@ -3,7 +3,7 @@
         <li class="inline-flex items-center">
             <a href="{{ route('customers.index') }}"
                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-                <x-ui.svg.users-group class="h-4 w-4 me-2" />
+                <x-ui.svg.book class="h-3 w-3 me-2" />
                 Customers
             </a>
         </li>

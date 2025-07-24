@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Quotation::class)->onDelete('cascade');
+            $table->foreignIdFor(Quotation::class)->constrained()->onDelete('cascade');
             $table->string('name');
             $table->text('specs')->nullable();
             $table->string('unit');

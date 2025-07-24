@@ -46,7 +46,11 @@ class CustomerController extends Controller
      */
     public function edit(Customer $customer)
     {
-        return view('dashboard.customers.edit', compact('customer'));
+        $customer->load(['quotations']);
+
+        $hasQuotation = count($customer->quotations) > 0 ? true : false;
+
+        return view('dashboard.customers.edit', compact('customer', 'hasQuotation'));
     }
 
     /**
@@ -74,6 +78,18 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        //
+
+        $customer->load(['quotations']);
+        $hasQuotation = count($customer->quotations) > 0 ? true : false;
+
+        if ($hasQuotation) {
+            abort(403);
+        }
+
+        $customer->delete();
+
+
+        return redirect()->route('customers.index')->with('success', 'Customer Deleted successfully.');
+
     }
 }

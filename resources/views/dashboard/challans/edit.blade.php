@@ -1,33 +1,28 @@
 <x-dashboard.layout.default title="Edit Challan">
     <x-dashboard.ui.bread-crumb>
         <li class="inline-flex items-center">
-            <a href="{{ route('quotations.index') }}"
+            <a href="{{ route('challans.index') }}"
                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-                <x-ui.svg.users-group class="h-3 w-3 me-2" />
-                Quotation List
+                <x-ui.svg.book class="h-3 w-3 me-2" />
+                Challans
             </a>
         </li>
-        <li class="inline-flex items-center">
-            <a href="{{ route('quotations.show', $challan->quotation->id) }}"
-                class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-                <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="m1 9 4-4-4-4" />
-                </svg> Quotation
-            </a>
-        </li>
-        <x-dashboard.ui.bread-crumb-list name="Challan" />
+
+        <x-dashboard.ui.bread-crumb-list name="Challan Edit" />
     </x-dashboard.ui.bread-crumb>
 
     <div>
+        {{-- print the session error --}}
+
         <h2 class="mx-5 text-xl font-extrabold dark:text-white">Edit Challan</h2>
 
-        <form class="space-y-3" action="{{ route('challans.update', $challan->id) }}" method="POST" enctype="multipart/form-data">
+        <form class="space-y-3" action="{{ route('challans.update', $challan->id) }}" method="POST"
+            enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
             <x-ui.card>
+
                 <div class="p-6">
                     <input type="hidden" name="quotation_id" value="{{ $challan->quotation->id }}">
 
@@ -100,19 +95,55 @@
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead class="bg-gray-50 dark:bg-gray-700">
                             <tr>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Unit</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Remarks</th>
+                                <th
+                                    class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    Name</th>
+                                <th
+                                    class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    Unit</th>
+                                <th
+                                    class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    Price</th>
+                                <th
+                                    class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    Quantity</th>
+                                @role('admin')
+                                    <th
+                                        class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        Buying Price</th>
+                                @endrole
+                                <th
+                                    class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    Remarks</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                            @foreach($challan->quotation->products as $product)
+                            @foreach ($challan->quotation->products as $product)
                                 <tr>
+                                    <input type="hidden" name="product[{{ $loop->index }}][id]"
+                                        value="{{ $product->id }}">
                                     <td class="px-4 py-2 text-gray-900 dark:text-gray-100">{{ $product->name }}</td>
                                     <td class="px-4 py-2 text-gray-900 dark:text-gray-100">{{ $product->unit }}</td>
-                                    <td class="px-4 py-2 text-gray-900 dark:text-gray-100">{{ $product->quantity }}</td>
-                                    <td class="px-4 py-2 text-gray-900 dark:text-gray-100">{{ $product->remarks }}</td>
+                                    <td class="px-4 py-2 text-gray-900 dark:text-gray-100">{{ $product->price }}</td>
+                                    <td class="px-4 py-2 text-gray-900 dark:text-gray-100">{{ $product->quantity }}
+                                    </td>
+
+                                    @role('admin')
+                                        <td class="px-4 py-2 text-gray-900 dark:text-gray-100">
+                                            <div class="mx-2">
+                                                <x-ui.form.input name="product[{{ $loop->index }}][buying_price]"
+                                                    type="number" placeholder="Buying Price" class="w-full p-2 text-lg"
+                                                    value="{{ old('product.' . $loop->index . '.buying_price', $product->buying_price) }}" />
+                                            </div>
+                                        </td>
+                                    @endrole
+                                    <td class="px-4 py-2 text-gray-900 dark:text-gray-100">
+                                        <div class="mx-2">
+                                            <x-ui.form.input name="product[{{ $loop->index }}][remarks]"
+                                                placeholder="Product Remarks" class="w-full p-2 text-lg"
+                                                value="{{ old('product.' . $loop->index . '.remarks', $product->remarks) }}" />
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -121,10 +152,24 @@
             </x-ui.card>
 
             <x-ui.card>
-                <button type="submit"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mx-5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 save-button">Update</button>
+                <div class="grid grid-cols-12">
+                    <button type="submit"
+                        class="col-span-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 my-2 mx-5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 save-button">
+                        Update Challan
+                    </button>
+
+                    @if (!$hasBill)
+                        <button form="delete-form" type="button"
+                            class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 m-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 delete-button">Delete</button>
+                    @endif
+                </div>
             </x-ui.card>
 
+        </form>
+
+        <form method="POST" action="{{ route('challans.destroy', $challan->id) }}" id="delete-form" class="hidden">
+            @csrf
+            @method('DELETE')
         </form>
     </div>
 </x-dashboard.layout.default>

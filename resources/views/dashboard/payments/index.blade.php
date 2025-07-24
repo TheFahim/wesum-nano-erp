@@ -3,7 +3,7 @@
         <li class="inline-flex items-center">
             <a href="{{ route('received-bills.index') }}"
                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-                <x-ui.svg.users-group class="h-4 w-4 me-2" />
+                <x-ui.svg.book class="h-3 w-3 me-2" />
                 Payements
             </a>
         </li>
@@ -89,7 +89,7 @@
                                 {{ $item->paid }} ৳
                             </td>
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
-                                {{ $item->due }} ৳
+                                {{ number_format($item->due, (fmod($item->due, 1) != 0 ? 2 : 0)) }} ৳
                             </td>
 
                             @role('admin')

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(Challan::class)->constrained();
             $table->string('bill_no')->unique();
             $table->double('payable');
+            $table->double('paid');
             $table->double('due');
             $table->timestamps();
         });

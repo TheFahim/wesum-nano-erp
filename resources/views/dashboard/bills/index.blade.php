@@ -3,7 +3,7 @@
         <li class="inline-flex items-center">
             <a href="{{ route('bills.index') }}"
                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-                <x-ui.svg.users-group class="h-4 w-4 me-2" />
+                <x-ui.svg.book class="h-3 w-3 me-2" />
                 Bills
             </a>
         </li>
@@ -94,7 +94,7 @@
                             </td>
 
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
-                                @if ($item->due == 0)
+                                @if ($item->due <= 0)
                                     <span class="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                                         Paid
                                     </span>
