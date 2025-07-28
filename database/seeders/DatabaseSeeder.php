@@ -15,19 +15,22 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        // Create the 'admin' and 'user' roles
-        $adminRole = Role::create(['name' => 'admin']);
-        Role::create(['name' => 'user']);
-
-        // Create the user
-        $user = User::create([
-            'name' => 'The Developer',
-            'username' => 'developer',
-            'password' => bcrypt('h5o3iamm2f')
+        $this->call([
+            ExpenseSeeder::class
         ]);
+        // // Create the 'admin' and 'user' roles
+        // $adminRole = Role::create(['name' => 'admin']);
+        // Role::create(['name' => 'user']);
 
-        // Assign the 'admin' role to the newly created user
-        $user->assignRole($adminRole);
+        // // Create the user
+        // $user = User::create([
+        //     'name' => 'The Developer',
+        //     'username' => 'developer',
+        //     'password' => bcrypt('h5o3iamm2f')
+        // ]);
+
+        // // Assign the 'admin' role to the newly created user
+        // $user->assignRole($adminRole);
 
     }
 }

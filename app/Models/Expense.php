@@ -10,4 +10,8 @@ class Expense extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    protected $casts = [
+        'date' => 'date', // Important for Carbon to work correctly
+    ];
 }

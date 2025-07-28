@@ -6,6 +6,7 @@ use App\Models\Expense;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 
@@ -19,9 +20,7 @@ class ExpenseController extends Controller
 
         if (Auth::getUser()->hasRole('admin')) {
             $expenses = Expense::with('user')->latest()->get();
-        }
-
-        else {
+        } else {
             $expenses = Expense::where('user_id', Auth::getUser()->id)->latest()->get();
         }
         return view('dashboard.expenses.index', compact('expenses'));
@@ -122,4 +121,68 @@ class ExpenseController extends Controller
 
         return redirect()->route('expense.index')->with('success', 'Expense Deleted');
     }
+
+    public function getChartData(Request $request)
+    {
+        // Default to 'last_month' if no period is provided
+        $period = $request->input('period', 'last_month');
+
+        $now = Carbon::now();
+        $startDate = $now->copy()->startOfDay();
+        $endDate = $now->copy()->endOfDay();
+
+        switch ($period) {
+            case 'today':
+                // Start and end date are already set to today
+                break;
+            case 'last_7_days':
+                $startDate = $now->copy()->subDays(6)->startOfDay();
+                break;
+            case 'this_month':
+                $startDate = $now->copy()->startOfMonth();
+                // $endDate is already set to today, which is correct for this period
+                break;
+            case 'last_month':
+                $startDate = $now->copy()->subMonthNoOverflow()->startOfMonth();
+                $endDate = $now->copy()->subMonthNoOverflow()->endOfMonth();
+                break;
+            case 'last_6_month':
+                $startDate = $now->copy()->subMonths(6)->startOfDay();
+                // End date remains today
+                break;
+            case 'this_year':
+                $startDate = $now->copy()->startOfYear();
+                // End date remains today
+                break;
+            case 'last_year': // <-- ADDED THIS MISSING CASE
+                $startDate = $now->copy()->subYear()->startOfYear();
+                $endDate = $now->copy()->subYear()->endOfYear();
+                break;
+            default:
+                // Fallback to a sensible default, e.g., last 7 days
+                $startDate = $now->copy()->subDays(6)->startOfDay();
+                break;
+        }
+
+        // Query the data
+        $expenseData = Expense::whereBetween('date', [$startDate, $endDate])
+            ->select('type', DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('type')
+            ->get();
+
+        // Format for ApexCharts
+        $labels = $expenseData->pluck('type')->map(function ($type) {
+            return ucfirst(str_replace('_', ' ', $type)); // Format for display
+        });
+
+        $series = $expenseData->pluck('total_amount');
+        $total = $series->sum();
+
+        return response()->json([
+            'series' => $series,
+            'labels' => $labels,
+            'total' => number_format($total, 2)
+        ]);
+    }
+
 }

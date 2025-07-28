@@ -204,7 +204,9 @@
 
             <!-- Section 6: Terms & Conditions -->
             <section class="mt-8">
-                <h3 class="bg-blue-900 text-white font-bold p-2 mb-4">Terms & Conditions</h3>
+                {!! $quotation->terms_conditions !!}
+
+                {{-- <h3 class="bg-blue-900 text-white font-bold p-2 mb-4">Terms & Conditions</h3>
                 <ul class="list-disc list-inside text-sm space-y-2 text-gray-700">
                     <li>Mushuk 6.3 will be provided with a bill Copy.</li>
                     <li>Payment will be due prior to delivery of service and goods.</li>
@@ -212,7 +214,7 @@
                     <li>BEFTN / Cheque in favor of Wesum corporation.</li>
                     <li>Delivery Time 3-4 weeks after getting PO. </li>
                     <li>The Quotation value valid 12 days after submission.</li>
-                </ul>
+                </ul> --}}
             </section>
 
             <!-- Section 7: Document Footer -->

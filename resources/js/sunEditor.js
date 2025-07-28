@@ -41,8 +41,23 @@ import 'katex/dist/katex.min.css'
 let textAreaEditor;
 if (document.getElementById('text-area')) {
 
-        textAreaEditor = suneditor.create('text-area', {
-        minWidth:'100%',
+    textAreaEditor = suneditor.create('text-area', {
+        allowedClassNames: [
+            'bg-blue-900',
+            'text-white',
+            'font-bold',
+            'p-2',
+            'mb-4',
+            'list-disc',
+            'list-inside',
+            'text-sm',
+            'space-y-2',
+            'text-gray-700'
+        ].join('|'), // Creates a regex-like string for allowed classes
+        attributesWhitelist: {
+            all: 'style,class'
+        },
+        minWidth: '100%',
         minHeight: '30vh',
         plugins: plugins,
         buttonList: [
@@ -54,4 +69,4 @@ if (document.getElementById('text-area')) {
 }
 
 
-export default textAreaEditor ;
+export default textAreaEditor;

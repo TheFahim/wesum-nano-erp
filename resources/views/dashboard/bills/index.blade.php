@@ -10,13 +10,13 @@
     </x-dashboard.ui.bread-crumb>
 
     <x-ui.card class="mx-auto">
-        <div class="grid grid-cols-8 p-2 mb-4">
+        {{-- <div class="grid grid-cols-8 p-2 mb-4">
             <a href="{{ route('bills.create') }}"
                 class="flex items-center gap-2 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-4 py-2">
                 <x-ui.svg.circle-plus />
                 <span>Add New</span>
             </a>
-        </div>
+        </div> --}}
         <hr class="border-t border-gray-300 w-full">
 
         <div class="relative overflow-x-auto sm:rounded-lg py-3 px-2 mx-2">

@@ -81,7 +81,7 @@
 
                                         <!-- Amount Input -->
                                         <div class="col-span-3 lg:col-span-2">
-                                            <x-ui.form.input x-bind:name="'payment[' + index + '][amount]'" x-model="row.amount" type="number" placeholder="Amount (Tk)" required />
+                                            <x-ui.form.input x-bind:name="'payment[' + index + '][amount]'" x-model="row.amount" type="number" step="0.01" placeholder="Amount (Tk)" required />
                                         </div>
 
                                         <!-- Details Input -->

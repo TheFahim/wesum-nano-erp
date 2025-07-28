@@ -185,7 +185,7 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('clonableInputs', () => ({
-            rows: {!! json_encode(old('target', [['user' => '', 'start_month' => '', 'end_month' => '', 'start_year' => '', 'end_year' => '', 'target_amount' => '']])) !!},
+            rows: {!! json_encode(old('target', [['user' => '', 'year' => '', 'end_month' => '', 'start_year' => '', 'end_year' => '', 'target_amount' => '']])) !!},
             addRow() {
                 this.rows.push({
                     user: '',

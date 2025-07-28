@@ -1,14 +1,16 @@
-const targetOptions = {
+import ApexCharts from "apexcharts";
+
+const options = {
     series: [
         {
             name: "Income",
-            color: "#31C48D",
+            color: "#CF9FFF",
             data: ["1420", "1620", "1820", "1420", "1650", "2120"],
         },
         {
             name: "Expense",
             data: ["788", "810", "866", "788", "1100", "1200"],
-            color: "#F05252",
+            color: "#16BDCA",
         }
     ],
     chart: {
@@ -92,4 +94,7 @@ const targetOptions = {
     }
 }
 
-export default targetOptions;
+if (document.getElementById("bar-chart") && typeof ApexCharts !== 'undefined') {
+    var chart = new ApexCharts(document.querySelector("#bar-chart"), options);
+    chart.render();
+}

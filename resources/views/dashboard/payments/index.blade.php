@@ -82,20 +82,30 @@
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->challan->quotation->customer->company_name }}
                             </td>
-                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
+                            <td
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
                                 {{ $item->payable }} ৳
                             </td>
-                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
+                            <td
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
                                 {{ $item->paid }} ৳
                             </td>
-                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
-                                {{ number_format($item->due, (fmod($item->due, 1) != 0 ? 2 : 0)) }} ৳
+                            <td
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
+                                @if ($item->due <= 0)
+                                    <span
+                                        class="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                        Paid
+                                    </span>
+                                @else
+                                    {{ number_format($item->due, fmod($item->due, 1) != 0 ? 2 : 0) }}
+                                @endif
                             </td>
 
                             @role('admin')
-                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $item->challan->quotation->user->username }}
-                            </td>
+                                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ $item->challan->quotation->user->username }}
+                                </td>
                             @endrole
 
                             {{-- FIX 1: Added an @else to ensure the column is always rendered --}}

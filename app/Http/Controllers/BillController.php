@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bill;
 use App\Models\Challan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class BillController extends Controller
@@ -105,4 +106,19 @@ class BillController extends Controller
 
         return response()->json($bills);
     }
+
+    public function getBillingData(Request $request)
+    {
+
+
+        $bill = Bill::select(
+                DB::raw('SUM(payable) as total_bill'),
+                DB::raw('SUM(paid) as total_paid'),
+                DB::raw('SUM(due) as total_due')
+            )
+            ->where('due', '>', 0)->get();
+
+
+    }
+
 }

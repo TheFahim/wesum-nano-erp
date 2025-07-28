@@ -15,10 +15,10 @@ return new class extends Migration
         Schema::create('sale_targets', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->constrained();
-            $table->integer('start_month');
-            $table->integer('end_month');
-            $table->year('start_year');
-            $table->year('end_year');
+            $table->year('year');
+            // $table->integer('end_month');
+            // $table->year('start_year');
+            // $table->year('end_year');
             $table->double('target_amount');
             $table->timestamps();
         });
