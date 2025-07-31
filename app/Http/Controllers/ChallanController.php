@@ -6,6 +6,7 @@ use App\Models\Challan;
 use App\Models\Product;
 use App\Models\Quotation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class ChallanController extends Controller
@@ -15,7 +16,26 @@ class ChallanController extends Controller
      */
     public function index()
     {
-        $challans = Challan::with(['quotation', 'quotation.customer'])->latest()->get();
+        if (Auth::user()->hasRole('admin')) {
+            $challans = Challan::with(['quotation', 'quotation.customer', 'quotation.products'])->latest()->get();
+
+
+            $challans->each(function ($challan) {
+                $buyingLeftCount = 0;
+                if ($challan->quotation && $challan->quotation->products) {
+                    $buyingLeftCount = $challan->quotation->products->where('buying_price', null)->count();
+                }
+                $challan->buying_left = $buyingLeftCount;
+            });
+
+        } else {
+            $challans = Challan::with(['quotation', 'quotation.customer'])
+                ->whereHas('quotation', function ($query) {
+                    $query->where('user_id', Auth::id());
+                })
+                ->latest()
+                ->get();
+        }
 
         return view('dashboard.challans.index', compact('challans'));
     }
@@ -28,7 +48,17 @@ class ChallanController extends Controller
 
         $quotationId = $request->query('quotation_id');
 
-        $quotation = Quotation::find($quotationId)->load(['products', 'customer', 'challan']);
+        $quotation = Quotation::find($quotationId);
+
+        if (!$quotation) {
+            abort(404, 'Quotation not found');
+        }
+
+        if (!Auth::user()->hasRole('admin') && $quotation->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $quotation->load(['customer', 'products']);
 
         $hasChallan = $quotation->challan ? true : false;
 
@@ -44,6 +74,7 @@ class ChallanController extends Controller
      */
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'quotation_id' => 'required|exists:quotations,id',
             'challan_no' => 'required|string|max:255|unique:challans,challan_no',
@@ -66,7 +97,14 @@ class ChallanController extends Controller
      */
     public function show(Challan $challan)
     {
+
+
+
         $challan->load(['quotation', 'quotation.products', 'quotation.customer']);
+
+        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
 
 
         $hasBill = $challan->bill ? true : false;
@@ -81,6 +119,11 @@ class ChallanController extends Controller
     public function edit(Challan $challan)
     {
         $challan->load(['quotation', 'quotation.customer', 'bill']);
+
+
+        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
 
 
         $hasBill = $challan->bill ? true : false;
@@ -104,6 +147,13 @@ class ChallanController extends Controller
             'product.*.remarks' => 'nullable|string|max:255',
         ]);
 
+        $challan->load('quotation');
+
+        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+
         $challan->update([
             'challan_no' => $validated['challan_no'],
             'po_no' => $validated['po_no'],
@@ -125,7 +175,10 @@ class ChallanController extends Controller
      */
     public function destroy(Challan $challan)
     {
-        $challan->load(['bill']);
+        $challan->load(['bill', 'quotation']);
+        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
 
         $hasBill = $challan->bill ? true : false;
 

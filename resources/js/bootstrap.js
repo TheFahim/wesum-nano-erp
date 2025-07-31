@@ -18,6 +18,6 @@ import './sunEditor';
 import './buttonAlerts';
 import './datepickerExpense';
 import './datepicker';
-import './charts/billChart';
 import './charts/expenseChart'
 import './charts/target';
+import './adminDashboard';

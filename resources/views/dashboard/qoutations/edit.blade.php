@@ -61,7 +61,7 @@
                                     </svg>
                                 </div>
                                 <input type="text" id="simple-search" x-model.debounce.300ms="searchQuery"
-                                    @focus="showSuggestions = true" @keydown.escape.prevent="showSuggestions = false"
+                                   @focus="getInitialSuggestions()" @keydown.escape.prevent="showSuggestions = false"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="Search to change customer..." autocomplete="off" />
                             </div>
@@ -304,7 +304,8 @@
             </x-ui.card>
 
         </form>
-        <form method="POST" action="{{ route('quotations.destroy', $quotation->id) }}" id="delete-form" class="hidden">
+        <form method="POST" action="{{ route('quotations.destroy', $quotation->id) }}" id="delete-form"
+            class="hidden">
             @csrf
             @method('DELETE')
         </form>
@@ -321,21 +322,52 @@
             loading: false,
             init() {
                 this.$watch('searchQuery', (query) => {
+                    // --- REVISED LOGIC ---
+
+                    // 1. If the user has cleared the input, show the initial list again.
+                    if (query === '') {
+                        this.getInitialSuggestions(); // Reuse our existing function!
+                        return;
+                    }
+
+                    // 2. If the query is too short, hide the suggestions list.
+                    //    This handles the case where the user backspaces from "Jo" to "J".
                     if (query.length < 2) {
                         this.suggestions = [];
                         this.showSuggestions = false;
                         return;
                     }
+
+                    // 3. If the query is long enough, perform the search. (This is your existing logic)
                     this.loading = true;
                     fetch(`{{ route('customers.search') }}?q=${encodeURIComponent(query)}`)
                         .then(response => response.json())
                         .then(data => {
                             this.suggestions = data;
+                            // Ensure the suggestions are shown, even if they were hidden before
                             this.showSuggestions = true;
                             this.loading = false;
                         });
                 });
             },
+
+            // This function remains the same, it's already perfect.
+            getInitialSuggestions() {
+                if (this.searchQuery.length > 0) {
+                    this.showSuggestions = true;
+                    return;
+                }
+                this.loading = true;
+                fetch(`{{ route('customers.search') }}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        this.suggestions = data;
+                        this.showSuggestions = true;
+                        this.loading = false;
+                    });
+            },
+
+            // This function also remains the same.
             selectCustomer(customer) {
                 this.$dispatch('customer-selected', {
                     customer: customer

@@ -18,9 +18,6 @@
             <x-dashboard.common.sidebar />
             <div class="min-h-screen sm:ml-64 mt-20">
 
-
-
-
                 @if (session('success'))
                     <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)" id="toast-success"
                         class="fixed top-4 right-4 z-50 flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-lg dark:text-gray-400 dark:bg-gray-800"

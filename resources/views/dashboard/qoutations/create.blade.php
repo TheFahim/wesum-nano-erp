@@ -56,9 +56,10 @@
                                     </svg>
                                 </div>
                                 <input type="text" id="simple-search" x-model.debounce.300ms="searchQuery"
-                                    @focus="showSuggestions = true" @keydown.escape.prevent="showSuggestions = false"
+                                    @focus="getInitialSuggestions()" @keydown.escape.prevent="showSuggestions = false"
+                                    @click.away="showSuggestions = false"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Search customer name, ID, or company..." autocomplete="off" />
+                                    placeholder="Search or click to see recent customers..." autocomplete="off" />
                             </div>
                         </div>
                         {{-- Suggestions dropdown --}}
@@ -190,9 +191,8 @@
                                             required />
                                     </div>
                                     <div class="col-span-2">
-                                        <x-ui.form.input type="number"
-                                            x-bind:name="'product[' + index + '][price]'" x-model.number="row.price"
-                                            placeholder="Price (1000)"
+                                        <x-ui.form.input type="number" x-bind:name="'product[' + index + '][price]'"
+                                            x-model.number="row.price" placeholder="Price (1000)"
                                             class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100"
                                             required />
                                     </div>
@@ -212,11 +212,11 @@
                                     <div class="col-span-2">
                                         <x-ui.form.input x-bind:name="'product[' + index + '][remarks]'"
                                             x-model="row.remarks" placeholder="Remakrs"
-                                            class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100"
-                                        />
+                                            class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100" />
                                     </div>
                                     <div class="col-span-7">
-                                        <textarea x-bind:id="'specs-' + index" rows="4" x-bind:name="'product[' + index + '][specs]'" x-model="row.specs"
+                                        <textarea x-bind:id="'specs-' + index" rows="4" x-bind:name="'product[' + index + '][specs]'"
+                                            x-model="row.specs"
                                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:bg-inherit dark:text-white"
                                             placeholder="Product Specifications"></textarea>
                                     </div>
@@ -265,14 +265,14 @@
                             {!! old(
                                 'quotation.terms_conditions',
                                 '<h3 class="bg-blue-900 text-white font-bold p-2 mb-4">Terms & Conditions</h3>
-                                                                    <ul class="list-disc list-inside text-sm space-y-2 text-gray-700">
-                                                                        <li>Mushuk 6.3 will be provided with a bill Copy.</li>
-                                                                        <li>Payment will be due prior to delivery of service and goods.</li>
-                                                                        <li>The Quotation Value Including VAT, AIT & Transportation.</li>
-                                                                        <li>BEFTN / Cheque in favor of Wesum corporation.</li>
-                                                                        <li>Delivery Time 3-4 weeks after getting PO. </li>
-                                                                        <li>The Quotation value valid 12 days after submission.</li>
-                                                                    </ul>',
+                                                                                                                                                                                    <ul class="list-disc list-inside text-sm space-y-2 text-gray-700">
+                                                                                                                                                                                        <li>Mushuk 6.3 will be provided with a bill Copy.</li>
+                                                                                                                                                                                        <li>Payment will be due prior to delivery of service and goods.</li>
+                                                                                                                                                                                        <li>The Quotation Value Including VAT, AIT & Transportation.</li>
+                                                                                                                                                                                        <li>BEFTN / Cheque in favor of Wesum corporation.</li>
+                                                                                                                                                                                        <li>Delivery Time 3-4 weeks after getting PO. </li>
+                                                                                                                                                                                        <li>The Quotation value valid 12 days after submission.</li>
+                                                                                                                                                                                    </ul>',
                             ) !!}
                         </textarea>
                     </div>
@@ -397,23 +397,53 @@
             loading: false,
             init() {
                 this.$watch('searchQuery', (query) => {
+                    // --- REVISED LOGIC ---
+
+                    // 1. If the user has cleared the input, show the initial list again.
+                    if (query === '') {
+                        this.getInitialSuggestions(); // Reuse our existing function!
+                        return;
+                    }
+
+                    // 2. If the query is too short, hide the suggestions list.
+                    //    This handles the case where the user backspaces from "Jo" to "J".
                     if (query.length < 2) {
                         this.suggestions = [];
                         this.showSuggestions = false;
                         return;
                     }
+
+                    // 3. If the query is long enough, perform the search. (This is your existing logic)
                     this.loading = true;
                     fetch(`{{ route('customers.search') }}?q=${encodeURIComponent(query)}`)
                         .then(response => response.json())
                         .then(data => {
                             this.suggestions = data;
+                            // Ensure the suggestions are shown, even if they were hidden before
                             this.showSuggestions = true;
                             this.loading = false;
                         });
                 });
             },
+
+            // This function remains the same, it's already perfect.
+            getInitialSuggestions() {
+                if (this.searchQuery.length > 0) {
+                    this.showSuggestions = true;
+                    return;
+                }
+                this.loading = true;
+                fetch(`{{ route('customers.search') }}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        this.suggestions = data;
+                        this.showSuggestions = true;
+                        this.loading = false;
+                    });
+            },
+
+            // This function also remains the same.
             selectCustomer(customer) {
-                // This correctly dispatches the event that our main form component listens for
                 this.$dispatch('customer-selected', {
                     customer: customer
                 });

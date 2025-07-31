@@ -12,7 +12,12 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckUserIsActive;
 use App\Http\Middleware\CheckUserIsAdmin;
+use App\Models\SaleTarget;
 use Illuminate\Support\Facades\Route;
+
+
+
+Route::redirect('/', '/dashboard');
 
 Route::middleware(['auth',CheckUserIsActive::class])
     ->prefix('dashboard')
@@ -33,6 +38,17 @@ Route::middleware(['auth',CheckUserIsActive::class])
         Route::get('/search/bills', [BillController::class, 'search'])->name('bills.search');
 
         Route::get('/api/billing-data', [BillController::class, 'getBillingData']);
+        Route::get('/api/target-chart-data', [SaleTargetController::class, 'getTargetChartData'])->name('targets.chart.data');
+
+        Route::get('/api/top-summary', [DashboradController::class, 'getTopSummary'])->name('dashboard.top.summary');
+
+        Route::get('/api/expense', [DashboradController::class, 'getExpenseData'])->name('dashboard.expense.data');
+
+        Route::get('/api/due', [DashboradController::class, 'getDueData'])->name('dashboard.due.data');
+
+        Route::get('/api/target', [DashboradController::class, 'getTargetData'])->name('dashboard.target.data');
+
+        Route::get('/api/quotation', [DashboradController::class, 'getQuotationData'])->name('dashboard.quotation.data');
 
         Route::resource('bills', BillController::class);
         Route::resource('received-bills', ReceivedBillController::class);

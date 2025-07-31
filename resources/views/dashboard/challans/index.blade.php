@@ -76,6 +76,21 @@
                             </td>
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                @role('admin')
+                                    @if ($item->buying_left > 0)
+                                        <span
+                                            class="
+                                                inline-flex items-center justify-center
+                                                h-4 w-4
+                                                ml-2
+                                                rounded-full
+                                                bg-yellow-400
+                                                text-xs font-bold text-gray-800
+                                            ">
+                                            {{ $item->buying_left }}
+                                        </span>
+                                    @endif
+                                @endrole
                                 {{ $item->challan_no }}
                             </th>
                             <td
@@ -85,13 +100,14 @@
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->quotation->customer->company_name }}
                             </td>
-                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
+                            <td
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
                                 {{ $item->quotation->total }} &#2547;
                             </td>
                             @role('admin')
-                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $item->quotation->user->username }}
-                            </td>
+                                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ $item->quotation->user->username }}
+                                </td>
                             @endrole
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">

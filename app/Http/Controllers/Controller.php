@@ -75,4 +75,13 @@ abstract class Controller
 
 
     }
+
+    public function formatBanglaNumber($number)
+    {
+        $num = (float)$number;
+        $formatted = number_format($num, 1, '.', ',');
+        $formatted = rtrim($formatted, '0'); // Remove trailing zeros
+        $formatted = rtrim($formatted, '.'); // Remove trailing decimal point
+        return $formatted;
+    }
 }

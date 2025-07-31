@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Quotation;
 use App\Models\SaleTarget;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SaleTargetController extends Controller
 {
@@ -14,8 +16,6 @@ class SaleTargetController extends Controller
     public function index()
     {
         $targets = SaleTarget::with('user')->latest()->get();
-
-
 
         // return $targets;
 
@@ -39,10 +39,7 @@ class SaleTargetController extends Controller
         $validated = $request->validate([
             'target' => ['required', 'array', 'min:1'],
             'target.*.user_id' => ['required', 'integer', 'exists:users,id'],
-            'target.*.start_month' => ['required', 'integer', 'between:1,12'],
-            'target.*.start_year' => ['required', 'integer', 'min:'.date('Y'), 'max:'.date('Y') + 3],
-            'target.*.end_month' => ['required', 'integer', 'between:1,12'],
-            'target.*.end_year' => ['required', 'integer', 'min:'.date('Y'), 'max:'.date('Y') + 3],
+            'target.*.year' => ['required', 'integer', 'min:'.date('Y'), 'max:'.date('Y') + 3],
             'target.*.target_amount' => ['required', 'numeric', 'gt:0'],
         ]);
 
@@ -79,10 +76,7 @@ class SaleTargetController extends Controller
 
         $validated = $request->validate([
             'user_id' => ['required', 'integer', 'exists:users,id'],
-            'start_month' => ['required', 'integer', 'between:1,12'],
-            'start_year' => ['required', 'integer', 'min:'.date('Y'), 'max:'.date('Y') + 3],
-            'end_month' => ['required', 'integer', 'between:1,12'],
-            'end_year' => ['required', 'integer', 'min:'.date('Y'), 'max:'.date('Y') + 3],
+            'year' => ['required', 'integer', 'min:'.date('Y'), 'max:'.date('Y') + 3],
             'target_amount' => ['required', 'numeric', 'gt:0'],
         ]);
 
@@ -99,5 +93,26 @@ class SaleTargetController extends Controller
         $target->delete();
 
         return redirect()->route('targets.index')->with('success','Target Deleted');
+    }
+
+    public function getTargetChartData(){
+        $target = SaleTarget::where('user_id', Auth::id())
+            ->where('year', date('Y'))
+            ->first();
+        // sum of quotations this year
+
+        $achived = Quotation::where('user_id', Auth::id())
+            ->whereYear('created_at', date('Y'))
+            ->whereHas('challan')
+            ->sum('total');
+
+        $target = [
+            'target' => $target ? $target->target_amount : 0,
+            'achived' => $achived,
+            'remaining' => ($target ? $target->target_amount : 0) - $achived,
+        ];
+
+
+        return response()->json($target);
     }
 }

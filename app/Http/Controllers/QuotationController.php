@@ -19,12 +19,13 @@ class QuotationController extends Controller
     public function index()
     {
 
-
-        if (Auth::user()->role === 'admin') {
+        if (Auth::user()->hasRole('admin')) {
             $quotations = Quotation::with(['customer', 'user'])->latest()->get();
         } else {
             $quotations = Quotation::where('user_id', Auth::id())->with(['customer', 'user'])->latest()->get();
         }
+
+        $quotations->load('challan');
 
         return view('dashboard.qoutations.index', compact('quotations'));
     }
@@ -34,7 +35,6 @@ class QuotationController extends Controller
      */
     public function create()
     {
-
         return view('dashboard.qoutations.create');
     }
 
@@ -90,10 +90,9 @@ class QuotationController extends Controller
     public function show(Quotation $quotation)
     {
 
-        $this->checkUserPermission($quotation);
         // Check if the quotation belongs to the authenticated user or is accessible by admin
-        if (Auth::user()->role !== 'admin' && $quotation->user_id !== Auth::id()) {
-            return redirect()->route('quotations.index')->with('error', 'You do not have permission to view this quotation.');
+        if (!Auth::user()->hasRole('admin') && $quotation->user_id !== Auth::id()) {
+            abort(403);
         }
 
         // Load the customer and products relationships for the quotation
@@ -111,12 +110,20 @@ class QuotationController extends Controller
     {
 
 
-        $this->checkUserPermission($quotation);
+        if (!Auth::user()->hasRole('admin') && $quotation->user_id !== Auth::id()) {
+            abort(403);
+        }
+
 
         $quotation->load(['customer', 'products']);
 
 
         $hasChallan = $quotation->challan ? true : false;
+
+        if ($hasChallan) {
+            abort(403);
+        }
+
 
 
         return view('dashboard.qoutations.edit', compact('quotation', 'hasChallan'));
@@ -129,7 +136,19 @@ class QuotationController extends Controller
     public function update(QuotationRequest $request, Quotation $quotation) // Renamed for clarity
     {
 
-        $this->checkUserPermission($quotation);
+        $quotation->load(['challan']);
+
+        $hasChallan = $quotation->challan ? true : false;
+
+        if ($hasChallan) {
+            abort(403);
+        }
+
+
+        if (!Auth::user()->hasRole('admin') && $quotation->user_id !== Auth::id()) {
+            abort(403);
+        }
+
 
         $validatedData = $request->validated();
 
@@ -199,7 +218,11 @@ class QuotationController extends Controller
      */
     public function destroy(Quotation $quotation)
     {
-        $this->checkUserPermission($quotation);
+
+        if (!Auth::user()->hasRole('admin') && $quotation->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         $quotation->load(['challan']);
 
         $hasChallan = $quotation->challan ? true : false;
@@ -217,21 +240,23 @@ class QuotationController extends Controller
 
     public function searchCustomer(Request $request)
     {
-
         $query = $request->input('q');
 
+        // If there is NO search query, return the 5 most recent customers.
         if (!$query) {
-            return response()->json([]);
+            $customers = Customer::latest() // Orders by `created_at` in descending order
+                ->limit(5)
+                ->get();
+            return response()->json($customers);
         }
 
-        // Search across multiple relevant columns
+        // Otherwise, perform the search as before.
         $customers = Customer::where('customer_name', 'LIKE', "%{$query}%")
             ->orWhere('company_name', 'LIKE', "%{$query}%")
             ->orWhere('customer_no', 'LIKE', "%{$query}%")
-            ->limit(10) // Limit results for performance
+            ->limit(10)
             ->get();
 
         return response()->json($customers);
-
     }
 }

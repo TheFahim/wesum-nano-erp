@@ -43,7 +43,7 @@
                 <div class="w-full h-6 my-5 bg-gray-200 rounded-full dark:bg-gray-700">
                     <div class="h-6 bg-blue-600 text-center text-blue-100 text-md rounded-full dark:bg-blue-500"
                         style="width: {{ number_format($bill[0]->paid_percentage, 0, '.', ',') }}%">
-                        {{ number_format($bill[0]->paid_percentage, 0, '.', ',') }}%</div>
+                        {{ number_format($bill[0]->paid_percentage, 1, '.', ',') }}%</div>
                 </div>
 
                 <div class="my-5"></div>
@@ -64,8 +64,8 @@
                 <a href="{{ route('received-bills.index') }}"
                     class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500  hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 px-3 py-2">
                     View payments
-                    <svg class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <svg class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 6 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="m1 9 4-4-4-4" />
                     </svg>
@@ -161,10 +161,34 @@
 
 
         </x-ui.card>
-        <div id="target-chart">
 
-        </div>
+        <x-ui.card heading="Target Progress">
 
+            <dd class="mx-5 leading-none text-xl font-bold text-gray-900 dark:text-white">
+                {{ date('Y') }}
+            </dd>
+            <div id="target-chart">
+
+                <div class="mx-5 grid grid-cols-3 py-3 my-5">
+                    <dl>
+                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1">Target</dt>
+                        <dd class="leading-none text-sm font-bold text-blue-500 dark:text-blue-400" id="target-amount">
+
+                    </dl>
+                    <dl>
+                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1">Achived</dt>
+                        <dd class="leading-none text-sm font-bold text-green-600 dark:text-green-500" id="target-achived">
+
+                    </dl>
+                    <dl>
+                        <dt class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1">Remaining</dt>
+                        <dd class="leading-none text-sm font-bold text-red-600 dark:text-red-500" id="target-remaining">
+
+                    </dl>
+                </div>
+
+            </div>
+        </x-ui.card>
 
 
     </div>

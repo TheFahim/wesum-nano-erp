@@ -48,46 +48,13 @@
 
                                             </x-ui.form.simple-select>
                                         </div>
-                                        <div class=" col-span-2">
 
-                                            <x-ui.form.simple-select x-model="row.start_month"
-                                                x-bind:name="'target[' + index + '][start_month]'"
-                                                class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100" required>
-                                                <option value="1" x-bind:selected="row.start_month === '1'">
-                                                    Jan</option>
-                                                <option value="2" x-bind:selected="row.start_month === '2'">
-                                                    Feb</option>
-                                                <option value="3" x-bind:selected="row.start_month === '3'">
-                                                    Mar</option>
-                                                <option value="4" x-bind:selected="row.start_month === '4'">
-                                                    Apr</option>
-                                                <option value="5" x-bind:selected="row.start_month === '5'">
-                                                    May</option>
-                                                <option value="6" x-bind:selected="row.start_month === '6'">
-                                                    Jun</option>
-                                                <option value="7" x-bind:selected="row.start_month === '7'">
-                                                    Jul</option>
-                                                <option value="8" x-bind:selected="row.start_month === '8'">
-                                                    Aug</option>
-                                                <option value="9" x-bind:selected="row.start_month === '9'">
-                                                    Sep</option>
-                                                <option value="10" x-bind:selected="row.start_month === '10'">
-                                                    Oct</option>
-                                                <option value="11" x-bind:selected="row.start_month === '11'">
-                                                    Nov</option>
-                                                <option value="12" x-bind:selected="row.start_month === '12'">
-                                                    Dec</option>
-
-
-
-                                            </x-ui.form.simple-select>
-                                        </div>
                                         <div class=" col-span-2">
 
                                             <x-ui.form.simple-select x-model="row.start_year"
-                                                x-bind:name="'target[' + index + '][start_year]'"
+                                                x-bind:name="'target[' + index + '][year]'"
                                                 class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100">
-                                                @for ($year = now()->year; $year <= now()->year + 2; $year++)
+                                                @for ($year = now()->year; $year <= now()->year + 5; $year++)
                                                     <option value="{{ $year }}"
                                                         x-bind:selected="row.year == '{{ $year }}'">
                                                         {{ $year }}
@@ -97,54 +64,7 @@
 
                                             </x-ui.form.simple-select>
                                         </div>
-                                        <div class=" col-span-2">
 
-                                            <x-ui.form.simple-select x-model="row.end_month"
-                                                x-bind:name="'target[' + index + '][end_month]'"
-                                                class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100">
-                                                <option value="1" x-bind:selected="row.end_month === '1'">
-                                                    Jan</option>
-                                                <option value="2" x-bind:selected="row.end_month === '2'">
-                                                    Feb</option>
-                                                <option value="3" x-bind:selected="row.end_month === '3'">
-                                                    Mar</option>
-                                                <option value="4" x-bind:selected="row.end_month === '4'">
-                                                    Apr</option>
-                                                <option value="5" x-bind:selected="row.end_month === '5'">
-                                                    May</option>
-                                                <option value="6" x-bind:selected="row.end_month === '6'">
-                                                    Jun</option>
-                                                <option value="7" x-bind:selected="row.end_month === '7'">
-                                                    Jul</option>
-                                                <option value="8" x-bind:selected="row.end_month === '8'">
-                                                    Aug</option>
-                                                <option value="9" x-bind:selected="row.end_month === '9'">
-                                                    Sep</option>
-                                                <option value="10" x-bind:selected="row.end_month === '10'">
-                                                    Oct</option>
-                                                <option value="11" x-bind:selected="row.end_month === '11'">
-                                                    Nov</option>
-                                                <option value="12" x-bind:selected="row.end_month === '12'">
-                                                    Dec</option>
-
-
-                                            </x-ui.form.simple-select>
-                                        </div>
-                                        <div class=" col-span-2">
-
-                                            <x-ui.form.simple-select x-model="row.end_year"
-                                                x-bind:name="'target[' + index + '][end_year]'"
-                                                class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100">
-                                                @for ($year = now()->year; $year <= now()->year + 2; $year++)
-                                                    <option value="{{ $year }}"
-                                                        x-bind:selected="row.year == '{{ $year }}'">
-                                                        {{ $year }}
-                                                    </option>
-                                                @endfor
-
-
-                                            </x-ui.form.simple-select>
-                                        </div>
 
                                         <!-- Input Field -->
                                         <div class=" col-span-2">
@@ -185,18 +105,14 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('clonableInputs', () => ({
-            rows: {!! json_encode(old('target', [['user' => '', 'year' => '', 'end_month' => '', 'start_year' => '', 'end_year' => '', 'target_amount' => '']])) !!},
+            rows: {!! json_encode(old('target', [['user' => '', 'year' => '']])) !!},
             addRow() {
                 this.rows.push({
                     user: '',
-                    start_month: '',
-                    end_month: ''
+                    year: '',
                 });
             },
-            validate(row) {
-                // Ensure both fields are required only if one of them is filled
-                return row.site !== '' || row.url !== '';
-            }
+
         }));
     });
 </script>

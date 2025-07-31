@@ -82,7 +82,19 @@
                         <tr
                             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                             <td class="px-6 py-4">
-                                {{ $loop->iteration }}
+                                <div class="flex items-center">
+                                    <span>{{ $loop->iteration }}</span>
+
+                                    <!-- Heroicon: check-circle -->
+                                    @if ($item->challan != null)
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 text-green-500"
+                                            viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    @endif
+                                </div>
                             </td>
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -95,15 +107,16 @@
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->customer->company_name }}
                             </td>
-                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
+                            <td
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
                                 {{ $item->total }} &#2547;
                             </td>
 
 
                             @role('admin')
-                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $item->user->username }}
-                            </td>
+                                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ $item->user->username }}
+                                </td>
                             @endrole
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -116,8 +129,10 @@
                                         class="font-medium text-blue-600 dark:text-green-500 hover:underline">View</a>
                                 </div>
                                 <div>
-                                    <a href="{{ route('quotations.edit', $item->id) }}"
-                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                                    @if ($item->challan == null)
+                                        <a href="{{ route('quotations.edit', $item->id) }}"
+                                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

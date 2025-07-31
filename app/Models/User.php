@@ -62,9 +62,8 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function technologies()
-    {
-        return $this->belongsToMany(Technology::class,'users_technologies');
+    public function saleTarget(){
+        return $this->hasMany(SaleTarget::class);
     }
 
 

@@ -37,16 +37,12 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
-                                From
+                                Year
                                 <x-ui.svg.sort-column class="w-4 h-4 ms-1" />
                             </span>
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            <span class="flex items-center">
-                                To
-                                <x-ui.svg.sort-column class="w-4 h-4 ms-1" />
-                            </span>
-                        </th>
+
+
                         <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
                                 Amount
@@ -75,12 +71,9 @@
                             </td>
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $item->from }}
+                                {{ $item->year }}
                             </th>
-                            <th scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $item->to }}
-                            </th>
+
                             <td
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->target_amount }}

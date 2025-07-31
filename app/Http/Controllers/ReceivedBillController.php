@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Bill;
 use App\Models\ReceivedBill;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ReceivedBillController extends Controller
 {
@@ -16,9 +17,20 @@ class ReceivedBillController extends Controller
      */
     public function index()
     {
-        $receivedBills = Bill::with(['receivedBills','challan', 'challan.quotation', 'challan.quotation.customer'])
-    ->latest()
-    ->get();
+
+        if(Auth::user()->hasRole('admin')) {
+            $receivedBills = Bill::with(['receivedBills', 'challan', 'challan.quotation', 'challan.quotation.customer'])
+                ->latest()
+                ->get();
+        } else {
+            $receivedBills = Bill::with(['receivedBills', 'challan', 'challan.quotation', 'challan.quotation.customer'])
+                ->whereHas('challan.quotation', function ($query) {
+                    $query->where('user_id', Auth::id());
+                })
+                ->latest()
+                ->get();
+        }
+
 
         return view('dashboard.payments.index', compact('receivedBills'));
 
@@ -49,6 +61,12 @@ class ReceivedBillController extends Controller
         $paid = 0;
 
         $bill = Bill::find($validated['bill_id']);
+
+        $bill->load('challan.quotation');
+
+        if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
 
         foreach ($validated['payment'] as $payment) {
             $paid += $payment['amount'];
@@ -83,7 +101,11 @@ class ReceivedBillController extends Controller
     public function edit(Bill $receivedBill)
     {
         // Eager load the related payments
-        $receivedBill->load('receivedBills');
+        $receivedBill->load(['receivedBills', 'challan.quotation']);
+
+        if (!Auth::user()->hasRole('admin') && $receivedBill->challan->quotation->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
 
         // Transform the payments data for the form
         // 1. Select only the necessary fields.
@@ -105,6 +127,10 @@ class ReceivedBillController extends Controller
      */
     public function update(Request $request, Bill $receivedBill)
     {
+        $receivedBill->load('challan.quotation');
+        if (!Auth::user()->hasRole('admin') && $receivedBill->challan->quotation->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
         // 1. VALIDATION
         // We validate that 'id' exists in the received_bills table if it's provided.
         $validated = $request->validate([

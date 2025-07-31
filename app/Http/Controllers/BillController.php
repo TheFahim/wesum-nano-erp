@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bill;
 use App\Models\Challan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -15,9 +16,20 @@ class BillController extends Controller
      */
     public function index()
     {
-        $bills = Bill::with(['challan', 'challan.quotation', 'challan.quotation.customer'])
-            ->latest()
-            ->get();
+
+        if (Auth::user()->hasRole('admin')) {
+            $bills = Bill::with(['challan', 'challan.quotation', 'challan.quotation.customer'])
+                ->latest()
+                ->get();
+        } else {
+            $bills = Bill::with(['challan', 'challan.quotation', 'challan.quotation.customer'])
+                ->whereHas('challan.quotation', function ($query) {
+                    $query->where('user_id', Auth::id());
+                })
+                ->latest()
+                ->get();
+        }
+
 
         return view('dashboard.bills.index', compact('bills'));
     }
@@ -31,7 +43,15 @@ class BillController extends Controller
 
         $challan = Challan::find($challan_id);
 
+        if (!$challan) {
+            abort(404, 'Challan not found');
+        }
+
         $challan->load('quotation', 'quotation.products');
+
+        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
 
         return view('dashboard.bills.create', compact('challan'));
     }
@@ -64,7 +84,11 @@ class BillController extends Controller
      */
     public function show(Bill $bill)
     {
-        $bill->load('challan', 'challan.quotation', 'challan.quotation.products');
+        $bill->load('challan.quotation');
+
+        if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
 
         return view('dashboard.bills.show', compact('bill'));
     }
@@ -74,6 +98,10 @@ class BillController extends Controller
      */
     public function edit(Bill $bill)
     {
+        $bill->load('challan', 'challan.quotation');
+        if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
         return view('dashboard.bills.edit', compact('bill'));
     }
 
@@ -85,6 +113,12 @@ class BillController extends Controller
         $validated = $request->validate([
             'bill_no' => ['required', 'string', 'max:255',Rule::unique('bills', 'bill_no')->ignore($bill->id)],
         ]);
+
+        $bill->load('challan.quotation');
+
+        if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
 
         $bill->update($validated);
 
@@ -112,10 +146,10 @@ class BillController extends Controller
 
 
         $bill = Bill::select(
-                DB::raw('SUM(payable) as total_bill'),
-                DB::raw('SUM(paid) as total_paid'),
-                DB::raw('SUM(due) as total_due')
-            )
+            DB::raw('SUM(payable) as total_bill'),
+            DB::raw('SUM(paid) as total_paid'),
+            DB::raw('SUM(due) as total_due')
+        )
             ->where('due', '>', 0)->get();
 
 

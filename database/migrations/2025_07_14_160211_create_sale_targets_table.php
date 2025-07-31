@@ -16,9 +16,6 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->constrained();
             $table->year('year');
-            // $table->integer('end_month');
-            // $table->year('start_year');
-            // $table->year('end_year');
             $table->double('target_amount');
             $table->timestamps();
         });

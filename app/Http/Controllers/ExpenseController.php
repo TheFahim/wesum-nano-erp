@@ -165,7 +165,7 @@ class ExpenseController extends Controller
         }
 
         // Query the data
-        $expenseData = Expense::whereBetween('date', [$startDate, $endDate])
+        $expenseData = Expense::where('user_id', Auth::id())->whereBetween('date', [$startDate, $endDate])
             ->select('type', DB::raw('SUM(amount) as total_amount'))
             ->groupBy('type')
             ->get();
