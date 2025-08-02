@@ -172,17 +172,20 @@
                 <div class="mx-5 grid grid-cols-3 py-3 my-5">
                     <dl>
                         <dt class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1">Target</dt>
-                        <dd class="leading-none text-sm font-bold text-blue-500 dark:text-blue-400" id="target-amount">
+                        <dd class="leading-none text-sm font-bold text-blue-500 dark:text-blue-400"
+                            id="target-amount">
 
                     </dl>
                     <dl>
                         <dt class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1">Achived</dt>
-                        <dd class="leading-none text-sm font-bold text-green-600 dark:text-green-500" id="target-achived">
+                        <dd class="leading-none text-sm font-bold text-green-600 dark:text-green-500"
+                            id="target-achived">
 
                     </dl>
                     <dl>
                         <dt class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1">Remaining</dt>
-                        <dd class="leading-none text-sm font-bold text-red-600 dark:text-red-500" id="target-remaining">
+                        <dd class="leading-none text-sm font-bold text-red-600 dark:text-red-500"
+                            id="target-remaining">
 
                     </dl>
                 </div>
@@ -190,6 +193,55 @@
             </div>
         </x-ui.card>
 
+        <div x-data="myQuotationChart" class="col-span-3 bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6 mx-2">
+            <!-- Header: Title and Year Selection Dropdown -->
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h5 class="leading-none text-xl font-bold text-gray-900 dark:text-white pb-1">My Yearly Performance
+                    </h5>
+                    <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Monthly quotation summary</p>
+                </div>
+                <div x-show="years.length > 0" class="relative">
+                    <button @click="isDropdownOpen = !isDropdownOpen"
+                        class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
+                        type="button">
+                        Year: <span x-text="selectedYear" class="font-semibold ml-1"></span>
+                        <svg class="w-2.5 m-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="m1 1 4 4 4-4" />
+                        </svg>
+                    </button>
+                    <!-- Dropdown menu -->
+                    <div x-show="isDropdownOpen" @click.away="isDropdownOpen = false" x-transition
+                        class="z-10 absolute right-0 mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-32 dark:bg-gray-700"
+                        style="display: none;">
+                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                            <template x-for="year in years" :key="year">
+                                <li>
+                                    <a href="#" @click.prevent="selectYear(year)"
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        x-text="year"></a>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div x-show="isLoading" class="text-center py-16 text-gray-500 dark:text-gray-400">Loading Chart...</div>
+
+            <!-- Message for no data -->
+            <div x-show="!isLoading && years.length === 0" class="text-center py-16 text-gray-500 dark:text-gray-400">
+                You have not created any quotations yet.
+            </div>
+
+            <!-- Chart Container -->
+            <div x-show="!isLoading && years.length > 0">
+                <div id="my-quotation-chart" x-ref="myQuotationChart"></div>
+            </div>
+        </div>
 
     </div>
 

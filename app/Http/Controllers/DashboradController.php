@@ -94,7 +94,6 @@ class DashboradController extends Controller
         $query = Expense::query();
 
         // Apply the date filter based on the 'filter' parameter
-        // Using whereBetween is more precise for month-based queries
         switch ($filter) {
             case 'last_month':
                 $query->whereBetween('expenses.created_at', [Carbon::now()->subMonth()->startOfMonth(), Carbon::now()->subMonth()->endOfMonth()]);
@@ -121,19 +120,46 @@ class DashboradController extends Controller
         $totalExpenseQuery = clone $query;
         $totalExpense = $totalExpenseQuery->sum('amount');
 
-        // Now, join with users and group to get the expense breakdown per user
-        $expensesPerUser = $query->join('users', 'expenses.user_id', '=', 'users.id')
+        // Get the detailed breakdown of expenses per user and type
+        $expenseDetails = $query->join('users', 'expenses.user_id', '=', 'users.id')
             ->select(
                 'users.name as user_name',
-                DB::raw('SUM(expenses.amount) as total_expense')
+                'expenses.type',
+                DB::raw('SUM(expenses.amount) as amount_per_type')
             )
-            ->groupBy('users.id', 'users.name')
-            ->orderBy('total_expense', 'desc') // Optional: show highest spenders first
+            ->groupBy('users.id', 'users.name', 'expenses.type')
             ->get();
+
+        // Process the flat data into the desired nested structure
+        $usersData = [];
+        foreach ($expenseDetails as $detail) {
+            // If the user is not yet in our results array, initialize them
+            if (!isset($usersData[$detail->user_name])) {
+                $usersData[$detail->user_name] = [
+                    'user_name' => $detail->user_name,
+                    'total_expense' => 0,
+                    'type' => new \stdClass, // Use stdClass for an empty JSON object {}
+                ];
+            }
+
+            // Add the amount for the current type to the 'type' object
+            $usersData[$detail->user_name]['type']->{$detail->type} = (float)$detail->amount_per_type;
+
+            // Add to the user's total_expense
+            $usersData[$detail->user_name]['total_expense'] += (float)$detail->amount_per_type;
+        }
+
+        // Convert the associative array to a simple indexed array for the JSON response
+        $expenses = array_values($usersData);
+
+        // Optional: Sort the final array by total_expense in descending order
+        usort($expenses, function ($a, $b) {
+            return $b['total_expense'] <=> $a['total_expense'];
+        });
 
         return response()->json([
             'total_expense' => $totalExpense,
-            'expenses' => $expensesPerUser, // This now contains the user-wise data
+            'expenses' => $expenses,
         ]);
     }
 
@@ -316,4 +342,59 @@ class DashboradController extends Controller
         // Return the data as a JSON response
         return response()->json($quotations);
     }
+
+    public function getMyQuotationYears()
+    {
+        $years = Quotation::where('user_id', Auth::id())
+            ->select(DB::raw('YEAR(created_at) as year'))
+            ->distinct()
+            ->orderBy('year', 'desc') // Show most recent years first
+            ->pluck('year');
+
+        return response()->json($years);
+    }
+
+    /**
+     * Get the authenticated user's monthly quotation summary for a given year.
+     */
+    public function getMyQuotationSummary(Request $request)
+    {
+        // Validate that the year is provided and is an integer
+        $request->validate(['year' => 'required|integer']);
+        $year = $request->input('year');
+
+        // Fetch data from the database
+        $monthlyData = Quotation::where('user_id', Auth::id())
+            ->whereYear('created_at', $year)
+            ->select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(total) as total_amount'),
+                DB::raw('COUNT(id) as quotation_count')
+            )
+            ->groupBy('month')
+            ->get()
+            ->keyBy('month'); // Key the collection by month number for easy lookup
+
+        // Create a full 12-month summary to ensure the chart axis is always complete
+        $summary = [];
+        for ($month = 1; $month <= 12; $month++) {
+            if (isset($monthlyData[$month])) {
+                $summary[] = [
+                    'month' => $month,
+                    'total_amount' => (float) $monthlyData[$month]->total_amount,
+                    'quotation_count' => (int) $monthlyData[$month]->quotation_count,
+                ];
+            } else {
+                // If no data for a month, add a zero-value entry
+                $summary[] = [
+                    'month' => $month,
+                    'total_amount' => 0,
+                    'quotation_count' => 0,
+                ];
+            }
+        }
+
+        return response()->json($summary);
+    }
+
 }

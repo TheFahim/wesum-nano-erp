@@ -109,4 +109,125 @@ document.addEventListener('alpine:init', () => {
             };
         }
     }));
+
+    Alpine.data('myQuotationChart', () => ({
+        chart: null,
+        isLoading: true,
+        isDropdownOpen: false,
+        years: [],
+        selectedYear: null,
+
+        init() {
+            this.fetchYears();
+        },
+
+        async fetchYears() {
+            this.isLoading = true;
+            try {
+                const response = await fetch("/dashboard/api/my-quotation-years");
+                this.years = await response.json();
+                if (this.years.length > 0) {
+                    this.selectYear(this.years[0]); // Select the most recent year by default
+                } else {
+                    this.isLoading = false; // No years to show, stop loading
+                }
+            } catch (error) {
+                console.error("Failed to fetch years:", error);
+                this.isLoading = false;
+            }
+        },
+
+        selectYear(year) {
+            this.selectedYear = year;
+            this.isDropdownOpen = false;
+            this.fetchChartData(year);
+        },
+
+        async fetchChartData(year) {
+            this.isLoading = true;
+            try {
+                const response = await fetch(`/dashboard/api/my-quotation-summary?year=${year}`);
+                const summaryData = await response.json();
+                this.renderChart(summaryData);
+            } catch (error) {
+                console.error(`Failed to fetch summary data for ${year}:`, error);
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        renderChart(data) {
+            if (!this.$refs.myQuotationChart) return;
+
+            // Process data for ApexCharts
+            const amounts = data.map(d => d.total_amount);
+            const counts = data.map(d => d.quotation_count);
+
+            const options = {
+                series: [{
+                    name: 'Total Amount',
+                    data: amounts
+                }],
+                chart: { type: 'bar', height: 350, toolbar: { show: false } },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 10,
+                        dataLabels: { position: 'top' },
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: (val, { dataPointIndex }) => {
+                        const count = counts[dataPointIndex];
+                        return count > 0 ? `${count}` : ''; // Show count as label, hide if zero
+                    },
+                    offsetY: -20,
+                    style: {
+                        fontSize: '12px',
+                        colors: ["#90A4AE"],
+                        fontWeight: 'bold'
+                    }
+                },
+                xaxis: {
+                    categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    position: 'bottom', // Changed from 'top' for better layout
+                    labels: { style: { colors: '#90A4AE', fontFamily: 'Inter, sans-serif' } },
+                    axisBorder: { show: false },
+                    axisTicks: { show: false },
+                },
+                yaxis: {
+                    labels: {
+                        show: true, // Keep y-axis labels to show scale
+                        style: { colors: '#90A4AE', fontFamily: 'Inter, sans-serif' },
+                        formatter: (val) => `৳${val / 1000}k`
+                    }
+                },
+                tooltip: {
+                    theme: 'dark',
+                    y: {
+                        formatter: (val) => `৳ ${val.toLocaleString()}`
+                    }
+                },
+                grid: {
+                    borderColor: '#e7e7e7',
+                    strokeDashArray: 5,
+                    yaxis: { lines: { show: true } },
+                    xaxis: { lines: { show: false } }
+                },
+                title: {
+                    // The title is now in the component's HTML, so we can remove it from here
+                    text: '',
+                }
+            };
+
+            if (this.chart) {
+                this.chart.updateOptions(options);
+            } else {
+                this.chart = new ApexCharts(this.$refs.myQuotationChart, options);
+                this.chart.render();
+            }
+        }
+    }));
+
+
 });

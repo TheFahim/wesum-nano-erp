@@ -15,8 +15,6 @@ use App\Http\Middleware\CheckUserIsAdmin;
 use App\Models\SaleTarget;
 use Illuminate\Support\Facades\Route;
 
-
-
 Route::redirect('/', '/dashboard');
 
 Route::middleware(['auth',CheckUserIsActive::class])
@@ -49,6 +47,12 @@ Route::middleware(['auth',CheckUserIsActive::class])
         Route::get('/api/target', [DashboradController::class, 'getTargetData'])->name('dashboard.target.data');
 
         Route::get('/api/quotation', [DashboradController::class, 'getQuotationData'])->name('dashboard.quotation.data');
+
+        Route::get('/api/my-quotation-years', [DashboradController::class, 'getMyQuotationYears'])->name('api.my.quotation.years');
+
+        // Route to get the user's own monthly summary for a given year
+        Route::get('/api/my-quotation-summary', [DashboradController::class, 'getMyQuotationSummary'])->name('api.my.quotation.summary');
+
 
         Route::resource('bills', BillController::class);
         Route::resource('received-bills', ReceivedBillController::class);

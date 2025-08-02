@@ -129,21 +129,67 @@ document.addEventListener('alpine:init', () => {
         },
 
         // --- MODIFIED FUNCTION ---
-        updateChart(data) {
-            // The new 'data' is the 'expenses' array from the API response
-            // Each item is now { user_name: 'John Doe', total_expense: 500 }
+        updateChart(expenseData) {
+            if (!this.chart) return;
 
-            // Map user names to the chart's categories
-            const categories = data.map(item => item.user_name);
-            const seriesData = data.map(item => item.total_expense);
+            const categories = expenseData.map(item => item.user_name);
+            const seriesData = expenseData.map(item => item.total_expense);
 
             this.chart.updateOptions({
                 xaxis: {
-                    categories: categories, // Update categories to be user names
+                    categories: categories,
                 },
                 series: [{
                     data: seriesData,
                 }],
+                dataLabels: {
+                    enabled: true,
+                    formatter: (val) => "৳" + val.toLocaleString(),
+                    offsetX: -15,
+                    style: {
+                        fontFamily: "Inter, sans-serif",
+                        colors: ["#90A4AE"]
+                    },
+                    dropShadow: {
+                        enabled: true,
+                        top: 1,
+                        left: 1,
+                        blur: 1,
+                        color: '#000',
+                        opacity: 0.35
+                    }
+                },
+                tooltip: {
+                    custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                        const userData = expenseData[dataPointIndex];
+                        if (!userData) return '';
+
+                        const typeItems = Object.entries(userData.type)
+                            .map(([type, amount]) => {
+                                const cleanType = String(type).replace(/</g, "<").replace(/>/g, ">");
+                                return `<li style="display: flex; justify-content: space-between; padding: 3px 0;">
+                                    <span>${cleanType}:</span>
+                                    <span style="font-weight: 600; margin-left: 15px;">৳${amount.toLocaleString()}</span>
+                                </li>`;
+                            }).join('');
+
+                        return `
+                    <div class="apexcharts-tooltip-title" style="font-family: Inter, sans-serif; font-size: 12px; font-weight: bold; background: #ECEFF1; padding: 6px 10px;">
+                        ${w.globals.labels[dataPointIndex]}
+                    </div>
+                    <div style="padding: 8px; font-family: Inter, sans-serif; font-size: 12px;">
+                        <div style="margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: bold; font-size: 13px;">Total Expense</span>
+                            <span style="font-weight: bold; font-size: 13px; margin-left: 15px;">৳${userData.total_expense.toLocaleString()}</span>
+                        </div>
+                        ${typeItems ? '<hr style="margin: 4px 0; border-top: 1px solid #e0e0e0;">' : ''}
+                        <ul style="list-style: none; margin: 0; padding: 0;">
+                            ${typeItems}
+                        </ul>
+                    </div>
+                `;
+                    }
+                }
             });
         }
     }));
@@ -298,6 +344,7 @@ document.addEventListener('alpine:init', () => {
             { label: 'All Time', value: 'all' },
         ],
         selectedFilter: { label: 'This Month', value: 'this_month' },
+        chart: null, // <-- 1. Added property to hold the chart instance
 
         init() {
             this.fetchAndRenderChart();
@@ -333,10 +380,8 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        // This helper function processes the data from your API
         processChartData(data) {
             const dataByUser = {};
-            // Group quotations by user
             data.forEach(item => {
                 if (!dataByUser[item.user]) {
                     dataByUser[item.user] = [];
@@ -347,7 +392,6 @@ document.addEventListener('alpine:init', () => {
             const userCategories = Object.keys(dataByUser);
             let maxQuotes = 0;
 
-            // Create Y-axis labels with counts, e.g., "User A (3)"
             const yAxisLabels = userCategories.map(user => {
                 const count = dataByUser[user].length;
                 if (count > maxQuotes) maxQuotes = count;
@@ -355,9 +399,8 @@ document.addEventListener('alpine:init', () => {
             });
 
             const series = [];
-            const quoteIdLookup = []; // A parallel array to store IDs for the tooltip
+            const quoteIdLookup = [];
 
-            // Build the series data
             for (let i = 0; i < maxQuotes; i++) {
                 const seriesData = [];
                 const idData = [];
@@ -366,26 +409,27 @@ document.addEventListener('alpine:init', () => {
                         seriesData.push(dataByUser[user][i].amount);
                         idData.push(dataByUser[user][i].id);
                     } else {
-                        seriesData.push(null); // No quote for this user at this position
+                        seriesData.push(null);
                         idData.push(null);
                     }
                 });
                 series.push({ name: ` ${i + 1}`, data: seriesData });
                 quoteIdLookup.push(idData);
             }
-            return { series, yAxisLabels, quoteIdLookup };
+            return { series, yAxisLabels, quoteIdLookup, dataByUser };
         },
 
         updateChart(rawData) {
+            // Ensure the chart container element exists
             if (!this.$refs.quotationChart) return;
 
-            const { series, yAxisLabels, quoteIdLookup } = this.processChartData(rawData);
+            const { series, yAxisLabels, quoteIdLookup, dataByUser } = this.processChartData(rawData);
 
             const options = {
                 series: series,
                 chart: {
                     type: 'bar',
-                    height: 450, // Increased height to prevent labels from being cut off
+                    height: 450,
                     stacked: true,
                 },
                 plotOptions: {
@@ -398,7 +442,7 @@ document.addEventListener('alpine:init', () => {
                     colors: ['#fff']
                 },
                 xaxis: {
-                    categories: yAxisLabels, // Users are now on the X-axis for horizontal chart
+                    categories: yAxisLabels,
                     title: {
                         text: 'Total Quotation Amount ($)',
                         style: { fontFamily: "Inter, sans-serif", color: "#90A4AE" }
@@ -418,9 +462,19 @@ document.addEventListener('alpine:init', () => {
                 },
                 tooltip: {
                     y: {
-                        formatter: (val, { seriesIndex, dataPointIndex }) => {
+                        formatter: (val, { seriesIndex, dataPointIndex, w }) => {
+                            if (val === null) return;
                             const quotationId = quoteIdLookup[seriesIndex][dataPointIndex];
-                            return `${quotationId}: ৳${val.toLocaleString()}`;
+                            const userLabel = w.globals.labels[dataPointIndex];
+                            const userName = userLabel.substring(0, userLabel.lastIndexOf('(') - 1);
+                            const totalAmount = dataByUser[userName].reduce((sum, quote) => sum + quote.amount, 0);
+
+                            return `
+                            <ul style="padding: 10px; margin: 0; list-style: none;">
+                                <li>${quotationId}: ৳${val.toLocaleString()}</li>
+                                <li>Total: ৳${totalAmount.toLocaleString()}</li>
+                            </ul>
+                        `;
                         }
                     }
                 },
@@ -428,16 +482,21 @@ document.addEventListener('alpine:init', () => {
                     opacity: 1
                 },
                 legend: {
-                    show: false, // Hide the legend as it's not meaningful here
+                    show: false,
                     position: 'top',
                     horizontalAlign: 'left'
                 }
+            };
+
+            // --- 2. MODIFIED LOGIC ---
+            // If the chart is already initialized, just update it for better performance.
+            if (this.chart) {
+                this.chart.updateOptions(options);
+            } else {
+                // Otherwise, create a new chart instance.
+                this.chart = new ApexCharts(this.$refs.quotationChart, options);
+                this.chart.render();
             }
-
-            var chart = new ApexCharts(document.querySelector("#quotation"), options);
-            chart.render();
-            // If chart is already initialized, just update it for better performance
-
         }
     }));
 
