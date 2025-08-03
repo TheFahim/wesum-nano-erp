@@ -1,5 +1,52 @@
 <x-dashboard.layout.default :title="'Challan - ' . $challan->challan_no">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                position: relative;
+            }
 
+            /* Watermark styling */
+            body::before {
+                content: "Wesum Corporation";
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(-45deg);
+                transform-origin: center;
+                font-size: 80px;
+                opacity: 0.1;
+                z-index: 9999;
+                pointer-events: none;
+                color: #000;
+                font-weight: bold;
+                font-family: Arial, sans-serif;
+                white-space: nowrap;
+            }
+        }
+
+        /* For screen preview */
+        .watermark-preview {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px;
+            opacity: 0.1;
+            z-index: 9999;
+            pointer-events: none;
+            color: #000;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            white-space: nowrap;
+            display: none;
+        }
+    </style>
+
+    <div class="watermark-preview">
+        Wesum Corporation
+    </div>
     <x-dashboard.ui.bread-crumb>
         <li class="inline-flex items-center">
             <a href="{{ route('challans.index') }}"
@@ -30,17 +77,16 @@
 
                 {{-- New Alpine.js Toggle Button --}}
                 @role('admin')
-
-                <button @click="showPrices = !showPrices" type="button"
-                    class="print:hidden inline-flex items-center text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 0010.004 0M6 7l3-1m6 1l-3-1m0 0l3 9a5.002 5.002 0 0010.004 0M18 7l-3-1m-6 11v-1a2 2 0 012-2h2a2 2 0 012 2v1m-6 0h6">
-                        </path>
-                    </svg>
-                    <span x-text="showPrices ? 'Hide Prices' : 'Compare Prices'">Compare Prices</span>
-                </button>
+                    <button @click="showPrices = !showPrices" type="button"
+                        class="print:hidden inline-flex items-center text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 0010.004 0M6 7l3-1m6 1l-3-1m0 0l3 9a5.002 5.002 0 0010.004 0M18 7l-3-1m-6 11v-1a2 2 0 012-2h2a2 2 0 012 2v1m-6 0h6">
+                            </path>
+                        </svg>
+                        <span x-text="showPrices ? 'Hide Prices' : 'Compare Prices'">Compare Prices</span>
+                    </button>
                 @endrole
             </div>
 
@@ -75,11 +121,13 @@
             <header class="flex justify-between items-start mb-8">
                 <div>
                     <div class="flex items-center space-x-2 mb-2">
-                        <div class="w-12 h-12 border-2 border-black rounded-full flex items-center justify-center">
+                        {{-- <div class="w-12 h-12 border-2 border-black rounded-full flex items-center justify-center">
                             <div
                                 class="w-8 h-8 border border-black rounded-full flex items-center justify-center font-bold text-xl">
                                 W</div>
-                        </div>
+                        </div> --}}
+                        <img src="{{ asset('assets/images/app-logo.jpeg') }}" alt="Company Logo" class="h-16 mb-2">
+
                         <h1 class="text-2xl font-serif font-bold tracking-wider">
                             <span class="text-blue-900">WESUM</span>
                             <span class="text-red-700">CORPORATION</span>

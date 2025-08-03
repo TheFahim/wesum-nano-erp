@@ -1,4 +1,52 @@
 <x-dashboard.layout.default :title="'Quotation - ' . $quotation->quotation_no">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                position: relative;
+            }
+
+            /* Watermark styling */
+            body::before {
+                content: "Wesum Corporation";
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(-45deg);
+                transform-origin: center;
+                font-size: 80px;
+                opacity: 0.1;
+                z-index: 9999;
+                pointer-events: none;
+                color: #000;
+                font-weight: bold;
+                font-family: Arial, sans-serif;
+                white-space: nowrap;
+            }
+        }
+
+        /* For screen preview */
+        .watermark-preview {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px;
+            opacity: 0.1;
+            z-index: 9999;
+            pointer-events: none;
+            color: #000;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            white-space: nowrap;
+            display: none;
+        }
+    </style>
+
+    <div class="watermark-preview">
+        Wesum Corporation
+    </div>
 
     <x-dashboard.ui.bread-crumb>
         <li class="inline-flex items-center">
@@ -13,6 +61,12 @@
     </x-dashboard.ui.bread-crumb>
 
     <div class="bg-gray-100 p-8 font-sans">
+
+            <div class="watermark-preview">
+        <img src="{{ asset('assets/images/app-logo.jpeg') }}" alt="Company Logo" class="h-16 mb-2">
+
+        Wesum Corporation
+    </div>
 
         {{-- The main container for the quotation, styled to look like a sheet of paper --}}
         <div class="flex justify-between p-4">
@@ -62,13 +116,13 @@
                 <!-- Left Side: Logo and Company Name -->
                 <div>
                     {{-- You can replace this with your actual logo --}}
-                    {{-- <img src="{{ asset('path/to/your/logo.png') }}" alt="Company Logo" class="h-16 mb-2"> --}}
                     <div class="flex items-center space-x-2 mb-2">
-                        <div class="w-12 h-12 border-2 border-black rounded-full flex items-center justify-center">
+                        <img src="{{ asset('assets/images/app-logo.jpeg') }}" alt="Company Logo" class="h-16 mb-2">
+                        {{-- <div class="w-12 h-12 border-2 border-black rounded-full flex items-center justify-center">
                             <div
                                 class="w-8 h-8 border border-black rounded-full flex items-center justify-center font-bold text-xl">
                                 W</div>
-                        </div>
+                        </div> --}}
                         <h1 class="text-2xl font-serif font-bold tracking-wider">
                             <span class="text-blue-900">WESUM</span>
                             <span class="text-red-700">CORPORATION</span>

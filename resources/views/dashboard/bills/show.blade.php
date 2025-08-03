@@ -1,5 +1,52 @@
 <x-dashboard.layout.default :title="'Bill - ' . $bill->challan->challan_no">
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                position: relative;
+            }
 
+            /* Watermark styling */
+            body::before {
+                content: "Wesum Corporation";
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(-45deg);
+                transform-origin: center;
+                font-size: 80px;
+                opacity: 0.1;
+                z-index: 9999;
+                pointer-events: none;
+                color: #000;
+                font-weight: bold;
+                font-family: Arial, sans-serif;
+                white-space: nowrap;
+            }
+        }
+
+        /* For screen preview */
+        .watermark-preview {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px;
+            opacity: 0.1;
+            z-index: 9999;
+            pointer-events: none;
+            color: #000;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            white-space: nowrap;
+            display: none;
+        }
+    </style>
+
+    <div class="watermark-preview">
+        Wesum Corporation
+    </div>
     <x-dashboard.ui.bread-crumb>
         <li class="inline-flex items-center">
             <a href="{{ route('bills.index') }}"
@@ -32,11 +79,13 @@
             <header class="flex justify-between items-start mb-8">
                 <div>
                     <div class="flex items-center space-x-2 mb-2">
-                        <div class="w-12 h-12 border-2 border-black rounded-full flex items-center justify-center">
+                        {{-- <div class="w-12 h-12 border-2 border-black rounded-full flex items-center justify-center">
                             <div
                                 class="w-8 h-8 border border-black rounded-full flex items-center justify-center font-bold text-xl">
                                 W</div>
-                        </div>
+                        </div> --}}
+                        <img src="{{ asset('assets/images/app-logo.jpeg') }}" alt="Company Logo" class="h-16 mb-2">
+
                         <h1 class="text-2xl font-serif font-bold tracking-wider">
                             <span class="text-blue-900">WESUM</span>
                             <span class="text-red-700">CORPORATION</span>
@@ -123,7 +172,8 @@
                                 <td class="border border-gray-400 p-2 align-top font-bold">{{ $product->unit }}</td>
                                 <td class="border border-gray-400 p-2 text-right align-top">{{ $product->quantity }}
                                 </td>
-                                <td class="border border-gray-400 p-2 text-center align-top">{{ $product->amount }}</td>
+                                <td class="border border-gray-400 p-2 text-center align-top">{{ $product->amount }}
+                                </td>
 
                             </tr>
                         @endforeach
