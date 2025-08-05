@@ -19,7 +19,7 @@
         </div> --}}
         <hr class="border-t border-gray-300 w-full">
 
-        <div class="relative overflow-x-auto sm:rounded-lg py-3 px-2 mx-2">
+        <div class="relative sm:rounded-lg py-3 px-2 mx-2">
             <table id="team-members"
                 class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-white datatable">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-500 dark:text-gray-400">
@@ -71,8 +71,16 @@
                     @foreach ($challans as $item)
                         <tr
                             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <td class="px-6 py-4">
-                                {{ $loop->iteration }}
+                            <td class="flex items-center px-6 py-4">
+                                <span>{{ $loop->iteration }}</span>
+                                @if ($item->bill != null)
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 text-green-500"
+                                        viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                @endif
                             </td>
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">

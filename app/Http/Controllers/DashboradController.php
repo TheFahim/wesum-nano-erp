@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bill;
 use App\Models\Challan;
 use App\Models\Expense;
+use App\Models\Product;
 use App\Models\Quotation;
 use App\Models\SaleTarget;
 use App\Models\User;
@@ -63,10 +64,13 @@ class DashboradController extends Controller
                                 ->flatten()
                                 ->sum('buying_price');
 
+        // return
+
         //count all the product with no buying price
-        $productsWithoutBuyingPrice = Bill::whereHas('challan.quotation.products', function ($query) {
+        $productsWithoutBuyingPrice = Product::whereHas('quotation.challan.bill', function ($query) {
             $query->whereNull('buying_price');
         })->count();
+
 
         $totalExpense = Expense::sum('amount');
 

@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
+
+    public function quotation(){
+        return $this->belongsTo(Quotation::class);
+    }
 }

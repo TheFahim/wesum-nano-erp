@@ -17,7 +17,7 @@ class ChallanController extends Controller
     public function index()
     {
         if (Auth::user()->hasRole('admin')) {
-            $challans = Challan::with(['quotation', 'quotation.customer', 'quotation.products'])->latest()->get();
+            $challans = Challan::with(['quotation', 'quotation.customer', 'quotation.products', 'bill'])->latest()->get();
 
 
             $challans->each(function ($challan) {
@@ -29,7 +29,7 @@ class ChallanController extends Controller
             });
 
         } else {
-            $challans = Challan::with(['quotation', 'quotation.customer'])
+            $challans = Challan::with(['quotation', 'quotation.customer', 'bill'])
                 ->whereHas('quotation', function ($query) {
                     $query->where('user_id', Auth::id());
                 })

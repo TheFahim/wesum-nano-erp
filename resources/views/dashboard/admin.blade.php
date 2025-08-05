@@ -289,6 +289,7 @@
 
             <div x-data="adminQuotation" class="col-span-3 bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
 
+                <dd class="leading-none text-xl font-bold text-gray-900 dark:text-white mb-4">Quotation Summery</dd>
 
 
                 {{-- The chart will be rendered here. x-show prevents a flash of unstyled content. --}}

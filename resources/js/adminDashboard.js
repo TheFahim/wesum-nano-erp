@@ -363,7 +363,6 @@ document.addEventListener('alpine:init', () => {
                 const response = await fetch(`/dashboard/api/quotation?filter=${this.selectedFilter.value}`);
                 if (!response.ok) throw new Error('Network response was not ok');
                 const fetchedData = await response.json();
-                console.log(fetchedData);
 
                 const rawData = fetchedData.map(data => {
                     return {
@@ -444,7 +443,7 @@ document.addEventListener('alpine:init', () => {
                 xaxis: {
                     categories: yAxisLabels,
                     title: {
-                        text: 'Total Quotation Amount ($)',
+                        text: 'Total Quotation Amount (৳)',
                         style: { fontFamily: "Inter, sans-serif", color: "#90A4AE" }
                     },
                     labels: {
