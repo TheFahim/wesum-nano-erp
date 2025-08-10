@@ -69,7 +69,7 @@ abstract class Controller
     {
 
 
-        if (Auth::user()->role !== 'admin' && $table->user_id !== Auth::id()) {
+        if (Auth::user()->role !== 'admin' && $table->user_id != Auth::id()) {
             abort(403);
         }
 

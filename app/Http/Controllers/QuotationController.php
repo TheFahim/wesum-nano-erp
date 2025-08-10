@@ -91,7 +91,7 @@ class QuotationController extends Controller
     {
 
         // Check if the quotation belongs to the authenticated user or is accessible by admin
-        if (!Auth::user()->hasRole('admin') && $quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $quotation->user_id != Auth::id()) {
             abort(403);
         }
 
@@ -110,7 +110,7 @@ class QuotationController extends Controller
     {
 
 
-        if (!Auth::user()->hasRole('admin') && $quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $quotation->user_id != Auth::id()) {
             abort(403);
         }
 
@@ -145,7 +145,7 @@ class QuotationController extends Controller
         }
 
 
-        if (!Auth::user()->hasRole('admin') && $quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $quotation->user_id != Auth::id()) {
             abort(403);
         }
 
@@ -219,7 +219,7 @@ class QuotationController extends Controller
     public function destroy(Quotation $quotation)
     {
 
-        if (!Auth::user()->hasRole('admin') && $quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $quotation->user_id != Auth::id()) {
             abort(403);
         }
 

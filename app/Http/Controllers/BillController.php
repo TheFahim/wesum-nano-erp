@@ -49,7 +49,7 @@ class BillController extends Controller
 
         $challan->load('quotation', 'quotation.products');
 
-        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
         }
 
@@ -86,7 +86,7 @@ class BillController extends Controller
     {
         $bill->load('challan.quotation');
 
-        if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
         }
 
@@ -99,7 +99,7 @@ class BillController extends Controller
     public function edit(Bill $bill)
     {
         $bill->load('challan', 'challan.quotation');
-        if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
         }
         return view('dashboard.bills.edit', compact('bill'));
@@ -116,7 +116,7 @@ class BillController extends Controller
 
         $bill->load('challan.quotation');
 
-        if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
         }
 

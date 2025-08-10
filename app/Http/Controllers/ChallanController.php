@@ -54,7 +54,7 @@ class ChallanController extends Controller
             abort(404, 'Quotation not found');
         }
 
-        if (!Auth::user()->hasRole('admin') && $quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
         }
 
@@ -102,7 +102,7 @@ class ChallanController extends Controller
 
         $challan->load(['quotation', 'quotation.products', 'quotation.customer']);
 
-        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
         }
 
@@ -121,7 +121,7 @@ class ChallanController extends Controller
         $challan->load(['quotation', 'quotation.customer', 'bill']);
 
 
-        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
         }
 
@@ -149,7 +149,7 @@ class ChallanController extends Controller
 
         $challan->load('quotation');
 
-        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
         }
 
@@ -176,7 +176,7 @@ class ChallanController extends Controller
     public function destroy(Challan $challan)
     {
         $challan->load(['bill', 'quotation']);
-        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
         }
 

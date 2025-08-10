@@ -76,7 +76,7 @@
             <x-dashboard.common.sidebar-link url="{{ route('challans.index') }}">
 
                 <x-ui.svg.chalan class="h-6 w-6" />
-                <span class="flex-1 ms-3 whitespace-nowrap">Chalan</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Challan</span>
             </x-dashboard.common.sidebar-link>
         </li>
         <li>

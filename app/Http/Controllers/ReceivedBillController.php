@@ -64,7 +64,7 @@ class ReceivedBillController extends Controller
 
         $bill->load('challan.quotation');
 
-        if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
         }
 
@@ -103,7 +103,7 @@ class ReceivedBillController extends Controller
         // Eager load the related payments
         $receivedBill->load(['receivedBills', 'challan.quotation']);
 
-        if (!Auth::user()->hasRole('admin') && $receivedBill->challan->quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $receivedBill->challan->quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
         }
 
@@ -128,7 +128,7 @@ class ReceivedBillController extends Controller
     public function update(Request $request, Bill $receivedBill)
     {
         $receivedBill->load('challan.quotation');
-        if (!Auth::user()->hasRole('admin') && $receivedBill->challan->quotation->user_id !== Auth::id()) {
+        if (!Auth::user()->hasRole('admin') && $receivedBill->challan->quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
         }
         // 1. VALIDATION
