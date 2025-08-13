@@ -79,11 +79,11 @@
 
             <div x-data="expenseChartComponent" x-init="init()" @click.away="isDropdownOpen = false" class="relative">
 
-                <!-- Donut Chart -->
-                <div class="py-6" x-ref="chartContainer">
-                    <!-- Loading state is handled by the chart rendering logic -->
+                <div class="py-6">
+                    <div id="expense-chart"></div>
                 </div>
 
+                {{-- This section remains largely the same for controlling the chart --}}
                 <div
                     class="grid grid-cols-1 items-center border-t border-gray-200 justify-between dark:border-gray-700">
                     <div class="flex justify-between items-center pt-5">
@@ -99,50 +99,32 @@
                             </svg>
                         </button>
 
-                        <!-- Dropdown menu (Now controlled by Alpine) -->
-                        <div x-show="isDropdownOpen" x-transition:enter="transition ease-out duration-100"
-                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-75"
-                            x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                        <!-- Dropdown menu -->
+                        <div x-show="isDropdownOpen" x-transition
                             class="z-10 absolute bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-44 dark:bg-gray-700"
-                            style="display: none;"> {{-- `style="display: none;"` prevents flash of content on page load --}}
-                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                aria-labelledby="dropdownDefaultButton">
-
-                                <li @click="selectPeriod('today', 'Today'); isDropdownOpen = false;">
-                                    <a href="#"
+                            style="display: none;">
+                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                                <li><a href="#" @click.prevent="selectPeriod('today', 'Today')"
                                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Today</a>
                                 </li>
-                                <li @click="selectPeriod('last_7_days', 'Last 7 days'); isDropdownOpen = false;">
-                                    <a href="#"
+                                <li><a href="#" @click.prevent="selectPeriod('last_7_days', 'Last 7 days')"
                                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last
-                                        7 days</a>
-                                </li>
-                                <li @click="selectPeriod('this_month', 'This Month'); isDropdownOpen = false;">
-                                    <a href="#"
+                                        7 days</a></li>
+                                <li><a href="#" @click.prevent="selectPeriod('this_month', 'This Month')"
                                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">This
-                                        Month</a>
-                                </li>
-                                <li @click="selectPeriod('last_month', 'Last Month'); isDropdownOpen = false;">
-                                    <a href="#"
+                                        Month</a></li>
+                                <li><a href="#" @click.prevent="selectPeriod('last_month', 'Last Month')"
                                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last
-                                        Month</a>
-                                </li>
-                                <li @click="selectPeriod('last_6_month', 'Last 6 Month'); isDropdownOpen = false;">
-                                    <a href="#"
+                                        Month</a></li>
+                                <li><a href="#" @click.prevent="selectPeriod('last_6_month', 'Last 6 Month')"
                                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last
-                                        6 Month</a>
-                                </li>
-                                <li @click="selectPeriod('this_year', 'This Year'); isDropdownOpen = false;">
-                                    <a href="#"
+                                        6 Month</a></li>
+                                <li><a href="#" @click.prevent="selectPeriod('this_year', 'This Year')"
                                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">This
-                                        Year</a>
-                                </li>
-                                <li @click="selectPeriod('last_year', 'Last Year'); isDropdownOpen = false;">
-                                    <a href="#"
+                                        Year</a></li>
+                                <li><a href="#" @click.prevent="selectPeriod('last_year', 'Last Year')"
                                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Last
-                                        Year</a>
-                                </li>
+                                        Year</a></li>
                             </ul>
                         </div>
 
@@ -159,7 +141,6 @@
                 </div>
             </div>
 
-
         </x-ui.card>
 
         <x-ui.card heading="Target Progress">
@@ -172,8 +153,7 @@
                 <div class="mx-5 grid grid-cols-3 py-3 my-5">
                     <dl>
                         <dt class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1">Target</dt>
-                        <dd class="leading-none text-sm font-bold text-blue-500 dark:text-blue-400"
-                            id="target-amount">
+                        <dd class="leading-none text-sm font-bold text-blue-500 dark:text-blue-400" id="target-amount">
 
                     </dl>
                     <dl>
@@ -193,7 +173,8 @@
             </div>
         </x-ui.card>
 
-        <div x-data="myQuotationChart" class="col-span-3 bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6 mx-2">
+        <div x-data="myQuotationChart"
+            class="col-span-3 bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6 mx-2">
             <!-- Header: Title and Year Selection Dropdown -->
             <div class="flex justify-between items-center mb-4">
                 <div>

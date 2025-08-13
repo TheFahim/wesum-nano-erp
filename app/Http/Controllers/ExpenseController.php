@@ -43,8 +43,7 @@ class ExpenseController extends Controller
             'date' => 'required|date_format:d/m/Y',
             'expense' => 'required|array|min:1',
             'expense.*.type' => [
-                'required',
-                Rule::in(['transport', 'phone', 'others', 'food']) // Allowed types
+                'required'
             ],
             'expense.*.amount' => 'required|numeric|gt:0', // Must be > 0
             'expense.*.remarks' => 'nullable|string',
@@ -59,7 +58,7 @@ class ExpenseController extends Controller
 
             Expense::create([
                 'date' => Carbon::createFromFormat('d/m/Y', $validated['date'])->format('Y-m-d'),
-                'type' => $data['type'],
+                'type' => strtolower($data['type']),
                 'amount' => $data['amount'],
                 'remarks' => $data['remarks'],
                 'voucher' => $data['voucher'] ?? '',
@@ -93,7 +92,7 @@ class ExpenseController extends Controller
     {
         $validated = $request->validate([
             "date" => ['required', 'date_format:d/m/Y'],
-            "type" => ['required',  Rule::in(['transport', 'phone', 'others', 'food'])],
+            "type" => ['required'],
             'amount' => 'required|numeric|gt:0', // Must be > 0
             'remarks' => 'nullable|string',
             'voucher' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,bmp,svg,pdf,doc,docx|max:2048'

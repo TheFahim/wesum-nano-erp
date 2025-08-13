@@ -101,17 +101,16 @@
                                 <th
                                     class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Unit</th>
-                                <th
+                                {{-- <th
                                     class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    Price</th>
+                                    Price</th> --}}
                                 <th
                                     class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Quantity</th>
-                                @role('admin')
-                                    <th
-                                        class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Buying Price</th>
-                                @endrole
+                                {{-- <th
+                                    class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    Amount</th> --}}
+
                                 <th
                                     class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Remarks</th>
@@ -124,19 +123,12 @@
                                         value="{{ $product->id }}">
                                     <td class="px-4 py-2 text-gray-900 dark:text-gray-100">{{ $product->name }}</td>
                                     <td class="px-4 py-2 text-gray-900 dark:text-gray-100">{{ $product->unit }}</td>
-                                    <td class="px-4 py-2 text-gray-900 dark:text-gray-100">{{ $product->price }}</td>
+                                    {{-- <td class="px-4 py-2 text-gray-900 dark:text-gray-100">{{ $product->price }}</td> --}}
                                     <td class="px-4 py-2 text-gray-900 dark:text-gray-100">{{ $product->quantity }}
                                     </td>
+                                    {{-- <td class="px-4 py-2 text-gray-900 dark:text-gray-100">{{ $product->amount }}
+                                    </td> --}}
 
-                                    @role('admin')
-                                        <td class="px-4 py-2 text-gray-900 dark:text-gray-100">
-                                            <div class="mx-2">
-                                                <x-ui.form.input name="product[{{ $loop->index }}][buying_price]"
-                                                    type="number" placeholder="Buying Price" class="w-full p-2 text-lg"
-                                                    value="{{ old('product.' . $loop->index . '.buying_price', $product->buying_price) }}" />
-                                            </div>
-                                        </td>
-                                    @endrole
                                     <td class="px-4 py-2 text-gray-900 dark:text-gray-100">
                                         <div class="mx-2">
                                             <x-ui.form.input name="product[{{ $loop->index }}][remarks]"

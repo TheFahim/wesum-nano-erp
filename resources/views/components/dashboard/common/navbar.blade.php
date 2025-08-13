@@ -15,7 +15,7 @@
                 </button>
                 <a href="{{ route('dashboard.index') }}" class="flex ms-2 md:me-24">
                     <img src="{{ asset('assets/images/app-logo.jpeg') }}" class="h-8 me-3" alt="Site Logo" />
-                    <span class="self-center text-lg font-semibold sm:text-2xl whitespace-nowrap dark:text-white">WESUM CORP.</span>
+                    <span class="self-center text-lg font-semibold sm:text-2xl whitespace-nowrap dark:text-white">WESUM CORPORATION</span>
                 </a>
             </div>
             <div class="flex items-center">

@@ -1,53 +1,71 @@
 <x-dashboard.layout.default :title="'Quotation - ' . $quotation->quotation_no">
     <style>
+        /* Hide watermark on screen by default */
+        .print-watermark {
+            display: none;
+        }
+
         @media print {
             body {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+            }
+
+            @page {
+                margin: 0;
+            }
+
+            /* 1. Set up the container as the positioning context */
+            #q-invoice {
                 position: relative;
             }
 
-            /* Watermark styling */
-            body::before {
-                content: "Wesum Corporation";
+            /* 2. Define the watermark's appearance and fixed position */
+            .print-watermark {
+                display: block;
+                /* Make it visible for print */
                 position: fixed;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%) rotate(-45deg);
-                transform-origin: center;
-                font-size: 80px;
-                opacity: 0.1;
-                z-index: 9999;
+                /* Center the watermark */
+                background: url("{{ asset('assets/images/app-logo.jpeg') }}") center/contain no-repeat;
+                /* Use the logo */
+                width: 70vmin;
+                /* Adjust size as needed */
+                height: 70vmin;
+                opacity: 0.06;
+                /* Lighter opacity */
                 pointer-events: none;
-                color: #000;
-                font-weight: bold;
-                font-family: Arial, sans-serif;
-                white-space: nowrap;
+                /* Ignore mouse events */
+                z-index: 0;
+                /* Place watermark on the bottom layer */
             }
-        }
 
-        /* For screen preview */
-        .watermark-preview {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 80px;
-            opacity: 0.1;
-            z-index: 9999;
-            pointer-events: none;
-            color: #000;
-            font-weight: bold;
-            font-family: Arial, sans-serif;
-            white-space: nowrap;
-            display: none;
+            /* 3. Ensure the content prints on top of the watermark */
+            #q-invoice>table {
+                position: relative;
+                z-index: 1;
+                /* Content is on the top layer */
+            }
+
+            /* 4. Ensure ONLY the table header repeats. The footer will now be in the body. */
+            thead {
+                display: table-header-group;
+            }
+
+            tfoot {
+                display: none;
+            }
+
+            /* Explicitly hide tfoot in case it's added back by mistake */
+            tr {
+                page-break-inside: avoid;
+            }
         }
     </style>
 
-    <div class="watermark-preview">
-        Wesum Corporation
-    </div>
-
+    {{-- Breadcrumb and controls remain outside the printable area --}}
     <x-dashboard.ui.bread-crumb>
         <li class="inline-flex items-center">
             <a href="{{ route('quotations.index') }}"
@@ -56,32 +74,21 @@
                 Quotations
             </a>
         </li>
-
         <x-dashboard.ui.bread-crumb-list name="Quotation" />
     </x-dashboard.ui.bread-crumb>
 
     <div class="bg-gray-100 p-8 font-sans">
-
-            <div class="watermark-preview">
-        <img src="{{ asset('assets/images/app-logo.jpeg') }}" alt="Company Logo" class="h-16 mb-2">
-
-        Wesum Corporation
-    </div>
-
-        {{-- The main container for the quotation, styled to look like a sheet of paper --}}
         <div class="flex justify-between p-4">
-
             <button id="printBtn" type="button"
                 class="inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                    height="24" fill="none" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linejoin="round" stroke-width="2"
                         d="M16.444 18H19a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2.556M17 11V5a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v6h10ZM7 15h10v4a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-4Z" />
                 </svg>
-
                 <span>&nbsp;&nbsp;Print</span>
             </button>
-
+            {{-- Other buttons... --}}
             @if (!$hasChallan)
                 <a href="{{ route('challans.create', ['quotation_id' => $quotation->id]) }}"
                     class="inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
@@ -109,199 +116,183 @@
             @endif
 
         </div>
-        <div id="q-invoice" class="max-w-4xl mx-auto bg-white p-8 shadow-lg">
 
-            <!-- Section 1: Header (Logo, Company Name, and Quotation Details) -->
-            <header class="flex justify-between items-start mb-8">
-                <!-- Left Side: Logo and Company Name -->
-                <div>
-                    {{-- You can replace this with your actual logo --}}
-                    <div class="flex items-center space-x-2 mb-2">
-                        <img src="{{ asset('assets/images/app-logo.jpeg') }}" alt="Company Logo" class="h-16 mb-2">
-                        {{-- <div class="w-12 h-12 border-2 border-black rounded-full flex items-center justify-center">
-                            <div
-                                class="w-8 h-8 border border-black rounded-full flex items-center justify-center font-bold text-xl">
-                                W</div>
-                        </div> --}}
-                        <h1 class="text-2xl font-serif font-bold tracking-wider">
-                            <span class="text-blue-900">WESUM</span>
-                            <span class="text-red-700">CORPORATION</span>
-                        </h1>
-                    </div>
-                </div>
+        <div id="q-invoice" class="max-w-4xl mx-auto bg-white px-8 pt-5">
+            <div class="print-watermark"></div>
+            <table class="w-full">
+                {{-- Repeating Header --}}
+                <thead>
+                    <tr>
+                        <td>
+                            <header class="flex justify-between items-start my-4">
+                                <div>
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        <img src="{{ asset('assets/images/app-logo.jpeg') }}" alt="Company Logo"
+                                            class="h-16 mb-2">
+                                        <h1 class="text-2xl font-serif font-bold tracking-wider">
+                                            <span class="text-blue-900">WESUM</span>
+                                            <span class="text-red-700">CORPORATION</span>
+                                        </h1>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <h2 class="text-2xl font-bold text-blue-600 mb-4">Quotation</h2>
+                                    <div class="grid grid-cols-2 text-sm">
+                                        <div class="font-bold px-3 text-right">DATE</div>
+                                        <div class="border border-gray-400 p-1">
+                                            {{ $quotation->created_at->format('d/m/Y') }}</div>
+                                        <div class="font-bold px-3 text-right">Ref</div>
+                                        <div class="border border-gray-400 p-1 bg-blue-100 font-semibold">
+                                            {{ $quotation->quotation_no }}</div>
+                                        <div class="font-bold px-3 text-right">CUSTOMER ID</div>
+                                        <div class="border border-gray-400 p-1">{{ $quotation->customer->customer_no }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </header>
+                            <div class="h-8"></div>
+                        </td>
+                    </tr>
+                </thead>
 
-                <!-- Right Side: Quotation Title and Details -->
-                <div class="text-right">
-                    <h2 class="text-2xl font-bold text-blue-600 mb-4">Quotation</h2>
-                    <div class="grid grid-cols-2 text-sm">
-                        <div class="font-bold p-1 text-left">DATE</div>
-                        <div class="border border-gray-400 p-1">{{ $quotation->created_at->format('d/m/Y') }}</div>
+                {{-- Main Document Body --}}
+                <tbody>
+                    <tr>
+                        <td>
+                            <section class="grid grid-cols-2 gap-8 mb-8 text-sm">
+                                <div>
+                                    <h3 class="bg-blue-900 text-white font-bold p-2">Contact Details</h3>
+                                    <div class="border border-gray-400 p-3">
+                                        <div class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+                                            <strong class="font-bold">Name</strong>
+                                            <p>: Reazul Kabir</p>
+                                            <strong class="font-bold">Phone</strong>
+                                            <p>: 01889977489</p>
+                                            <strong class="font-bold">Web</strong>
+                                            <p>: <a href="https://wesumcorporation.com/"
+                                                    class="text-blue-600 hover:underline"
+                                                    target="_blank">https://wesumcorporation.com</a></p>
+                                            <strong class="font-bold">Address</strong>
+                                            <p>: 78/1, Hasanlen, Dattapara, Tongi, Gazipur.</p>
+                                        </div>
+                                        <p>&nbsp;</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="bg-blue-900 text-white font-bold p-2">Kind Attention</h3>
+                                    <div class="border border-gray-400 p-3">
+                                        <div class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
+                                            <strong class="font-bold">Name</strong>
+                                            <p>: {{ $quotation->customer->customer_name }}</p>
+                                            <strong class="font-bold">Designation</strong>
+                                            <p>: {{ $quotation->customer->designation }}</p>
+                                            <strong class="font-bold">Company</strong>
+                                            <p>: {{ $quotation->customer->company_name }}</p>
+                                            <strong class="font-bold">Address</strong>
+                                            <p>: {{ $quotation->customer->address }}</p>
+                                            <strong class="font-bold">Phone</strong>
+                                            <p>: {{ $quotation->customer->phone }}</p>
+                                        </div>
+                                        <p>&nbsp;</p>
+                                    </div>
+                                </div>
+                            </section>
 
-                        <div class="font-bold p-1 text-left">Ref</div>
-                        <div class="border border-gray-400 p-1 bg-blue-100 font-semibold">{{ $quotation->quotation_no }}
-                        </div>
+                            <section>
+                                <table class="w-full border-collapse text-sm">
+                                    <thead>
+                                        <tr>
+                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 w-12">SL</th>
+                                            <th
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-left w-1/4">
+                                                ITEM NAME</th>
+                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-left">
+                                                SPECIFICATIONS</th>
+                                            <th
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-24">
+                                                UNIT PRICE</th>
+                                            <th
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-16">
+                                                QTY</th>
+                                            <th
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-center w-20">
+                                                Unit</th>
+                                            <th
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-28">
+                                                AMOUNT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($quotation->products as $product)
+                                            <tr>
+                                                <td class="border border-gray-400 p-2 text-center align-top">
+                                                    {{ $loop->iteration }}</td>
+                                                <td class="border border-gray-400 p-2 align-top font-bold">
+                                                    {{ $product->name }}</td>
+                                                <td class="border border-gray-400 p-2 align-top">{!! $product->specs !!}
+                                                </td>
+                                                <td class="border border-gray-400 p-2 text-right align-top">
+                                                    {{ number_format($product->price, 2) }}</td>
+                                                <td class="border border-gray-400 p-2 text-right align-top">
+                                                    {{ $product->quantity }}</td>
+                                                <td class="border border-gray-400 p-2 text-center align-top">
+                                                    {{ $product->unit }}</td>
+                                                <td class="border border-gray-400 p-2 text-right align-top font-bold">
+                                                    {{ number_format($product->amount, 2) }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </section>
 
-                        <div class="font-bold p-1 text-left">CUSTOMER ID</div>
-                        <div class="border border-gray-400 p-1">{{ $quotation->customer->customer_no }}</div>
+                            <section class="flex mt-8 text-sm place-content-between">
+                                <div class="w-1/3 text-center place-content-end">
+                                    <img src="{{ asset('assets/images/wesum-sign.jpeg') }}" class="h- mx-auto">
+                                    <div class="border-t border-gray-600 mt-1">
+                                        <p class="text-sm font-semibold">Authorized Signature</p>
+                                    </div>
+                                </div>
+                                <div class="w-1/3 justify-end">
+                                    <div class="grid grid-cols-2">
+                                        <div class="font-bold p-2">SUBTOTAL</div>
+                                        <div class="text-right p-2 font-semibold">
+                                            {{ number_format($quotation->subtotal, 2) }} &#2547;</div>
+                                        <div class="font-bold p-2">VAT ({{ (int) $quotation->vat }}%)</div>
+                                        <div class="text-right p-2 font-semibold">
+                                            {{ number_format($quotation->subtotal * ($quotation->vat / 100), 2) }}
+                                            &#2547;</div>
+                                        <div class="font-bold p-2 bg-gray-200">GRAND TOTAL</div>
+                                        <div class="text-right p-2 bg-gray-200 font-bold">
+                                            {{ number_format($quotation->total, 2) }} &#2547;</div>
+                                    </div>
+                                </div>
+                            </section>
 
-                    </div>
-                </div>
-            </header>
+                            <section class="my-4">
+                                {!! $quotation->terms_conditions !!}
+                            </section>
 
-            <!-- Section 2: Contact Information -->
-            <section class="grid grid-cols-2 gap-8 mb-8 text-sm">
-                <!-- Left Side: Your Company's Contact Details -->
-                <div>
-                    <h3 class="bg-blue-900 text-white font-bold p-2">Contact Details</h3>
-                    <div class="border border-gray-400 p-3 space-y-1">
-                        <p><strong class="w-16 inline-block">Name</strong> : {{ $quotation->user->name }}</p>
-                        <p><strong class="w-16 inline-block">Phone</strong> : {{ $quotation->user->phone }}</p>
-                        <p><strong class="w-16 inline-block">Web Site</strong> <a href="https://wesumcorporation.com/"
-                                class="text-blue-600 hover:underline" target="_blank"> :
-                                https://wesumcorporation.com</a></p>
-                        <p><strong class="w-16 inline-block">Address</strong> : 78/1, Hasanlen, Dattapara, Tongi,
-                            Gazipur.</p>
-                        <p> </p>
-
-                    </div>
-                </div>
-
-                <!-- Right Side: Customer's Information ("Kind Atten.") -->
-                <div>
-                    <h3 class="bg-blue-900 text-white font-bold p-2">Kind Atten.</h3>
-                    <div class="border border-gray-400 p-3 space-y-1">
-                        <p><strong class="w-24 inline-block">Name</strong> : {{ $quotation->customer->customer_name }}
-                        </p>
-                        <p><strong class="w-24 inline-block">Designation</strong>
-                            : {{ $quotation->customer->designation }}</p>
-                        <p><strong class="w-24 inline-block">Company</strong>
-                            : {{ $quotation->customer->company_name }}</p>
-                        <p><strong class="w-24 inline-block">Address</strong>
-                            : {{ $quotation->customer->address }}</p>
-                        <p><strong class="w-24 inline-block">Phone</strong> : {{ $quotation->customer->phone }}</p>
-                    </div>
-                </div>
-            </section>
-
-
-
-            <!-- Section 4: Products Table -->
-            <section>
-                <table class="w-full border-collapse text-sm">
-                    <thead>
-                        <tr>
-                            <th class="bg-blue-900 text-white p-2 border border-gray-500 w-12">SL</th>
-                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-left w-1/4">ITEM NAME</th>
-                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-left">SPECIFICATIONS</th>
-                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-24">UNIT PRICE
-                            </th>
-                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-16">QTY</th>
-                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-center w-20">Unit</th>
-                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-28">AMOUNT</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($quotation->products as $product)
-                            <tr>
-                                <td class="border border-gray-400 p-2 text-center align-top">{{ $loop->iteration }}
-                                </td>
-                                <td class="border border-gray-400 p-2 align-top font-bold">{{ $product->name }}</td>
-                                {{-- Using whitespace-pre-wrap to respect new lines from the textarea --}}
-                                <td class="border border-gray-400 p-2 align-top ">
-                                    {!! $product->specs !!}</td>
-                                <td class="border border-gray-400 p-2 text-right align-top">
-                                    {{ number_format($product->price, 2) }}</td>
-                                <td class="border border-gray-400 p-2 text-right align-top">{{ $product->quantity }}
-                                </td>
-                                <td class="border border-gray-400 p-2 text-center align-top">{{ $product->unit }}</td>
-                                <td class="border border-gray-400 p-2 text-right align-top font-bold">
-                                    {{ number_format($product->amount, 2) }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot id="pageFooter">
-                        <tr>
-                            <td>
-                                <div>&nbsp;</div>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </section>
-
-
-
-            <!-- Section 5: Totals -->
-            <section class="flex mt-8 text-sm place-content-between">
-                <div class="w-1/3 text-center place-content-end">
-                    {{-- You can place a signature image here if you have one --}}
-                    <img src="{{ asset('assets/images/wesum-sign.jpeg') }}" class="h- mx-auto">
-                    <div class="border-t border-gray-600 mt-1">
-                        <p class="text-sm font-semibold">Authorized Signature</p>
-                    </div>
-                </div>
-                <div class="w-1/3 justify-end">
-                    <div class="grid grid-cols-2">
-                        <div class="font-bold p-2">SUBTOTAL</div>
-                        <div class="text-right p-2 font-semibold">{{ number_format($quotation->subtotal, 2) }} &#2547;
-                        </div>
-                        <div class="font-bold p-2">VAT ({{ (int) $quotation->vat }}%)</div>
-                        <div class="text-right p-2 font-semibold">
-                            {{ number_format($quotation->subtotal * ($quotation->vat / 100), 2) }} &#2547;</div>
-                        <div class="font-bold p-2 bg-gray-200">GRAND TOTAL</div>
-                        <div class="text-right p-2 bg-gray-200 font-bold">{{ number_format($quotation->total, 2) }}
-                            &#2547;
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section 6: Terms & Conditions -->
-            <section class="mt-8">
-                {!! $quotation->terms_conditions !!}
-
-                {{-- <h3 class="bg-blue-900 text-white font-bold p-2 mb-4">Terms & Conditions</h3>
-                <ul class="list-disc list-inside text-sm space-y-2 text-gray-700">
-                    <li>Mushuk 6.3 will be provided with a bill Copy.</li>
-                    <li>Payment will be due prior to delivery of service and goods.</li>
-                    <li>The Quotation Value Including VAT, AIT & Transportation.</li>
-                    <li>BEFTN / Cheque in favor of Wesum corporation.</li>
-                    <li>Delivery Time 3-4 weeks after getting PO. </li>
-                    <li>The Quotation value valid 12 days after submission.</li>
-                </ul> --}}
-            </section>
-
-            <!-- Section 7: Document Footer -->
-            <footer
-                class="mt-12 pt-4 border-t border-gray-300 text-xs text-gray-600 flex justify-between items-center">
-                <div class="mx-auto space-x-4">
-                    <div class="text-center">
-                        <div>
-                            If you have any questions about this price quote, please contact
-                        </div>
-                        <div>
-                            [Name: {{ $quotation->user->name }}, Phone: {{ $quotation->user->phone }}, E-mail:
-                            wesum@wesumcorporation.com]
-                        </div>
-                        <div class="font-bold mt-2">
-                            Thank You For Your Business!
-                        </div>
-                    </div>
-                </div>
-                {{-- You can add page numbers here if this is a multi-page document --}}
-                {{-- <div class="text-right">Page 1 of 1</div> --}}
-            </footer>
-
+                            <footer class="px-4 border-t border-gray-300 text-xs text-gray-600 text-center">
+                                If you have any questions about this price quote, please contact
+                                <br>
+                                <div class="font-bold">
+                                    Thank You For Your Business!
+                                </div>
+                            </footer>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-
     </div>
+
+
     <script>
         document.querySelector('#printBtn').addEventListener('click', function() {
             $('#q-invoice').printThis({
                 importCSS: true,
-                importStyle: true
+                importStyle: true,
             });
         });
     </script>
-
 </x-dashboard.layout.default>

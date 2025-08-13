@@ -69,11 +69,18 @@ class BillController extends Controller
 
         $total = Challan::find($validated['challan_id'])
             ->quotation->total;
+        $vat = Challan::find($validated['challan_id'])
+            ->quotation->vat;
+
 
         $validated['payable'] = $total;
         $validated['paid'] = 0;
         $validated['due'] = $total;
-
+        $validated['att'] = $total * 0.05;
+        $validated['vat'] = $total * $vat/100;
+        $validated['delivery_cost'] = 0;
+        $validated['buying_price'] = 0;
+        $validated['profit'] = $total - $validated['att'] - $validated['vat'];
         $bill = Bill::create($validated);
 
         return redirect()->route('bills.show', $bill->id)->with('success', 'Bill created successfully.');
@@ -118,6 +125,12 @@ class BillController extends Controller
 
         if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
+        }
+
+        if (Auth::user()->hasRole('admin')) {
+            $validated['buying_price'] = $request->buying_price;
+            $validated['delivery_cost'] = $request->delivery_cost;
+            $validated['profit'] = $bill->payable - $request->buying_price - $request->delivery_cost - $bill->vat - $bill->att;
         }
 
         $bill->update($validated);

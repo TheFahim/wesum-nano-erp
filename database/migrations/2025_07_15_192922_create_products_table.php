@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('specs')->nullable();
             $table->string('unit');
             $table->double('price');
-            $table->double('buying_price')->nullable();
+            // $table->double('buying_price')->nullable();
             $table->integer('quantity');
             $table->double('amount');
             $table->string('remarks')->nullable();

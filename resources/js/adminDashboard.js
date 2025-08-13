@@ -1,25 +1,67 @@
 import Alpine from 'alpinejs';
 import ApexCharts from 'apexcharts';
+import { DateRangePicker } from 'flowbite-datepicker';
 
 
 document.addEventListener('alpine:init', () => {
     Alpine.data('topSummery', () => ({
-        init() {
-            const api = '/dashboard/api/top-summary';
-            this.fetchTopSummary(api);
-        },
-
+        // --- Properties ---
         sellRevenue: 0,
         collectableBill: 0,
         buyingPriceLeft: 0,
         totalPaid: 0,
         totalDue: 0,
         totalExpense: 0,
-        fetchTopSummary(api) {
+        startDate: '',
+        endDate: '',
+        dateRangePicker: null,
+
+        // --- Methods ---
+        init() {
+            // Set default dates for the last 3 months
+            const today = new Date();
+            const threeMonthsAgo = new Date(new Date().setMonth(today.getMonth() - 2));
+
+            this.startDate = this.formatDate(new Date(threeMonthsAgo.getFullYear(), threeMonthsAgo.getMonth(), 1));
+            this.endDate = this.formatDate(new Date(today.getFullYear(), today.getMonth() + 1, 0));
+
+            // Initialize Flowbite DateRangePicker
+            const datepickerEl = document.getElementById('date-range-picker');
+            this.dateRangePicker = new DateRangePicker(datepickerEl, {
+                format: 'dd/mm/yyyy',
+            });
+
+            // Set the default values in the input fields
+            document.getElementById('datepicker-range-start').value = this.startDate;
+            document.getElementById('datepicker-range-end').value = this.endDate;
+
+            // Initial data fetch
+            this.fetchTopSummary(this.startDate, this.endDate);
+        },
+
+        handleSearch() {
+            const [start, end] = this.dateRangePicker.getDates('yyyy-mm-dd');
+            this.fetchTopSummary(start, end);
+        },
+
+        fetchTopSummary(startDate, endDate) {
+            let api = '/dashboard/api/top-summary';
+
+            // Ensure dates are in yyyy-mm-dd for the API
+            const formattedStartDate = this.toApiDate(startDate);
+            const formattedEndDate = this.toApiDate(endDate);
+
+            if (formattedStartDate && formattedEndDate) {
+                const params = new URLSearchParams({
+                    start: formattedStartDate,
+                    end: formattedEndDate,
+                });
+                api = `${api}?${params.toString()}`;
+            }
+
             fetch(api)
                 .then(response => response.json())
                 .then(data => {
-
                     this.sellRevenue = data.sellRevenue;
                     this.collectableBill = data.collectableBill;
                     this.buyingPriceLeft = data.buyingPriceWarning;
@@ -29,6 +71,24 @@ document.addEventListener('alpine:init', () => {
                 })
                 .catch(error => console.error('Error fetching top summary:', error));
         },
+
+        // --- Helper Functions ---
+        formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        },
+
+        toApiDate(dateString) {
+            if (!dateString) return null;
+            // Converts dd/mm/yyyy to yyyy-mm-dd
+            if (dateString.includes('/')) {
+                const parts = dateString.split('/');
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+            return dateString; // Assumes it's already in yyyy-mm-dd
+        }
     }));
 
     Alpine.data('expenseAdmin', () => ({
@@ -253,10 +313,9 @@ document.addEventListener('alpine:init', () => {
 
     Alpine.data('targetAdmin', () => ({
         isDropdownOpen: false,
-        chart: null,
+        chart: null, // Initialize chart as null
         year: new Date().getFullYear(),
         stats: { target: 0, achieved: 0, remaining: 0 },
-        // Filters relevant to a yearly target
         filters: [
             { label: 'This Year', value: 'this_year' },
             { label: 'Last Year', value: 'last_year' },
@@ -264,7 +323,7 @@ document.addEventListener('alpine:init', () => {
         selectedFilter: { label: 'This Year', value: 'this_year' },
 
         init() {
-            this.initChart();
+            // Just fetch the data. The chart will be created inside the fetch function.
             this.fetchTargetData();
         },
 
@@ -275,8 +334,15 @@ document.addEventListener('alpine:init', () => {
                 .then(data => {
                     this.year = data.year;
                     this.stats = data.stats;
-                    // Update the chart with the new data from the API
-                    this.chart.updateSeries([{ name: 'Actual', data: data.chartData }]);
+
+                    // Check if the chart has already been initialized
+                    if (this.chart) {
+                        // If it exists, just update it with the new data
+                        this.chart.updateSeries([{ name: 'Actual', data: data.chartData }]);
+                    } else {
+                        // If it doesn't exist (first run), initialize it with the fetched data
+                        this.initChart(data.chartData);
+                    }
                 })
                 .catch(error => console.error('Error fetching target data:', error));
         },
@@ -284,12 +350,14 @@ document.addEventListener('alpine:init', () => {
         selectFilter(filter) {
             this.selectedFilter = filter;
             this.isDropdownOpen = false;
+            // Fetching new data will now correctly update the existing chart
             this.fetchTargetData();
         },
 
-        initChart() {
+        initChart(chartData) {
             const options = {
-                series: [{ name: 'Actual', data: [] }],
+                // Pass the initial data directly into the series
+                series: [{ name: 'Actual', data: chartData }],
                 chart: {
                     height: 300,
                     type: 'bar',
@@ -302,8 +370,7 @@ document.addEventListener('alpine:init', () => {
                     formatter: function (val, opt) {
                         const goals = opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex]?.goals;
                         if (goals && goals.length) {
-                            // Format with K/M for brevity
-                            const format = n => (n >= 1000 ? (n / 1000).toFixed(0) + 'K' : n);
+                            const format = n => (n >= 1000000 ? (n / 1000000).toFixed(1) + 'M' : (n >= 1000 ? (n / 1000).toFixed(0) + 'K' : n));
                             return `${format(val)} / ${format(goals[0].value)}`;
                         }
                         return val;
@@ -325,13 +392,15 @@ document.addEventListener('alpine:init', () => {
                     }
                 }
             };
+            // Create the chart instance and store it
             this.chart = new ApexCharts(document.querySelector("#target-chart"), options);
+            // Finally, render the chart
             this.chart.render();
         },
 
         formatCurrency(value) {
             if (typeof value !== 'number') value = 0;
-            return value.toLocaleString('en-US'); // Using a simple number format for this one
+            return value.toLocaleString('en-US');
         }
     }));
 

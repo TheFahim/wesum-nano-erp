@@ -36,12 +36,12 @@
                                 <x-ui.svg.sort-column class="w-4 h-4 ms-1" />
                             </span>
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        {{-- <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
                                 Customer
                                 <x-ui.svg.sort-column class="w-4 h-4 ms-1" />
                             </span>
-                        </th>
+                        </th> --}}
                         <th scope="col" class="px-6 py-3">
                             <span class="flex items-center">
                                 Company
@@ -84,27 +84,12 @@
                             </td>
                             <th scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                @role('admin')
-                                    @if ($item->buying_left > 0)
-                                        <span
-                                            class="
-                                                inline-flex items-center justify-center
-                                                h-4 w-4
-                                                ml-2
-                                                rounded-full
-                                                bg-yellow-400
-                                                text-xs font-bold text-gray-800
-                                            ">
-                                            {{ $item->buying_left }}
-                                        </span>
-                                    @endif
-                                @endrole
                                 {{ $item->challan_no }}
                             </th>
-                            <td
+                            {{-- <td
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
                                 {{ $item->quotation->customer->customer_name }}
-                            </td>
+                            </td> --}}
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->quotation->customer->company_name }}
                             </td>

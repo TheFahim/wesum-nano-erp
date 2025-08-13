@@ -20,14 +20,6 @@ class ChallanController extends Controller
             $challans = Challan::with(['quotation', 'quotation.customer', 'quotation.products', 'bill'])->latest()->get();
 
 
-            $challans->each(function ($challan) {
-                $buyingLeftCount = 0;
-                if ($challan->quotation && $challan->quotation->products) {
-                    $buyingLeftCount = $challan->quotation->products->where('buying_price', null)->count();
-                }
-                $challan->buying_left = $buyingLeftCount;
-            });
-
         } else {
             $challans = Challan::with(['quotation', 'quotation.customer', 'bill'])
                 ->whereHas('quotation', function ($query) {
@@ -120,7 +112,6 @@ class ChallanController extends Controller
     {
         $challan->load(['quotation', 'quotation.customer', 'bill']);
 
-
         if (!Auth::user()->hasRole('admin') && $challan->quotation->user_id != Auth::id()) {
             abort(403, 'Unauthorized');
         }
@@ -162,7 +153,6 @@ class ChallanController extends Controller
 
         foreach ($validated['product'] as $productData) {
             Product::where('id', $productData['id'])->update([
-                'buying_price' => $productData['buying_price'] ?? null,
                 'remarks' => $productData['remarks'] ?? null,
             ]);
         }

@@ -20,6 +20,11 @@ return new class extends Migration
             $table->double('payable');
             $table->double('paid');
             $table->double('due');
+            $table->double('vat');
+            $table->double('att');
+            $table->double('delivery_cost');
+            $table->double('buying_price');
+            $table->double('profit');
             $table->timestamps();
         });
     }

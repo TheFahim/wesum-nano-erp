@@ -21,17 +21,62 @@
                 <div class="grid grid-cols-3 p-6">
                     <div>
 
-                        <x-ui.form.input
-                            name="bill_no"
-                            label="Bill No."
-                            placeholder="Ex. BILL-0001"
-                            class="w-full p-2 text-lg"
-                            value="{{ old('bill_no', $bill->bill_no) }}"
-                            required
-                        />
+                        <x-ui.form.input name="bill_no" label="Bill No." placeholder="Ex. BILL-0001"
+                            class="w-full p-2 text-lg" value="{{ old('bill_no', $bill->bill_no) }}" required />
                     </div>
                 </div>
             </x-ui.card>
+            @role('admin')
+                <x-ui.card heading="Cost">
+
+
+                    <div class="relative overflow-x-auto">
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">
+                                        P.O
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Total (P.O) ৳
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Buying Price ৳
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Delivery Cost ৳
+                                    </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                    <th scope="row"
+                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        {{ $bill->challan->po_no }}
+                                    </th>
+                                    <th scope="row"
+                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        {{ $bill->challan->quotation->total }}
+                                    </th>
+                                    <td class="px-6 py-4">
+                                        <x-ui.form.input name="buying_price" placeholder="Total Buying Price" type="number" step="0.01"
+                                            class="w-full p-2 text-lg" value="{{ old('buying_price', $bill->buying_price) }}"
+                                            required />
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <x-ui.form.input name="delivery_cost" placeholder="Delivery Cost" type="number" step="0.01"
+                                            class="w-full p-2 text-lg" value="{{ old('delivery_cost', $bill->delivery_cost) }}"
+                                            required />
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </x-ui.card>
+            @endrole
 
             <x-ui.card>
                 <button type="submit"

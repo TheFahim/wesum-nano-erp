@@ -13,82 +13,89 @@
     </x-dashboard.ui.bread-crumb>
 
     <div class="p-4">
-        <div x-data="topSummery" class="grid grid-cols-5 gap-4">
+        <x-ui.card>
+            <div x-data="topSummery" x-init="init" class="space-y-4">
 
-            <div class ='mx-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700'>
-
-                <h2
-                    class="bg-green-700 p-1.5 text-center text-xl font-extrabold leading-none tracking-tight md:text-xl text-white  border-b border-gray-200 dark:border-gray-700">
-                    Sell Revenue
-                </h2>
-
-                <div x-text="`${sellRevenue} ৳`"
-                    class="p-6 text-center text-2xl font-bold text-gray-900 dark:text-white">
-
-                </div>
-                <template x-if="buyingPriceLeft > 0">
-                    <div class="p-4 flex items-center text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
-                        role="alert">
-                        <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                        </svg>
-                        <span class="sr-only">Warning</span>
-                        <div>
-                            <span class="font-medium" x-text="`${buyingPriceLeft} Buying Price Left`"></span>
+                {{-- Date Range Picker and Search Button --}}
+                <div class="flex items-center justify-center space-x-4">
+                    <div id="date-range-picker" date-rangepicker datepicker-format="dd/mm/yyyy"
+                        class="flex items-center">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                </svg>
+                            </div>
+                            <input id="datepicker-range-start" name="start" type="text"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Select date start">
+                        </div>
+                        <span class="mx-4 text-gray-500">to</span>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                </svg>
+                            </div>
+                            <input id="datepicker-range-end" name="end" type="text"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Select date end">
                         </div>
                     </div>
-                </template>
-
-            </div>
-            <div class ='mx-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700'>
-
-                <h2 class="p-1.5 text-center text-xl font-extrabold leading-none tracking-tight md:text-xl text-white  border-b border-gray-200 dark:border-gray-700"
-                    style="background-color: rgb(227 160 8 / var(--tw-bg-opacity))">
-                    Expense
-                </h2>
-                <div x-text="`${totalExpense} ৳`"
-                    class="p-6 text-center text-2xl font-bold text-gray-900 dark:text-white"></div>
-
-
-            </div>
-            <div class="mx-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-
-                <h2
-                    class="bg-green-700 p-1.5 text-center text-xl font-extrabold leading-none tracking-tight md:text-xl text-white  border-b border-gray-200 dark:border-gray-700">
-                    Collectable Bill
-                </h2>
-                <div x-text="`${collectableBill} ৳`"
-                    class="p-6 text-center text-2xl font-bold text-gray-900 dark:text-white">
-
+                    <button @click="handleSearch" type="button"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                        Search
+                    </button>
                 </div>
 
+                {{-- Summary Cards --}}
+                <div class="grid grid-cols-4 gap-4">
+                    <div
+                        class="mx-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-700 dark:border-gray-700">
+                        <h2
+                            class="bg-green-700 p-1.5 text-center text-xl font-extrabold leading-none tracking-tight md:text-xl text-white border-b border-gray-200 dark:border-gray-700">
+                            Sell Revenue
+                        </h2>
+                        <div x-text="`${sellRevenue} ৳`"
+                            class="p-6 text-center text-2xl font-bold text-gray-900 dark:text-white"></div>
+                    </div>
 
+                    <div
+                        class="mx-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-700 dark:border-gray-700">
+                        <h2 class="p-1.5 text-center text-xl font-extrabold leading-none tracking-tight md:text-xl text-white border-b border-gray-200 dark:border-gray-700"
+                            style="background-color: rgb(227 160 8 / var(--tw-bg-opacity))">
+                            Expense
+                        </h2>
+                        <div x-text="`${totalExpense} ৳`"
+                            class="p-6 text-center text-2xl font-bold text-gray-900 dark:text-white"></div>
+                    </div>
 
-            </div>
-            <div class ='mx-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700'>
+                    <div
+                        class="mx-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-700 dark:border-gray-700">
+                        <h2
+                            class="bg-green-700 p-1.5 text-center text-xl font-extrabold leading-none tracking-tight md:text-xl text-white border-b border-gray-200 dark:border-gray-700">
+                            Received Bill
+                        </h2>
+                        <div x-text="`${totalPaid} ৳`"
+                            class="p-6 text-center text-2xl font-bold text-gray-900 dark:text-white"></div>
+                    </div>
 
-                <h2
-                    class="bg-green-700 p-1.5 text-center text-xl font-extrabold leading-none tracking-tight md:text-xl text-white  border-b border-gray-200 dark:border-gray-700">
-                    Received Bill
-                </h2>
-
-                <div x-text="`${totalPaid} ৳`" class="p-6 text-center text-2xl font-bold text-gray-900 dark:text-white">
-
+                    <div
+                        class="mx-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-700 dark:border-gray-700">
+                        <h2 class="p-1.5 text-center text-xl font-extrabold leading-none tracking-tight md:text-xl text-white border-b border-gray-200 dark:border-gray-700"
+                            style="background-color: rgb(227 160 8 / var(--tw-bg-opacity))">
+                            Due
+                        </h2>
+                        <div x-text="`${totalDue} ৳`"
+                            class="p-6 text-center text-2xl font-bold text-gray-900 dark:text-white"></div>
+                    </div>
                 </div>
             </div>
-            <div class ='mx-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700'>
-
-                <h2 class="p-1.5 text-center text-xl font-extrabold leading-none tracking-tight md:text-xl text-white  border-b border-gray-200 dark:border-gray-700"
-                    style="background-color: rgb(227 160 8 / var(--tw-bg-opacity))">
-                    Due
-                </h2>
-                <div x-text="`${totalDue} ৳`" class="p-6 text-center text-2xl font-bold text-gray-900 dark:text-white">
-                </div>
-            </div>
-
-        </div>
+        </x-ui.card>
 
         <div class="grid grid-cols-3 mx-2 gap-4 mt-4">
 
@@ -221,7 +228,7 @@
                 </div>
             </div>
 
-            <div x-data="targetAdmin"
+            <div x-data="targetAdmin" x-init="init()"
                 class="max-w-sm w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6 flex flex-col min-h-[250px]">
 
                 <!-- Main Content -->

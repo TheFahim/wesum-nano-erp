@@ -7,7 +7,6 @@ use App\Models\Challan;
 use App\Models\Expense;
 use App\Models\Product;
 use App\Models\Quotation;
-use App\Models\SaleTarget;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -48,33 +47,33 @@ class DashboradController extends Controller
         return view('dashboard.admin');
     }
 
-    public function getTopSummary()
+    public function getTopSummary(Request $request)
     {
+        // Set the default date range to the last 3 months if not provided
+        $startDate = $request->start ? Carbon::parse($request->start)->startOfDay() : Carbon::now()->subMonths(2)->startOfMonth();
+        $endDate = $request->end ? Carbon::parse($request->end)->endOfDay() : Carbon::now()->endOfMonth();
 
-        $sell = Bill::sum('payable');
+        $sell = Bill::whereBetween('created_at', [$startDate, $endDate])->sum('payable');
 
-        $received = Bill::sum('paid');
+        $received = Bill::whereBetween('created_at', [$startDate, $endDate])->sum('paid');
 
-        $due = Bill::sum('due');
+        $due = Bill::whereBetween('created_at', [$startDate, $endDate])->sum('due');
 
-        $buyingPrice = Bill::whereHas('challan.quotation.products')
+        $buyingPrice = Bill::whereBetween('created_at', [$startDate, $endDate])
+                                ->whereHas('challan.quotation.products')
                                 ->with('challan.quotation.products')
                                 ->get()
                                 ->pluck('challan.quotation.products')
                                 ->flatten()
                                 ->sum('buying_price');
 
-        // return
-
-        //count all the product with no buying price
-        $productsWithoutBuyingPrice = Product::whereHas('quotation.challan.bill', function ($query) {
-            $query->whereNull('buying_price');
+        // Count all the products with no buying price within the date range
+        $productsWithoutBuyingPrice = Product::whereHas('quotation.challan.bill', function ($query) use ($startDate, $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate])->whereNull('buying_price');
         })->count();
 
 
-        $totalExpense = Expense::sum('amount');
-
-
+        $totalExpense = Expense::whereBetween('created_at', [$startDate, $endDate])->sum('amount');
 
         $sellRevenue = $sell - $buyingPrice;
 
@@ -87,7 +86,6 @@ class DashboradController extends Controller
             'totalDue' => $this->formatBanglaNumber($due),
             'totalExpense' => $this->formatBanglaNumber($totalExpense),
         ]);
-
     }
 
     public function getExpenseData(Request $request)
@@ -142,7 +140,7 @@ class DashboradController extends Controller
                 $usersData[$detail->user_name] = [
                     'user_name' => $detail->user_name,
                     'total_expense' => 0,
-                    'type' => new \stdClass, // Use stdClass for an empty JSON object {}
+                    'type' => new \stdClass(), // Use stdClass for an empty JSON object {}
                 ];
             }
 

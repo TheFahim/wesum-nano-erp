@@ -3,62 +3,108 @@ import ApexCharts from "apexcharts";
 document.addEventListener('alpine:init', () => {
     Alpine.data('expenseChartComponent', () => ({
         // --- STATE ---
-        chart: null,
-        buttonText: 'This Month', // Initial button text
-        isDropdownOpen: false,   // State to control the dropdown visibility
+        chart: null, // This will hold the ApexCharts instance.
+        buttonText: 'This Month',
+        isDropdownOpen: false,
 
         // --- LIFECYCLE HOOK ---
         init() {
-            // Fetch the data for the default period when the component loads.
-            // Using a timeout to ensure the DOM is ready for ApexCharts.
+            // $nextTick ensures we run this after Alpine has initialized the DOM.
             this.$nextTick(() => {
-                this.fetchAndRenderChart('this_month');
+                // 1. Create the empty chart shell first.
+                this.createChart();
+                // 2. Fetch the initial data to populate the chart.
+                this.fetchAndUpdateChart('this_month');
             });
         },
 
         // --- METHODS ---
 
-        // Called by the dropdown links to update the chart
-        selectPeriod(period, text) {
-            this.buttonText = text; // Update the button text.
-            this.fetchAndRenderChart(period); // Fetch new data and update the chart.
-            // The dropdown is closed via `@click` in the HTML, simplifying this function.
+        /**
+         * Creates the initial chart instance. This is called only once.
+         */
+        createChart() {
+            const chartEl = document.getElementById('expense-chart');
+
+            if (!chartEl || typeof ApexCharts === 'undefined') {
+                console.error("CRITICAL: Chart container #expense-chart or ApexCharts library not found.");
+                if (chartEl) chartEl.innerHTML = '<p class="text-red-500 text-center py-12">Charting library failed to load.</p>';
+                return;
+            }
+
+            // Initial options for the empty chart.
+            const initialOptions = {
+                series: [],
+                chart: {
+                    height: 320,
+                    width: "100%",
+                    type: "donut",
+                },
+                noData: {
+                    text: 'Initializing Chart...' // A temporary message.
+                },
+                legend: {
+                    position: "bottom"
+                }
+            };
+
+            this.chart = new ApexCharts(chartEl, initialOptions);
+            this.chart.render();
         },
 
-        // Fetches data and renders/updates the chart
-        async fetchAndRenderChart(period) {
-            // Show a loading message while fetching
-            this.$refs.chartContainer.innerHTML = '<p class="text-center text-gray-500 py-12">Loading Chart...</p>';
+        /**
+         * Handles period selection from the dropdown.
+         */
+        selectPeriod(period, text) {
+            this.buttonText = text;
+            this.isDropdownOpen = false;
+            this.fetchAndUpdateChart(period);
+        },
+
+        /**
+         * The CORE LOGIC: Fetches data and updates the chart.
+         */
+        async fetchAndUpdateChart(period) {
+            // Guard clause: If the chart object doesn't exist, do nothing.
+            if (!this.chart) {
+                console.error("Cannot update: Chart instance is not available.");
+                return;
+            }
+
+            // THIS IS THE FIX: Manually set a loading state before the fetch.
+            // We clear the series and show a "Loading..." message.
+            this.chart.updateOptions({
+                series: [],
+                labels: [],
+                noData: { text: 'Loading data...' }
+            });
 
             try {
-                // Use a proper URL helper in a real app, e.g., using Ziggy or a data attribute
+                // Fetch the data from the server.
                 const response = await fetch(`/dashboard/expenses-chart-data?period=${period}`);
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
                 }
                 const data = await response.json();
 
-                // Clear loading message before rendering
-                this.$refs.chartContainer.innerHTML = '';
-
-                const options = this.getChartOptions(data);
-
-                if (this.chart) {
-                    // If chart exists, update it
-                    this.chart.updateOptions(options);
-                } else {
-                    // Otherwise, create a new chart instance
-                    this.chart = new ApexCharts(this.$refs.chartContainer, options);
-                    this.chart.render();
-                }
+                // If the fetch is successful, update the chart with the real data.
+                const finalOptions = this.getChartOptions(data);
+                this.chart.updateOptions(finalOptions);
 
             } catch (error) {
-                console.error('Failed to fetch or render chart data:', error);
-                this.$refs.chartContainer.innerHTML = '<p class="text-red-500 text-center py-12">Failed to load chart data.</p>';
+                console.error('Failed to fetch or update chart data:', error);
+                // If the fetch fails, update the chart to show an error message.
+                this.chart.updateOptions({
+                    series: [],
+                    labels: [],
+                    noData: { text: 'Failed to load chart data.' }
+                });
             }
         },
 
-        // Helper to generate ApexCharts options object
+        /**
+         * Helper function to build the complete ApexCharts options object from server data.
+         */
         getChartOptions(data) {
             return {
                 series: data.series || [],
@@ -71,6 +117,7 @@ document.addEventListener('alpine:init', () => {
                 },
                 stroke: {
                     colors: ["transparent"],
+                    width: 2,
                 },
                 plotOptions: {
                     pie: {
@@ -84,7 +131,6 @@ document.addEventListener('alpine:init', () => {
                                     label: "Total Expenses",
                                     fontFamily: "Inter, sans-serif",
                                     color: "#64748B",
-                                    // Use Unicode Taka sign directly
                                     formatter: () => `${data.total} ৳`
                                 },
                                 value: {
@@ -106,9 +152,11 @@ document.addEventListener('alpine:init', () => {
                     fontFamily: "Inter, sans-serif",
                     labels: { colors: '#64748B', useSeriesColors: false },
                 },
+                // We no longer need the noData property here, as it's handled in the fetch function
             };
         }
     }));
+
 
     Alpine.data('myQuotationChart', () => ({
         chart: null,

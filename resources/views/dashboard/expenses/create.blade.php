@@ -47,18 +47,22 @@
                                     <div class="grid items-center gap-4" style="grid-template-columns: repeat(10, minmax(0, 1fr));">
                                         <!-- Dropdown Select -->
                                         <div class="col-span-2">
-
                                             <x-ui.form.simple-select x-model="row.type"
-                                                x-bind:name="'expense[' + index + '][type]'"
+                                                x-bind:name="row.type === 'others' ? '' : 'expense[' + index + '][type]'"
                                                 class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100">
-                                                <option value="transport" x-bind:selected="row.type === 'transport'">
-                                                    Transport</option>
-                                                <option value="food" x-bind:selected="row.type === 'food'">Food</option>
-                                                <option value="phone" x-bind:selected="row.type === 'phone'">
-                                                    Phone</option>
-                                                <option value="others" x-bind:selected="row.type === 'others'">
-                                                    Others</option>
+                                                <option value="transport">Transport</option>
+                                                <option value="food">Food</option>
+                                                <option value="phone">Phone</option>
+                                                <option value="others">Others</option>
                                             </x-ui.form.simple-select>
+
+                                            <div x-show="row.type === 'others'" class="mt-2">
+                                                <x-ui.form.input x-bind:name="'expense[' + index + '][type]'"
+                                                      x-model="row.other_type"
+                                                      type="text"
+                                                      placeholder="Specify Other Type"
+                                                      class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100" required />
+                                            </div>
                                         </div>
 
                                         <!-- Input Field -->
@@ -70,11 +74,9 @@
                                         </div>
 
                                         <div class=" col-span-2">
-
                                             <input
                                                 class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                                                id="file_input" x-model="row.voucher" type="file" x-bind:name="'expense[' + index + '][voucher]'">
-
+                                                id="file_input" type="file" x-bind:name="'expense[' + index + '][voucher]'">
                                         </div>
 
                                         <div class=" col-span-3">
@@ -116,13 +118,14 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('clonableInputs', () => ({
-            rows: {!! json_encode(old('expense', [['type' => '', 'amount' => '', 'voucher' => '', 'remarks' => '']])) !!},
+            rows: {!! json_encode(old('expense', [['type' => '', 'amount' => '', 'voucher' => '', 'remarks' => '', 'other_type' => '']])) !!},
             addRow() {
                 this.rows.push({
                     type: '',
                     amount: '',
                     voucher: '',
-                    remarks: ''
+                    remarks: '',
+                    other_type: ''
                 });
             },
 
