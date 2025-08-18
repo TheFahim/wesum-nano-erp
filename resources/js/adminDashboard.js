@@ -9,6 +9,7 @@ document.addEventListener('alpine:init', () => {
         sellRevenue: 0,
         collectableBill: 0,
         buyingPriceLeft: 0,
+        buyingPrice: 0,
         totalPaid: 0,
         totalDue: 0,
         totalExpense: 0,
@@ -65,9 +66,12 @@ document.addEventListener('alpine:init', () => {
                     this.sellRevenue = data.sellRevenue;
                     this.collectableBill = data.collectableBill;
                     this.buyingPriceLeft = data.buyingPriceWarning;
+                    this.buyingPrice = data.buyingPrice;
                     this.totalPaid = data.totalPaid;
                     this.totalDue = data.totalDue;
                     this.totalExpense = data.totalExpense;
+
+
                 })
                 .catch(error => console.error('Error fetching top summary:', error));
         },
@@ -90,6 +94,74 @@ document.addEventListener('alpine:init', () => {
             return dateString; // Assumes it's already in yyyy-mm-dd
         }
     }));
+
+    // This is the new component for profit calculation
+    Alpine.data('profitCalculator', () => ({
+        // --- Properties ---
+        totalReceived: 0,
+        totalExpense: 0,
+        totalPurchasePrice: 0,
+        profit: 0,
+        loading: false,
+        resultsVisible: false,
+        dateRangePicker: null,
+
+        // --- Methods ---
+        init() {
+            // **THE FIX IS HERE:** We are now getting the element with the unique ID
+            const datepickerEl = document.getElementById('date-range-picker-profit');
+
+            this.dateRangePicker = new DateRangePicker(datepickerEl, {
+                format: 'dd/mm/yyyy',
+            });
+
+            // Set default dates in the input fields for user convenience
+            const today = new Date();
+            const threeMonthsAgo = new Date(new Date().setMonth(today.getMonth() - 2));
+            const startDate = new Date(threeMonthsAgo.getFullYear(), threeMonthsAgo.getMonth(), 1);
+            const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+            // Use the datepicker's API to set the dates
+            this.dateRangePicker.setDates(startDate, endDate);
+        },
+
+        handleSearch() {
+            // ... the rest of your handleSearch function remains the same ...
+            this.loading = true;
+            this.resultsVisible = false;
+
+            const [startDate, endDate] = this.dateRangePicker.getDates('yyyy-mm-dd');
+
+            if (!startDate || !endDate) {
+                alert('Please select a valid date range.');
+                this.loading = false;
+                return;
+            }
+
+            let api = `/dashboard/api/profit-summary?start=${startDate}&end=${endDate}`;
+
+            fetch(api)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    this.totalReceived = data.totalReceived;
+                    this.totalExpense = data.totalExpense;
+                    this.totalPurchasePrice = data.totalPurchasePrice;
+                    this.profit = data.profit;
+                    this.resultsVisible = true;
+                })
+                .catch(error => {
+                    console.error('Error fetching profit summary:', error);
+                    alert('Failed to fetch profit data. Please check the console.');
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
+    }));
+
 
     Alpine.data('expenseAdmin', () => ({
         isDropdownOpen: false,

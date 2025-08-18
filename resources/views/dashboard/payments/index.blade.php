@@ -111,7 +111,7 @@
                             {{-- FIX 1: Added an @else to ensure the column is always rendered --}}
                             @if ($item->receivedBills->last()->received_date ?? false)
                                 <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    {{ date('d/m/Y', strtotime($item->receivedBills->last()->created_at)) }}
+                                    {{ date('d/m/Y', strtotime($item->receivedBills->last()->received_date)) }}
                                 </td>
                             @else
                                 <td class="px-6 py-4"></td> {{-- Render empty cell if no date --}}

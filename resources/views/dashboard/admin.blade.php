@@ -18,7 +18,7 @@
 
                 {{-- Date Range Picker and Search Button --}}
                 <div class="flex items-center justify-center space-x-4">
-                    <div id="date-range-picker" date-rangepicker datepicker-format="dd/mm/yyyy"
+                    <div id="date-range-picker"
                         class="flex items-center">
                         <div class="relative">
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -53,7 +53,7 @@
                 </div>
 
                 {{-- Summary Cards --}}
-                <div class="grid grid-cols-4 gap-4">
+                <div class="grid grid-cols-5 gap-4">
                     <div
                         class="mx-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-700 dark:border-gray-700">
                         <h2
@@ -77,6 +77,31 @@
                     <div
                         class="mx-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-700 dark:border-gray-700">
                         <h2
+                            class="bg-blue-700 p-1.5 text-center text-xl font-extrabold leading-none tracking-tight md:text-xl text-white border-b border-gray-200 dark:border-gray-700">
+                            Purchase Price
+                        </h2>
+                        <div x-text="`${buyingPrice} ৳`"
+                            class="p-6 text-center text-2xl font-bold text-gray-900 dark:text-white"></div>
+
+                        <template x-if="buyingPriceLeft > 0">
+                            <div class="p-4 flex items-center text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-700 dark:text-yellow-300"
+                                role="alert">
+                                <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                                </svg>
+                                <span class="sr-only">Warning</span>
+                                <div>
+                                    <span class="font-medium" x-text="`${buyingPriceLeft} Buying Price Left`"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div
+                        class="mx-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-700 dark:border-gray-700">
+                        <h2
                             class="bg-green-700 p-1.5 text-center text-xl font-extrabold leading-none tracking-tight md:text-xl text-white border-b border-gray-200 dark:border-gray-700">
                             Received Bill
                         </h2>
@@ -92,6 +117,71 @@
                         </h2>
                         <div x-text="`${totalDue} ৳`"
                             class="p-6 text-center text-2xl font-bold text-gray-900 dark:text-white"></div>
+                    </div>
+                </div>
+            </div>
+        </x-ui.card>
+
+        <x-ui.card heading="Profit Calculation" class="my-5">
+            <div x-data="profitCalculator" x-init="init" class="space-y-4">
+
+                {{-- Date Range Picker and Search Button with UNIQUE IDs --}}
+                <div class="flex items-center justify-center space-x-4">
+                    {{-- ID changed to be unique --}}
+                    <div id="date-range-picker-profit"
+                        class="flex items-center">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                </svg>
+                            </div>
+                            {{-- ID changed to be unique --}}
+                            <input id="datepicker-range-start-profit" name="start" type="text"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Select date start">
+                        </div>
+                        <span class="mx-4 text-gray-500">to</span>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                </svg>
+                            </div>
+                            {{-- ID changed to be unique --}}
+                            <input id="datepicker-range-end-profit" name="end" type="text"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Select date end">
+                        </div>
+                    </div>
+                    <button @click="handleSearch" type="button" :disabled="loading"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 disabled:opacity-50">
+                        <span x-show="!loading">Search</span>
+                        <span x-show="loading">Searching...</span>
+                    </button>
+                </div>
+
+                {{-- Profit Calculation Results --}}
+                <div x-show="resultsVisible" class="grid grid-cols-4 gap-4 pt-4">
+                    <div class="p-4 text-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-500 dark:text-gray-400">Bill Received</h3>
+                        <p x-text="`${totalReceived} ৳`" class="text-2xl font-bold text-green-600"></p>
+                    </div>
+                    <div class="p-4 text-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-500 dark:text-gray-400">Purchase Price</h3>
+                        <p x-text="`${totalPurchasePrice} ৳`" class="text-2xl font-bold text-red-500"></p>
+                    </div>
+                    <div class="p-4 text-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-500 dark:text-gray-400">Expense</h3>
+                        <p x-text="`${totalExpense} ৳`" class="text-2xl font-bold text-red-500"></p>
+                    </div>
+                    <div class="p-4 text-center bg-gray-200 dark:bg-gray-700 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-600 dark:text-gray-300">Net Profit</h3>
+                        <p x-text="`${profit} ৳`" class="text-2xl font-bold text-blue-600"></p>
                     </div>
                 </div>
             </div>

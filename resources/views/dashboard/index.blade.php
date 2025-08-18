@@ -14,7 +14,7 @@
 
     <div class="grid grid-cols-3 gap-4">
 
-        <x-ui.card heading="Payement Summary">
+        <x-ui.card heading="Due Summary">
 
             <div class="max-w-sm w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
                 <div class="flex justify-between border-gray-200 border-b dark:border-gray-700 pb-3">

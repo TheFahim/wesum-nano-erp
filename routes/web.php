@@ -39,6 +39,7 @@ Route::middleware(['auth',CheckUserIsActive::class])
         Route::get('/api/target-chart-data', [SaleTargetController::class, 'getTargetChartData'])->name('targets.chart.data');
 
         Route::get('/api/top-summary', [DashboradController::class, 'getTopSummary'])->name('dashboard.top.summary');
+        Route::get('/api/profit-summary', [DashboradController::class, 'getProfitSummary'])->name('dashboard.profit.summary');
 
         Route::get('/api/expense', [DashboradController::class, 'getExpenseData'])->name('dashboard.expense.data');
 

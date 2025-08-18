@@ -57,7 +57,7 @@
                                 </x-ui.form.simple-select>
 
                                 {{-- This input only appears if "Others" is selected --}}
-                                <div x-show="selectedType === 'others'" class="mt-2">
+                                <template x-if="row.type === 'others'">
                                     <x-ui.form.input
                                         label="Please Specify"
                                         {{-- This input's name is 'type', so its value is submitted as the expense type --}}
@@ -66,7 +66,7 @@
                                         type="text"
                                         placeholder="Specify other type"
                                         required />
-                                </div>
+                                </template>
                             </div>
 
                             <div class="relative max-w-sm">

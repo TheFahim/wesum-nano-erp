@@ -44,11 +44,16 @@
 
                                 <!-- Input Rows -->
                                 <template x-for="(row, index) in rows" :key="index">
-                                    <div class="grid items-center gap-4" style="grid-template-columns: repeat(10, minmax(0, 1fr));">
+                                    <div class="grid items-center gap-4"
+                                        style="grid-template-columns: repeat(10, minmax(0, 1fr));">
                                         <!-- Dropdown Select -->
                                         <div class="col-span-2">
+                                            {{--
+                    When 'others' is selected, the name attribute is removed (by binding to null).
+                    This prevents it from being submitted and clashing with the input below.
+                --}}
                                             <x-ui.form.simple-select x-model="row.type"
-                                                x-bind:name="row.type === 'others' ? '' : 'expense[' + index + '][type]'"
+                                                x-bind:name="row.type === 'others' ? null : 'expense[' + index + '][type]'"
                                                 class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100">
                                                 <option value="transport">Transport</option>
                                                 <option value="food">Food</option>
@@ -56,33 +61,35 @@
                                                 <option value="others">Others</option>
                                             </x-ui.form.simple-select>
 
-                                            <div x-show="row.type === 'others'" class="mt-2">
-                                                <x-ui.form.input x-bind:name="'expense[' + index + '][type]'"
-                                                      x-model="row.other_type"
-                                                      type="text"
-                                                      placeholder="Specify Other Type"
-                                                      class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100" required />
-                                            </div>
+                                            <template x-if="row.type === 'others'">
+                                                <div class="mt-2">
+                                                    <x-ui.form.input x-bind:name="'expense[' + index + '][type]'"
+                                                        x-model="row.other_type" type="text"
+                                                        placeholder="Specify Other Type"
+                                                        class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100"
+                                                        required />
+                                                </div>
+                                            </template>
                                         </div>
 
                                         <!-- Input Field -->
                                         <div class=" col-span-2">
                                             <x-ui.form.input x-bind:name="'expense[' + index + '][amount]'"
-                                                x-model="row.amount" type="number"
-                                                placeholder="Amount (Tk)"
-                                                class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100" required />
+                                                x-model="row.amount" type="number" placeholder="Amount (Tk)"
+                                                class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100"
+                                                required />
                                         </div>
 
                                         <div class=" col-span-2">
                                             <input
                                                 class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                                                id="file_input" type="file" x-bind:name="'expense[' + index + '][voucher]'">
+                                                id="file_input" type="file"
+                                                x-bind:name="'expense[' + index + '][voucher]'">
                                         </div>
 
                                         <div class=" col-span-3">
                                             <x-ui.form.input x-bind:name="'expense[' + index + '][remarks]'"
-                                                x-model="row.remarks" type="text"
-                                                placeholder="Remarks"
+                                                x-model="row.remarks" type="text" placeholder="Remarks"
                                                 class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100" />
                                         </div>
 
@@ -97,8 +104,6 @@
                                         </div>
                                     </div>
                                 </template>
-
-
                             </div>
 
                         </div>
@@ -118,7 +123,9 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('clonableInputs', () => ({
-            rows: {!! json_encode(old('expense', [['type' => '', 'amount' => '', 'voucher' => '', 'remarks' => '', 'other_type' => '']])) !!},
+            rows: {!! json_encode(
+                old('expense', [['type' => '', 'amount' => '', 'voucher' => '', 'remarks' => '', 'other_type' => '']]),
+            ) !!},
             addRow() {
                 this.rows.push({
                     type: '',

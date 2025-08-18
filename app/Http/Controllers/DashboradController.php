@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Bill;
 use App\Models\Challan;
 use App\Models\Expense;
-use App\Models\Product;
 use App\Models\Quotation;
+use App\Models\ReceivedBill;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -47,6 +47,46 @@ class DashboradController extends Controller
         return view('dashboard.admin');
     }
 
+    public function getProfitSummary(Request $request)
+    {
+        // Validate that start and end dates are present
+        $request->validate([
+            'start' => 'required|date_format:Y-m-d',
+            'end' => 'required|date_format:Y-m-d',
+        ]);
+
+        $startDate = Carbon::parse($request->start)->startOfDay();
+        $endDate = Carbon::parse($request->end)->endOfDay();
+
+        // 1. Get ReceivedBills for fully paid bills within the date range
+        $receivedBills = ReceivedBill::whereBetween('received_date', [$startDate, $endDate])
+            ->whereHas('bill', function ($query) {
+                $query->where('paid', '<>', 0);
+            })
+            ->with('bill') // Eager load the bill to get buying_price efficiently
+            ->get();
+
+        // 2. Calculate total received amount from these bills
+        $totalReceived = $receivedBills->sum('amount');
+
+        // 3. Calculate total purchase price from the related bills
+        $totalPurchasePrice = $receivedBills->sum('bill.buying_price');
+
+        // 4. Calculate total expense within the same date range
+        $totalExpense = Expense::whereBetween('date', [$startDate, $endDate])->sum('amount');
+
+        // 5. Calculate the final profit
+        $profit = $totalReceived - $totalExpense - $totalPurchasePrice;
+
+        // Return the results as JSON
+        return response()->json([
+            'totalReceived' => $this->formatBanglaNumber($totalReceived),
+            'totalExpense' => $this->formatBanglaNumber($totalExpense),
+            'totalPurchasePrice' => $this->formatBanglaNumber($totalPurchasePrice),
+            'profit' => $this->formatBanglaNumber($profit),
+        ]);
+    }
+
     public function getTopSummary(Request $request)
     {
         // Set the default date range to the last 3 months if not provided
@@ -59,28 +99,20 @@ class DashboradController extends Controller
 
         $due = Bill::whereBetween('created_at', [$startDate, $endDate])->sum('due');
 
-        $buyingPrice = Bill::whereBetween('created_at', [$startDate, $endDate])
-                                ->whereHas('challan.quotation.products')
-                                ->with('challan.quotation.products')
-                                ->get()
-                                ->pluck('challan.quotation.products')
-                                ->flatten()
-                                ->sum('buying_price');
+        $buyingPrice = Bill::whereBetween('created_at', [$startDate, $endDate])->sum('buying_price');
 
         // Count all the products with no buying price within the date range
-        $productsWithoutBuyingPrice = Product::whereHas('quotation.challan.bill', function ($query) use ($startDate, $endDate) {
-            $query->whereBetween('created_at', [$startDate, $endDate])->whereNull('buying_price');
-        })->count();
+        $productsWithoutBuyingPrice = Bill::where('buying_price', '0')->count();
 
 
         $totalExpense = Expense::whereBetween('created_at', [$startDate, $endDate])->sum('amount');
 
-        $sellRevenue = $sell - $buyingPrice;
 
 
         return response()->json([
-            'sellRevenue' => $this->formatBanglaNumber($sellRevenue),
-            'buyingPriceWarning' => $this->formatBanglaNumber($productsWithoutBuyingPrice),
+            'sellRevenue' => $this->formatBanglaNumber($sell),
+            'buyingPriceWarning' => $productsWithoutBuyingPrice,
+            'buyingPrice' => $this->formatBanglaNumber($buyingPrice),
             'collectableBill' => $this->formatBanglaNumber($sell),
             'totalPaid' => $this->formatBanglaNumber($received),
             'totalDue' => $this->formatBanglaNumber($due),
