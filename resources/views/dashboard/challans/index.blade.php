@@ -48,6 +48,12 @@
                                 <x-ui.svg.sort-column class="w-4 h-4 ms-1" />
                             </span>
                         </th>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="flex items-center">
+                                Products
+                                <x-ui.svg.sort-column class="w-4 h-4 ms-1" />
+                            </span>
+                        </th>
                         <th scope="col" class="px-6 py-3 text-right">
                             Total
                         </th>
@@ -91,8 +97,23 @@
                                 {{ $item->quotation->customer->customer_name }}
                             </td> --}}
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $item->quotation->customer->company_name }}
+                                {{-- {{ $item->quotation->customer->company_name }} --}}
+                                {{ strlen($item->quotation->customer->company_name) > 15 ? substr($item->quotation->customer->company_name, 0, 15) . '...' : $item->quotation->customer->company_name }}
                             </td>
+
+                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                @php
+                                    $products = $item->quotation->products;
+                                    $maxToShow = 2;
+                                @endphp
+                                @foreach ($products->take($maxToShow) as $index => $product)
+                                    {{ $index + 1 }}. {{ $product->name }}<br>
+                                @endforeach
+                                @if ($products->count() > $maxToShow)
+                                    ...
+                                @endif
+                            </td>
+
                             <td
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">
                                 {{ $item->quotation->total }} &#2547;

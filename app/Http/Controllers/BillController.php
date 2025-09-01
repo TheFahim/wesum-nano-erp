@@ -30,6 +30,8 @@ class BillController extends Controller
                 ->get();
         }
 
+        $bills->load('challan.quotation.products');
+
 
         return view('dashboard.bills.index', compact('bills'));
     }
@@ -69,6 +71,10 @@ class BillController extends Controller
 
         $total = Challan::find($validated['challan_id'])
             ->quotation->total;
+
+        $subtotal = Challan::find($validated['challan_id'])
+            ->quotation->subtotal;
+
         $vat = Challan::find($validated['challan_id'])
             ->quotation->vat;
 
@@ -76,8 +82,8 @@ class BillController extends Controller
         $validated['payable'] = $total;
         $validated['paid'] = 0;
         $validated['due'] = $total;
-        $validated['att'] = $total * 0.05;
-        $validated['vat'] = $total * $vat/100;
+        $validated['att'] = $subtotal * 0.05;
+        $validated['vat'] = $subtotal * $vat/100;
         $validated['delivery_cost'] = 0;
         $validated['buying_price'] = 0;
         $validated['profit'] = $total - $validated['att'] - $validated['vat'];
@@ -143,7 +149,13 @@ class BillController extends Controller
      */
     public function destroy(Bill $bill)
     {
-        //
+        if (!Auth::user()->hasRole('admin') && $bill->challan->quotation->user_id != Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $bill->delete();
+
+        return redirect()->route('bills.index')->with('success', 'Bill deleted successfully.');
     }
 
     public function search(Request $request)

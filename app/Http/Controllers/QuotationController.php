@@ -25,7 +25,9 @@ class QuotationController extends Controller
             $quotations = Quotation::where('user_id', Auth::id())->with(['customer', 'user'])->latest()->get();
         }
 
-        $quotations->load('challan');
+        $quotations->load('challan', 'products');
+
+        // return $quotations;
 
         return view('dashboard.qoutations.index', compact('quotations'));
     }

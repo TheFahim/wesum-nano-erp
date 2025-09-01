@@ -62,6 +62,11 @@
             tr {
                 page-break-inside: avoid;
             }
+
+            .avoid-break {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
         }
     </style>
 
@@ -245,40 +250,42 @@
                                 </table>
                             </section>
 
-                            <section class="flex mt-8 text-sm place-content-between">
-                                <div class="w-1/3 text-center place-content-end">
-                                    <img src="{{ asset('assets/images/wesum-sign.jpeg') }}" class="h- mx-auto">
-                                    <div class="border-t border-gray-600 mt-1">
-                                        <p class="text-sm font-semibold">Authorized Signature</p>
+                            <section class="avoid-break">
+                                <section class="flex mt-8 text-sm place-content-between">
+                                    <div class="w-1/3 text-center place-content-end">
+                                        <img src="{{ asset('assets/images/wesum-sign.jpeg') }}" class="h- mx-auto">
+                                        <div class="border-t border-gray-600 mt-1">
+                                            <p class="text-sm font-semibold">Authorized Signature</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="w-1/3 justify-end">
-                                    <div class="grid grid-cols-2">
-                                        <div class="font-bold p-2">SUBTOTAL</div>
-                                        <div class="text-right p-2 font-semibold">
-                                            {{ number_format($quotation->subtotal, 2) }} &#2547;</div>
-                                        <div class="font-bold p-2">VAT ({{ (int) $quotation->vat }}%)</div>
-                                        <div class="text-right p-2 font-semibold">
-                                            {{ number_format($quotation->subtotal * ($quotation->vat / 100), 2) }}
-                                            &#2547;</div>
-                                        <div class="font-bold p-2 bg-gray-200">GRAND TOTAL</div>
-                                        <div class="text-right p-2 bg-gray-200 font-bold">
-                                            {{ number_format($quotation->total, 2) }} &#2547;</div>
+                                    <div class="w-1/3 justify-end">
+                                        <div class="grid grid-cols-2">
+                                            <div class="font-bold p-2">SUBTOTAL</div>
+                                            <div class="text-right p-2 font-semibold">
+                                                {{ number_format($quotation->subtotal, 2) }} &#2547;</div>
+                                            <div class="font-bold p-2">VAT ({{ (int) $quotation->vat }}%)</div>
+                                            <div class="text-right p-2 font-semibold">
+                                                {{ number_format($quotation->subtotal * ($quotation->vat / 100), 2) }}
+                                                &#2547;</div>
+                                            <div class="font-bold p-2 bg-gray-200">GRAND TOTAL</div>
+                                            <div class="text-right p-2 bg-gray-200 font-bold">
+                                                {{ number_format($quotation->total, 2) }} &#2547;</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </section>
+                                </section>
 
-                            <section class="my-4">
-                                {!! $quotation->terms_conditions !!}
-                            </section>
+                                <section class="my-4">
+                                    {!! $quotation->terms_conditions !!}
+                                </section>
 
-                            <footer class="px-4 border-t border-gray-300 text-xs text-gray-600 text-center">
-                                If you have any questions about this price quote, please contact
-                                <br>
-                                <div class="font-bold">
-                                    Thank You For Your Business!
-                                </div>
-                            </footer>
+                                <footer class="px-4 border-t border-gray-300 text-xs text-gray-600 text-center">
+                                    If you have any questions about this price quote, please contact
+                                    <br>
+                                    <div class="font-bold">
+                                        Thank You For Your Business!
+                                    </div>
+                                </footer>
+                            </section>
                         </td>
                     </tr>
                 </tbody>

@@ -20,6 +20,7 @@
                         <th scope="col" class="px-6 py-3">S/L</th>
                         <th scope="col" class="px-6 py-3">Bill NO.</th>
                         <th scope="col" class="px-6 py-3">Company</th>
+                        <th scope="col" class="px-6 py-3">Products</th>
                         <th scope="col" class="px-6 py-3 text-right">Total</th>
                         <th scope="col" class="px-6 py-3 text-right">Status</th>
                         @role('admin')
@@ -58,7 +59,21 @@
                                 {{ $item->bill_no }}
                             </th>
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $item->challan->quotation->customer->company_name }}
+                                {{-- {{ $item->challan->quotation->customer->company_name }} --}}
+                                {{ strlen($item->challan->quotation->customer->company_name) > 15 ? substr($item->challan->quotation->customer->company_name, 0, 15) . '...' : $item->challan->quotation->customer->company_name }}
+
+                            </td>
+                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                @php
+                                    $products = $item->challan->quotation->products;
+                                    $maxToShow = 2;
+                                @endphp
+                                @foreach ($products->take($maxToShow) as $index => $product)
+                                    {{ $index + 1 }}. {{ $product->name }}<br>
+                                @endforeach
+                                @if ($products->count() > $maxToShow)
+                                    ...
+                                @endif
                             </td>
                             <td
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">

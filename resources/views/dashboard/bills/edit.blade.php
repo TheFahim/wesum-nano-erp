@@ -81,7 +81,15 @@
             <x-ui.card>
                 <button type="submit"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mx-5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 save-button">Update</button>
+                    @role('admin')
+                        <button form="delete-form" type="button"
+                            class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 m-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 delete-button">Delete</button>
+                    @endrole
             </x-ui.card>
+        </form>
+        <form method="POST" action="{{ route('bills.destroy', $bill->id) }}" id="delete-form" class="hidden">
+            @csrf
+            @method('DELETE')
         </form>
     </div>
 </x-dashboard.layout.default>

@@ -19,7 +19,7 @@
         </div> --}}
         <hr class="border-t border-gray-300 w-full">
 
-        <div class="relative overflow-x-auto sm:rounded-lg py-3 px-2 mx-2">
+        <div class="relative sm:rounded-lg py-3 px-2 mx-2">
             <table id="team-members"
                 class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-white datatable">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-500 dark:text-gray-400">
@@ -42,14 +42,31 @@
                                 <x-ui.svg.sort-column class="w-4 h-4 ms-1" />
                             </span>
                         </th>
-                        <th scope="col" class="px-6 py-3 text-right">
-                            Total
+                        <th scope="col" class="px-6 py-3">
+                            <span class="flex items-center">
+                                Products
+                                <x-ui.svg.sort-column class="w-4 h-4 ms-1" />
+                            </span>
                         </th>
                         <th scope="col" class="px-6 py-3 text-right">
-                            Paid
+                            <span class="flex items-center">
+
+                                Total
+                                <x-ui.svg.sort-column class="w-4 h-4 ms-1" />
+                            </span>
+
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-right">
+                            <span class="flex items-center">
+
+                                Paid
+                                <x-ui.svg.sort-column class="w-4 h-4 ms-1" />
+                            </span>
+
                         </th>
                         <th scope="col" class="px-6 py-3 text-right">
                             Due
+
                         </th>
 
                         @role('admin')
@@ -79,8 +96,23 @@
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $item->bill_no }}
                             </th>
+
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $item->challan->quotation->customer->company_name }}
+                                {{-- {{ $item->challan->quotation->customer->company_name }} --}}
+                                {{ strlen($item->challan->quotation->customer->company_name) > 15 ? substr($item->challan->quotation->customer->company_name, 0, 15) . '...' : $item->challan->quotation->customer->company_name }}
+
+                            </td>
+                            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                @php
+                                    $products = $item->challan->quotation->products;
+                                    $maxToShow = 2;
+                                @endphp
+                                @foreach ($products->take($maxToShow) as $index => $product)
+                                    {{ $index + 1 }}. {{ $product->name }}<br>
+                                @endforeach
+                                @if ($products->count() > $maxToShow)
+                                    ...
+                                @endif
                             </td>
                             <td
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-right">

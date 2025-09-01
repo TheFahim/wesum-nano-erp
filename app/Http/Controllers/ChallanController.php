@@ -29,6 +29,8 @@ class ChallanController extends Controller
                 ->get();
         }
 
+        $challans->load('quotation.products');
+
         return view('dashboard.challans.index', compact('challans'));
     }
 
