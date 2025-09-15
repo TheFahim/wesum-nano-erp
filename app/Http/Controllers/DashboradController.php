@@ -66,23 +66,33 @@ class DashboradController extends Controller
             ->with('bill') // Eager load the bill to get buying_price efficiently
             ->get();
 
+        // return $receivedBills;
+
         // 2. Calculate total received amount from these bills
         $totalReceived = $receivedBills->sum('amount');
 
         // 3. Calculate total purchase price from the related bills
-        $totalPurchasePrice = $receivedBills->sum('bill.buying_price');
+        $totalPurchasePrice = $receivedBills->sum('bill.buying_price') ?? 0;
+
+        $totalVat = $receivedBills->sum('bill.vat');
+        $totalAtt = $receivedBills->sum('bill.att');
+        $totalDelivery = $receivedBills->sum('bill.delivery_cost') ?? 0;
 
         // 4. Calculate total expense within the same date range
         $totalExpense = Expense::whereBetween('date', [$startDate, $endDate])->sum('amount');
 
         // 5. Calculate the final profit
-        $profit = $totalReceived - $totalExpense - $totalPurchasePrice;
+        // $profit = $totalReceived - $totalExpense - $totalVat -$totalAtt - $totalDelivery - $totalPurchasePrice;
+        $profit = $totalReceived - $totalVat -$totalAtt - $totalDelivery ;
 
         // Return the results as JSON
         return response()->json([
             'totalReceived' => $this->formatBanglaNumber($totalReceived),
             'totalExpense' => $this->formatBanglaNumber($totalExpense),
             'totalPurchasePrice' => $this->formatBanglaNumber($totalPurchasePrice),
+            'totalVat' => $this->formatBanglaNumber($totalVat),
+            'totalAtt' => $this->formatBanglaNumber($totalAtt),
+            'totalDelivery' => $this->formatBanglaNumber($totalDelivery),
             'profit' => $this->formatBanglaNumber($profit),
         ]);
     }
@@ -130,23 +140,23 @@ class DashboradController extends Controller
         // Apply the date filter based on the 'filter' parameter
         switch ($filter) {
             case 'last_month':
-                $query->whereBetween('expenses.created_at', [Carbon::now()->subMonth()->startOfMonth(), Carbon::now()->subMonth()->endOfMonth()]);
+                $query->whereBetween('expenses.date', [Carbon::now()->subMonth()->startOfMonth(), Carbon::now()->subMonth()->endOfMonth()]);
                 break;
             case 'this_year':
-                $query->whereYear('expenses.created_at', Carbon::now()->year);
+                $query->whereYear('expenses.date', Carbon::now()->year);
                 break;
             case 'last_year':
-                $query->whereYear('expenses.created_at', Carbon::now()->subYear()->year);
+                $query->whereYear('expenses.date', Carbon::now()->subYear()->year);
                 break;
             case 'last_90_days':
-                $query->where('expenses.created_at', '>=', Carbon::now()->subDays(90)->startOfDay());
+                $query->where('expenses.date', '>=', Carbon::now()->subDays(90)->startOfDay());
                 break;
             case 'last_6_months':
-                $query->where('expenses.created_at', '>=', Carbon::now()->subMonths(6)->startOfDay());
+                $query->where('expenses.date', '>=', Carbon::now()->subMonths(6)->startOfDay());
                 break;
             case 'this_month':
             default:
-                $query->whereBetween('expenses.created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()]);
+                $query->whereBetween('expenses.date', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()]);
                 break;
         }
 

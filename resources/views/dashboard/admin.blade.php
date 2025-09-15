@@ -122,7 +122,7 @@
             </div>
         </x-ui.card>
 
-        <x-ui.card heading="Profit Calculation" class="my-5">
+        <x-ui.card heading="Net Received" class="my-5">
             <div x-data="profitCalculator" x-init="init" class="space-y-4">
 
                 {{-- Date Range Picker and Search Button with UNIQUE IDs --}}
@@ -175,12 +175,24 @@
                         <h3 class="text-lg font-semibold text-gray-500 dark:text-gray-400">Purchase Price</h3>
                         <p x-text="`${totalPurchasePrice} ৳`" class="text-2xl font-bold text-red-500"></p>
                     </div>
+                    {{-- <div class="p-4 text-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-500 dark:text-gray-400">VAT</h3>
+                        <p x-text="`${vat} ৳`" class="text-2xl font-bold text-red-500"></p>
+                    </div>
+                    <div class="p-4 text-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-500 dark:text-gray-400">ATT</h3>
+                        <p x-text="`${att} ৳`" class="text-2xl font-bold text-red-500"></p>
+                    </div>
+                    <div class="p-4 text-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-500 dark:text-gray-400">Delivery Cost</h3>
+                        <p x-text="`${deliveryCost} ৳`" class="text-2xl font-bold text-red-500"></p>
+                    </div> --}}
                     <div class="p-4 text-center bg-gray-100 dark:bg-gray-800 rounded-lg">
                         <h3 class="text-lg font-semibold text-gray-500 dark:text-gray-400">Expense</h3>
                         <p x-text="`${totalExpense} ৳`" class="text-2xl font-bold text-red-500"></p>
                     </div>
                     <div class="p-4 text-center bg-gray-200 dark:bg-gray-700 rounded-lg">
-                        <h3 class="text-lg font-semibold text-gray-600 dark:text-gray-300">Net Profit</h3>
+                        <h3 class="text-lg font-semibold text-gray-600 dark:text-gray-300">Net Received Amount</h3>
                         <p x-text="`${profit} ৳`" class="text-2xl font-bold text-blue-600"></p>
                     </div>
                 </div>

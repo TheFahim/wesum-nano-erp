@@ -88,9 +88,9 @@
                 <thead>
                     <tr>
                         <td>
-                            <header class="flex justify-start items-start my-8">
+                            <header class="flex justify-start items-start my-4">
                                 <div class="text-left">
-                                    <h2 class="text-2xl font-bold text-blue-600 mb-4">Bill</h2>
+                                    <h2 class="text-xl font-bold text-blue-600 mb-4">Bill</h2>
                                     <div class="grid grid-cols-2 text-sm">
                                         <div class="font-bold p-1 text-left">Bill No</div>
                                         <div class="border border-gray-400 p-1 bg-blue-100 font-semibold">
@@ -107,7 +107,6 @@
                                     </div>
                                 </div>
                             </header>
-                            <div class="h-8"></div>
                         </td>
                     </tr>
                 </thead>
@@ -115,33 +114,30 @@
                 <tbody>
                     <tr>
                         <td>
-                            <section class="mb-8 text-sm">
+                            <section class="mb-4 text-sm">
                                 <div class="flex justify-between items-stretch gap-x-8">
                                     <div class="w-1/2 flex flex-col">
-                                        <h3 class="bg-blue-900 text-white font-bold p-2">Delivered By</h3>
+                                        <h3 class="bg-blue-900 text-white font-bold p-1 text-sm">Delivered By</h3>
                                         <div class="border border-gray-400 p-3 space-y-1 break-words flex-grow">
-                                            <p><strong class="w-full inline-block">WESUM CORPORATION</strong></p>
-                                            <p><strong class="w-16 inline-block">Phone</strong> : 01889977489</p>
-                                            <p><strong class="w-16 inline-block">Web Site</strong> <a
+                                            <p><strong class="w-full inline-block text-xs">WESUM CORPORATION</strong></p>
+                                            <p><strong class="w-16 inline-block text-xs">Phone</strong> : 01889977489</p>
+                                            {{-- <p><strong class="w-16 inline-block text-xs">Web Site</strong> <a
                                                     href="https://wesumcorporation.com/"
                                                     class="text-blue-600 hover:underline"> :
-                                                    https://wesumcorporation.com</a></p>
-                                            <p><strong class="w-16 inline-block">Address</strong> : 78/1, Hasanlen,
+                                                    https://wesumcorporation.com</a></p> --}}
+                                            <p><strong class="w-16 inline-block text-xs">Address</strong> : 78/1, Hasanlen,
                                                 Dattapara, Tongi, Gazipur.</p>
-                                            <p>&nbsp;</p>
                                         </div>
                                     </div>
-                                    <div class="w-1/2 flex flex-col mt-2">
-                                        <h3 class="bg-blue-900 text-white font-bold p-2">Receiver Details</h3>
+                                    <div class="w-1/2 flex flex-col">
+                                        <h3 class="bg-blue-900 text-white font-bold p-1 text-sm">Receiver Details</h3>
                                         <div class="border border-gray-400 p-3 space-y-1 break-words flex-grow">
-                                            <p><strong class="w-24 inline-block">Company</strong> :
+                                            <p><strong class="w-24 inline-block text-xs">Company</strong> :
                                                 {{ $bill->challan->quotation->customer->company_name }}</p>
-                                            <p><strong class="w-24 inline-block">Address</strong> :
+                                            <p><strong class="w-24 inline-block text-xs">Address</strong> :
                                                 {{ $bill->challan->quotation->customer->address }}</p>
-                                            <p><strong class="w-24 inline-block">Phone</strong> :
-                                                {{ $bill->challan->quotation->customer->phone }}</p>
-                                            <p>&nbsp;</p>
-                                            <p>&nbsp;</p>
+                                            {{-- <p><strong class="w-24 inline-block text-xs">Phone</strong> :
+                                                {{ $bill->challan->quotation->customer->phone }}</p> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -151,65 +147,69 @@
                                 <table id="products-table" class="w-full border-collapse text-sm">
                                     <thead>
                                         <tr>
-                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 w-12">SL</th>
+                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 w-12 text-xs">SL</th>
                                             <th
-                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-left w-1/4">
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-left w-1/4 text-xs">
                                                 ITEM NAME</th>
-                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-left">
-                                                DESCRIPTION</th>
+                                            {{-- <th class="bg-blue-900 text-white p-2 border border-gray-500 text-left text-xs">
+                                                DESCRIPTION</th> --}}
+                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-left text-xs">
+                                                Remarks</th>
                                             <th
-                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-16">
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-16 text-xs">
                                                 QTY</th>
                                             <th
-                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-center w-20">
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-center w-20 text-xs">
                                                 UNIT</th>
-                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-right">
+                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-right text-xs">
                                                 PRICE</th>
                                             <th
-                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-24">
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-24 text-xs">
                                                 AMOUNT</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($bill->challan->quotation->products as $product)
                                             <tr>
-                                                <td class="border border-gray-400 p-2 text-center align-top">
+                                                <td class="border border-gray-400 p-2 text-center align-top text-xs">
                                                     {{ $loop->iteration }}</td>
-                                                <td class="border border-gray-400 p-2 align-top font-bold">
+                                                <td class="border border-gray-400 p-2 align-top font-bold text-xs">
                                                     {{ $product->name }}</td>
-                                                <td class="border border-gray-400 p-2 align-top">{!! $product->specs ?? '' !!}
+                                                {{-- <td class="border border-gray-400 p-2 align-top text-xs">{!! $product->specs ?? '' !!}
+                                                </td> --}}
+                                                <td class="border border-gray-400 p-2 align-top text-xs">{{ $product->remarks ?? '' }}
                                                 </td>
-                                                <td class="border border-gray-400 p-2 text-right align-top">
+                                                <td class="border border-gray-400 p-2 text-right align-top text-xs">
                                                     {{ $product->quantity }}</td>
-                                                <td class="border border-gray-400 p-2 text-center align-top">
+                                                <td class="border border-gray-400 p-2 text-center align-top text-xs">
                                                     {{ $product->unit }}</td>
-                                                <td class="border border-gray-400 p-2 text-right align-top">
+                                                <td class="border border-gray-400 p-2 text-right align-top text-xs">
                                                     {{ number_format($product->price, 2) }}</td>
-                                                <td class="border border-gray-400 p-2 text-right align-top font-bold">
+                                                <td class="border border-gray-400 p-2 text-right align-top font-bold text-xs">
                                                     {{ number_format($product->amount, 2) }}</td>
                                             </tr>
                                         @endforeach
                                         <tr>
-                                            <td class="border border-gray-400 p-2 text-right align-top font-bold"
+                                            <td class="border border-gray-400 p-2 text-right align-top font-bold text-xs"
                                                 colspan="5">Subtotal</td>
-                                                <td class="border border-gray-400 p-2 text-right align-top font-bold"
+                                                <td class="border border-gray-400 p-2 text-right align-top font-bold text-xs"
                                                     colspan="2">
                                                         {{ number_format($bill->challan->quotation->subtotal, 2) }}
                                                 </td>
                                         </tr>
                                         <tr>
-                                            <td class="border border-gray-400 p-2 text-right align-top font-bold"
+                                            <td class="border border-gray-400 p-2 text-right align-top font-bold text-xs"
                                                 colspan="5">VAT
                                                 ({{ (int) $bill->challan->quotation->vat }}%)</td>
-                                                <td class="border border-gray-400 p-2 text-right align-top font-bold"
+                                                <td class="border border-gray-400 p-2 text-right align-top font-bold text-xs"
                                                     colspan="2">
                                                         {{ number_format($bill->challan->quotation->subtotal * ($bill->challan->quotation->vat / 100), 2) }}
                                                 </td>
                                         </tr>
                                         <tr>
-                                            <td class="border border-gray-400 p-2 text-right align-top font-bold"
+                                            <td class="border border-gray-400 p-2 text-right align-top font-bold text-xs"
                                                 colspan="5">Total</td>
-                                                <td class="border border-gray-400 p-2 text-right align-top font-bold"
+                                                <td class="border border-gray-400 p-2 text-right align-top font-bold text-xs"
                                                     colspan="2">
                                                         {{ number_format($bill->challan->quotation->total, 2) }}
                                                 </td>
@@ -274,14 +274,14 @@
                             </section>
 
                             {{-- ** THE FIX - PART 2 ** Added `print:break-inside-avoid` to keep the Notes section from splitting. --}}
-                            <section class="mt-8 print:break-inside-avoid">
-                                <h3 class="bg-blue-900 text-white font-bold p-2 mb-4">Notes</h3>
+                            {{-- <section class="mt-8 print:break-inside-avoid">
+                                <h3 class="bg-blue-900 text-white font-bold p-2 mb-4 text-lg">Notes</h3>
                                 <ul class="list-disc list-inside text-sm space-y-2 text-gray-700">
                                     <li>Goods delivered as per above details.</li>
                                     <li>Please check and confirm receipt of goods in good condition.</li>
                                     <li>Any discrepancy should be reported within 24 hours of delivery.</li>
                                 </ul>
-                            </section>
+                            </section> --}}
                         </td>
                     </tr>
                 </tbody>
@@ -289,7 +289,7 @@
                 <tfoot>
                     <tr>
                         <td>
-                            <div class="h-[110px]"></div>
+                            <div class="h-[100px]"></div>
                         </td>
                     </tr>
                 </tfoot>

@@ -155,7 +155,6 @@
                                     </div>
                                 </div>
                             </header>
-                            <div class="h-8"></div>
                         </td>
                     </tr>
                 </thead>
@@ -166,39 +165,37 @@
                         <td>
                             <section class="grid grid-cols-2 gap-8 mb-8 text-sm">
                                 <div>
-                                    <h3 class="bg-blue-900 text-white font-bold p-2">Contact Details</h3>
+                                    <h3 class="bg-blue-900 text-white font-bold p-2 text-sm">Contact Details</h3>
                                     <div class="border border-gray-400 p-3">
-                                        <div class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
-                                            <strong class="font-bold">Name</strong>
+                                        <div class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-xs">
+                                            <strong class="font-bold text-xs">Name</strong>
                                             <p>: Reazul Kabir</p>
-                                            <strong class="font-bold">Phone</strong>
+                                            <strong class="font-bold text-xs">Phone</strong>
                                             <p>: 01889977489</p>
-                                            <strong class="font-bold">Web</strong>
+                                            <strong class="font-bold text-xs">Web</strong>
                                             <p>: <a href="https://wesumcorporation.com/"
                                                     class="text-blue-600 hover:underline"
-                                                    target="_blank">https://wesumcorporation.com</a></p>
-                                            <strong class="font-bold">Address</strong>
+                                                    target="_blank text-xs">https://wesumcorporation.com</a></p>
+                                            <strong class="font-bold text-xs">Address</strong>
                                             <p>: 78/1, Hasanlen, Dattapara, Tongi, Gazipur.</p>
                                         </div>
-                                        <p>&nbsp;</p>
                                     </div>
                                 </div>
                                 <div>
-                                    <h3 class="bg-blue-900 text-white font-bold p-2">Kind Attention</h3>
-                                    <div class="border border-gray-400 p-3">
-                                        <div class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1">
-                                            <strong class="font-bold">Name</strong>
+                                    <h3 class="bg-blue-900 text-white font-bold p-2 text-sm">Kind Attention</h3>
+                                    <div class="border border-gray-400 p-3 text-xs">
+                                        <div class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-xs">
+                                            <strong class="font-bold text-xs">Name</strong>
                                             <p>: {{ $quotation->customer->customer_name }}</p>
-                                            <strong class="font-bold">Designation</strong>
+                                            <strong class="font-bold text-xs">Designation</strong>
                                             <p>: {{ $quotation->customer->designation }}</p>
-                                            <strong class="font-bold">Company</strong>
+                                            <strong class="font-bold text-xs">Company</strong>
                                             <p>: {{ $quotation->customer->company_name }}</p>
-                                            <strong class="font-bold">Address</strong>
+                                            <strong class="font-bold text-xs">Address</strong>
                                             <p>: {{ $quotation->customer->address }}</p>
-                                            <strong class="font-bold">Phone</strong>
-                                            <p>: {{ $quotation->customer->phone }}</p>
+                                            {{-- <strong class="font-bold">Phone</strong>
+                                            <p>: {{ $quotation->customer->phone }}</p> --}}
                                         </div>
-                                        <p>&nbsp;</p>
                                     </div>
                                 </div>
                             </section>
@@ -207,45 +204,63 @@
                                 <table class="w-full border-collapse text-sm">
                                     <thead>
                                         <tr>
-                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 w-12">SL</th>
-                                            <th
-                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-left w-1/4">
+                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-xs">SL</th>
+                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-left text-xs">
                                                 ITEM NAME</th>
-                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-left">
+                                            <th colspan="2"
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-left text-xs">
                                                 SPECIFICATIONS</th>
-                                            <th
-                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-24">
+                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-right text-xs">
                                                 UNIT PRICE</th>
-                                            <th
-                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-16">
+                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-right text-xs">
                                                 QTY</th>
-                                            <th
-                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-center w-20">
+                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-center text-xs">
                                                 Unit</th>
-                                            <th
-                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-28">
+                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-right text-xs">
                                                 AMOUNT</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($quotation->products as $product)
                                             <tr>
-                                                <td class="border border-gray-400 p-2 text-center align-top">
+                                                <td class="border border-gray-400 p-2 text-center align-top text-xs">
                                                     {{ $loop->iteration }}</td>
-                                                <td class="border border-gray-400 p-2 align-top font-bold">
+                                                <td class="border border-gray-400 p-2 align-top font-bold text-xs">
                                                     {{ $product->name }}</td>
-                                                <td class="border border-gray-400 p-2 align-top">{!! $product->specs !!}
+                                                <td colspan="2" class="border border-gray-400 p-2 align-top text-xs">
+                                                    {!! $product->specs !!}
                                                 </td>
-                                                <td class="border border-gray-400 p-2 text-right align-top">
+                                                <td class="border border-gray-400 p-2 text-right align-top text-xs">
                                                     {{ number_format($product->price, 2) }}</td>
-                                                <td class="border border-gray-400 p-2 text-right align-top">
+                                                <td class="border border-gray-400 p-2 text-right align-top text-xs">
                                                     {{ $product->quantity }}</td>
-                                                <td class="border border-gray-400 p-2 text-center align-top">
+                                                <td class="border border-gray-400 p-2 text-center align-top text-xs">
                                                     {{ $product->unit }}</td>
-                                                <td class="border border-gray-400 p-2 text-right align-top font-bold">
+                                                <td class="border border-gray-400 p-2 text-right align-top font-bold text-xs">
                                                     {{ number_format($product->amount, 2) }}</td>
                                             </tr>
                                         @endforeach
+                                        <tr>
+                                            <td colspan="6" class="font-bold p-2 text-right border border-gray-400 text-xs">SUBTOTAL</td>
+                                            {{-- <td class="font-bold p-2 text-right border border-gray-400 text-xs">SUBTOTAL</td> --}}
+                                            <td colspan="2" class="text-right p-2 font-semibold border border-gray-400 text-xs">
+                                                {{ number_format($quotation->subtotal, 2) }} &#2547;
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="font-bold p-2 text-right border border-gray-400 text-xs">VAT ({{ (int) $quotation->vat }}%)</td>
+                                            {{-- <td class="font-bold p-2 text-right border border-gray-400 text-xs"></td> --}}
+                                            <td colspan="2" class="text-right p-2 font-semibold border border-gray-400 text-xs">
+                                                {{ number_format($quotation->subtotal * ($quotation->vat / 100), 2) }} &#2547;
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="font-bold p-2 text-right border border-gray-400 text-xs">GRAND TOTAL</td>
+                                            {{-- <td class="font-bold p-2 text-right border border-gray-400 bg-gray-200 text-xs"></td> --}}
+                                            <td colspan="2" class="text-right p-2 font-bold border border-gray-400 bg-gray-200 text-xs">
+                                                {{ number_format($quotation->total, 2) }} &#2547;
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </section>
@@ -253,28 +268,15 @@
                             <section class="avoid-break">
                                 <section class="flex mt-8 text-sm place-content-between">
                                     <div class="w-1/3 text-center place-content-end">
-                                        <img src="{{ asset('assets/images/wesum-sign.jpeg') }}" class="h- mx-auto">
+                                        <img src="{{ asset('assets/images/wesum-sign.jpeg') }}" style="width: 80%" class="mx-auto">
                                         <div class="border-t border-gray-600 mt-1">
                                             <p class="text-sm font-semibold">Authorized Signature</p>
                                         </div>
                                     </div>
-                                    <div class="w-1/3 justify-end">
-                                        <div class="grid grid-cols-2">
-                                            <div class="font-bold p-2">SUBTOTAL</div>
-                                            <div class="text-right p-2 font-semibold">
-                                                {{ number_format($quotation->subtotal, 2) }} &#2547;</div>
-                                            <div class="font-bold p-2">VAT ({{ (int) $quotation->vat }}%)</div>
-                                            <div class="text-right p-2 font-semibold">
-                                                {{ number_format($quotation->subtotal * ($quotation->vat / 100), 2) }}
-                                                &#2547;</div>
-                                            <div class="font-bold p-2 bg-gray-200">GRAND TOTAL</div>
-                                            <div class="text-right p-2 bg-gray-200 font-bold">
-                                                {{ number_format($quotation->total, 2) }} &#2547;</div>
-                                        </div>
-                                    </div>
+
                                 </section>
 
-                                <section class="my-4">
+                                <section class="my-4 text-xs">
                                     {!! $quotation->terms_conditions !!}
                                 </section>
 

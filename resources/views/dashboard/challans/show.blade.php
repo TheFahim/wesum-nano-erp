@@ -83,7 +83,7 @@
             @endif
         </div>
 
-        <div id="challan-invoice-container" class="max-w-4xl mx-auto bg-white p-8">
+        <div id="challan-invoice-container" class="max-w-4xl mx-auto bg-white px-8">
             <div class="print-watermark"></div>
             <table class="w-full">
                 <thead>
@@ -91,7 +91,7 @@
                         <td>
                             <header class="flex justify-start items-start my-8">
                                 <div class="text-left">
-                                    <h2 class="text-2xl font-bold text-blue-600 mb-4">Challan</h2>
+                                    <h2 class="text-xl font-bold text-blue-600 mb-4">Challan</h2>
                                     <div class="grid grid-cols-2 text-sm">
                                         <div class="font-bold p-1 text-left">Challan No</div>
                                         <div class="border border-gray-400 p-1 bg-blue-100 font-semibold">{{ $challan->challan_no }}</div>
@@ -104,7 +104,6 @@
                                     </div>
                                 </div>
                             </header>
-                            <div class="h-8"></div>
                         </td>
                     </tr>
                 </thead>
@@ -117,34 +116,33 @@
                                 Replaced the nested table with a Flexbox layout.
                                 This is the best method for creating equal-height columns.
                             -->
-                            <section class="mb-8 text-sm">
+                            <section class="mb-4 text-sm">
                                 {{-- `items-stretch` makes the direct children (the two w-1/2 divs) equal height. --}}
                                 <div class="flex justify-between items-stretch gap-x-8">
                                     {{-- Delivered By Box --}}
                                     {{-- `flex-col` stacks the h3 and content div vertically. --}}
                                     <div class="w-1/2 flex flex-col">
-                                        <h3 class="bg-blue-900 text-white font-bold p-2">Delivered By</h3>
+                                        <h3 class="bg-blue-900 text-white font-bold p-2 text-sm">Delivered By</h3>
                                         {{-- `flex-grow` makes this div expand to fill all available vertical space in its column. --}}
-                                        <div class="border border-gray-400 p-3 space-y-1 break-words flex-grow">
-                                            <p><strong class="w-full inline-block">WESUM CORPORATION</strong></p>
-                                            <p><strong class="w-16 inline-block">Phone</strong> : 01889977489</p>
-                                            <p><strong class="w-16 inline-block">Web Site</strong> <a href="https://wesumcorporation.com/" class="text-blue-600 hover:underline"> : https://wesumcorporation.com</a></p>
-                                            <p><strong class="w-16 inline-block">Address</strong> : 78/1, Hasanlen, Dattapara, Tongi, Gazipur.</p>
-                                            <p><strong class="w-16 inline-block">BIN no.</strong> : 006482594-0102</p>
-                                            <p>&nbsp;</p>
+                                        <div class="border border-gray-400 p-3 space-y-1 break-words">
+                                            <p><strong class="w-full inline-block text-xs">WESUM CORPORATION</strong></p>
+                                            <p><strong class="w-16 inline-block text-xs">Phone</strong> : 01889977489</p>
+                                            {{-- <p><strong class="w-16 inline-block text-xs">Web Site</strong> <a href="https://wesumcorporation.com/" class="text-blue-600 hover:underline text-xs"> : https://wesumcorporation.com</a></p> --}}
+                                            <p><strong class="w-16 inline-block text-xs">Address</strong> : 78/1, Hasanlen, Dattapara, Tongi, Gazipur.</p>
+                                            <p><strong class="w-16 inline-block text-xs">BIN no.</strong> : 006482594-0102</p>
+
                                         </div>
                                     </div>
 
                                     {{-- Bill To Box --}}
                                     <div class="w-1/2 flex flex-col">
-                                        <h3 class="bg-blue-900 text-white font-bold p-2">Bill To</h3>
-                                        <div class="border border-gray-400 p-3 space-y-1 break-words flex-grow">
-                                            <p><strong class="w-24 inline-block">Company</strong> : {{ $challan->quotation->customer->company_name }}</p>
-                                            <p><strong class="w-24 inline-block">Address</strong> : {{ $challan->quotation->customer->address }}</p>
-                                            <p><strong class="w-24 inline-block">Phone</strong> : {{ $challan->quotation->customer->phone }}</p>
-                                            <p><strong class="w-24 inline-block">BIN no.</strong> : {{ $challan->quotation->customer->bin_no }}</p>
-                                            <p>&nbsp;</p>
-                                            <p>&nbsp;</p>
+                                        <h3 class="bg-blue-900 text-white font-bold p-2 text-sm">Bill To</h3>
+                                        <div class="border border-gray-400 p-3 space-y-1 break-words">
+                                            <p><strong class="w-24 inline-block text-xs">Company</strong> : {{ $challan->quotation->customer->company_name }}</p>
+                                            <p><strong class="w-24 inline-block text-xs">Address</strong> : {{ $challan->quotation->customer->address }}</p>
+                                            {{-- <p><strong class="w-24 inline-block text-xs">Phone</strong> : {{ $challan->quotation->customer->phone }}</p> --}}
+                                            <p><strong class="w-24 inline-block text-xs">BIN no.</strong> : {{ $challan->quotation->customer->bin_no }}</p>
+
                                         </div>
                                     </div>
                                 </div>
@@ -158,18 +156,18 @@
                                             <th class="bg-blue-900 text-white p-2 border border-gray-500 text-left">ITEM NAME</th>
                                             <th class="bg-blue-900 text-white p-2 border border-gray-500 text-right w-16">QTY</th>
                                             <th class="bg-blue-900 text-white p-2 border border-gray-500 text-center w-20">Unit</th>
-                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-left w-32">Remarks</th>
+                                            <th colspan="1" class="bg-blue-900 text-white p-2 border border-gray-500 text-left w-32">Remarks</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($challan->quotation->products as $product)
                                             <tr>
-                                                <td class="border border-gray-400 p-2 text-center align-top">{{ $loop->iteration }}</td>
-                                                <td class="border border-gray-400 p-2 align-top font-bold">{{ $product->name }}</td>
-  
-                                                <td class="border border-gray-400 p-2 text-right align-top">{{ $product->quantity }}</td>
-                                                <td class="border border-gray-400 p-2 text-center align-top">{{ $product->unit }}</td>
-                                                <td class="border border-gray-400 p-2 align-top">{{ $product->remarks ?? '' }}</td>
+                                                <td class="border border-gray-400 p-2 text-center align-top text-xs">{{ $loop->iteration }}</td>
+                                                <td class="border border-gray-400 p-2 align-top font-bold text-xs">{{ $product->name }}</td>
+
+                                                <td class="border border-gray-400 p-2 text-right align-top text-xs">{{ $product->quantity }}</td>
+                                                <td class="border border-gray-400 p-2 text-center align-top text-xs">{{ $product->unit }}</td>
+                                                <td colspan="1" class="border border-gray-400 p-2 align-top whitespace-nowrap text-xs">{{ $product->remarks ?? '' }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -177,7 +175,7 @@
                             </section>
 
                             <section class="mt-8 print:break-inside-avoid">
-                                <h3 class="bg-blue-900 text-white font-bold p-2 mb-4">Notes</h3>
+                                <h3 class="bg-blue-900 text-white font-bold p-2 mb-4 text-lg">Notes</h3>
                                 <ul class="list-disc list-inside text-sm space-y-2 text-gray-700">
                                     <li>Goods delivered as per above details.</li>
                                     <li>Please check and confirm receipt of goods in good condition.</li>

@@ -102,6 +102,9 @@ document.addEventListener('alpine:init', () => {
         totalExpense: 0,
         totalPurchasePrice: 0,
         profit: 0,
+        vat: 0,
+        att: 0,
+        deliveryCost: 0,
         loading: false,
         resultsVisible: false,
         dateRangePicker: null,
@@ -140,6 +143,9 @@ document.addEventListener('alpine:init', () => {
 
             let api = `/dashboard/api/profit-summary?start=${startDate}&end=${endDate}`;
 
+            // console.log(api);
+
+
             fetch(api)
                 .then(response => {
                     if (!response.ok) throw new Error('Network response was not ok');
@@ -150,6 +156,9 @@ document.addEventListener('alpine:init', () => {
                     this.totalExpense = data.totalExpense;
                     this.totalPurchasePrice = data.totalPurchasePrice;
                     this.profit = data.profit;
+                    this.vat = data.totalVat;
+                    this.att = data.totalAtt;
+                    this.deliveryCost = data.totalDelivery;
                     this.resultsVisible = true;
                 })
                 .catch(error => {

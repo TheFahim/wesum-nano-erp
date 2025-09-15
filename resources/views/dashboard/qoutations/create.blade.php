@@ -264,8 +264,8 @@
                             placeholder="Terms And Conditions">
                             {!! old(
                                 'quotation.terms_conditions',
-                                '<h3 class="bg-blue-900 text-white font-bold p-2 mb-4">Terms & Conditions</h3>
-                                                                                                                                                                                    <ul class="list-disc list-inside text-sm space-y-2 text-gray-700">
+                                '<h3 class="bg-blue-900 text-white font-bold p-2 mb-4 text-sm">Terms & Conditions</h3>
+                                                                                                                                                                                    <ul class="list-disc list-inside text-xs space-y-2 text-gray-700">
                                                                                                                                                                                         <li>Mushuk 6.3 will be provided with a bill Copy.</li>
                                                                                                                                                                                         <li>Payment will be due prior to delivery of service and goods.</li>
                                                                                                                                                                                         <li>The Quotation Value Including VAT, AIT & Transportation.</li>
