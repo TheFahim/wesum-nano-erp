@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+use function PHPSTORM_META\type;
+
 class QuotationController extends Controller
 {
     /**
@@ -20,9 +22,9 @@ class QuotationController extends Controller
     {
 
         if (Auth::user()->hasRole('admin')) {
-            $quotations = Quotation::with(['customer', 'user'])->latest()->get();
+            $quotations = Quotation::where('type', 1)->with(['customer', 'user'])->latest()->get();
         } else {
-            $quotations = Quotation::where('user_id', Auth::id())->with(['customer', 'user'])->latest()->get();
+            $quotations = Quotation::where('type', 1)->where('user_id', Auth::id())->with(['customer', 'user'])->latest()->get();
         }
 
         $quotations->load('challan', 'products');
@@ -33,11 +35,32 @@ class QuotationController extends Controller
     }
 
     /**
+     * Display the pre-quotation form.
+     */
+    public function preQuotation()
+    {
+        if (Auth::user()->hasRole('admin')) {
+            $quotations = Quotation::where('type', 2)->with(['customer', 'user'])->latest()->get();
+        } else {
+            $quotations = Quotation::where('type', 2)->where('user_id', Auth::id())->with(['customer', 'user'])->latest()->get();
+        }
+
+        $quotations->load('challan', 'products');
+        return view('dashboard.qoutations.pre-quote', compact('quotations'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('dashboard.qoutations.create');
+        $type = request()->query('type', 1);
+
+        $nextQuotationNumber = Quotation::select('quotation_no')->latest()->first();
+
+        $nextQuotationNumber = $nextQuotationNumber ? substr($nextQuotationNumber->quotation_no, 0,2) .'-0'. intval(substr($nextQuotationNumber->quotation_no, 3)) + 1 : "";
+
+        return view('dashboard.qoutations.create', compact('type', 'nextQuotationNumber'));
     }
 
     /**
@@ -64,6 +87,13 @@ class QuotationController extends Controller
             $quotationData['user_id'] = Auth::id();
             $quotationData['customer_id'] = $customer->id;
 
+            if ($request->has('quotation.type')) {
+                $quotationData['type'] = $request['quotation']['type'];
+            } else {
+                $quotationData['type'] = 1;
+            }
+
+
             $quotation = Quotation::create($quotationData);
 
 
@@ -73,7 +103,12 @@ class QuotationController extends Controller
 
             DB::commit();
 
-            return redirect()->route('quotations.index')->with('success', 'Quotation created successfully!');
+            if ($quotationData['type'] == 2) {
+                return redirect()->route('pre.quotation')->with('success', 'Pre-Quotation created successfully!');
+            } else {
+                return redirect()->route('quotations.index')->with('success', 'Quotation created successfully!');
+            }
+
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -118,7 +153,6 @@ class QuotationController extends Controller
 
 
         $quotation->load(['customer', 'products']);
-
 
         $hasChallan = $quotation->challan ? true : false;
 
@@ -168,9 +202,12 @@ class QuotationController extends Controller
                 $newCustomer = Customer::create($customerData);
                 $customerId = $newCustomer->id;
             }
-
             // --- QUOTATION UPDATE LOGIC ---
             $quotationUpdateData = $validatedData['quotation'];
+            if ($request->has('quotation.type')) {
+                $quotationUpdateData['type'] = $request['quotation']['type'];
+            }
+
             $quotationUpdateData['customer_id'] = $customerId; // Assign the resolved customer ID
 
             // Step 1: Update the parent Quotation model
@@ -205,7 +242,11 @@ class QuotationController extends Controller
 
             DB::commit();
 
-            return redirect()->route('quotations.index')->with('success', 'Quotation updated successfully!');
+            if ($quotationUpdateData['type'] ?? false) {
+                return redirect()->route('quotations.index')->with('success', 'Quotation updated successfully!');
+            } else {
+                return redirect()->route('pre.quotation')->with('success', 'Pre-Quotation updated successfully!');
+            }
 
         } catch (\Exception $e) {
             DB::rollBack();

@@ -1,10 +1,10 @@
 <x-dashboard.layout.default title="Qoutations">
     <x-dashboard.ui.bread-crumb>
         <li class="inline-flex items-center">
-            <a href="{{ route('quotations.index') }}"
+            <a href="{{ route('pre.quotation') }}"
                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
                 <x-ui.svg.book class="h-3 w-3 me-2" />
-                Quotations
+                Pre Quotations
             </a>
         </li>
     </x-dashboard.ui.bread-crumb>
@@ -12,7 +12,7 @@
 
     <x-ui.card class="mx-auto">
         <div class="grid grid-cols-8 p-2 mb-4">
-            <a href="{{ route('quotations.create') }}"
+            <a href="{{ route('quotations.create', ['type' => 2]) }}"
                 class="flex items-center gap-2 text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-4 py-2">
                 <x-ui.svg.circle-plus />
                 <span>Add New</span>

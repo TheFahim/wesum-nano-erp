@@ -73,13 +73,13 @@
     {{-- Breadcrumb and controls remain outside the printable area --}}
     <x-dashboard.ui.bread-crumb>
         <li class="inline-flex items-center">
-            <a href="{{ route('quotations.index') }}"
+            <a href="{{  $quotation->type == 2 ? route('pre.quotation') : route('quotations.index') }}"
                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
                 <x-ui.svg.book class="h-3 w-3 me-2" />
-                Quotations
+                {{ $quotation->type == 2 ? 'Pre-Quotations' : 'Quotations' }}
             </a>
         </li>
-        <x-dashboard.ui.bread-crumb-list name="Quotation" />
+        <x-dashboard.ui.bread-crumb-list name="{{ $quotation->type == 2 ? 'Pre-Quotation' : 'Quotation' }}" />
     </x-dashboard.ui.bread-crumb>
 
     <div class="bg-gray-100 p-8 font-sans">
@@ -94,30 +94,33 @@
                 <span>&nbsp;&nbsp;Print</span>
             </button>
             {{-- Other buttons... --}}
-            @if (!$hasChallan)
-                <a href="{{ route('challans.create', ['quotation_id' => $quotation->id]) }}"
-                    class="inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                    Proceed To Challan
+            @if ($quotation->type == 1)
+                @if (!$hasChallan)
+                    <a href="{{ route('challans.create', ['quotation_id' => $quotation->id]) }}"
+                        class="inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                        Proceed To Challan
 
-                    <svg class="w-6 h-6 text-gray-800 dark:text-white ml-1" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                        viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 12H5m14 0-4 4m4-4-4-4" />
-                    </svg>
-                </a>
-            @else
-                <a href="{{ route('challans.show', $quotation->challan->id) }}"
-                    class="inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                    Show Challan
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white ml-1" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                            viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 12H5m14 0-4 4m4-4-4-4" />
+                        </svg>
+                    </a>
+                @else
+                    <a href="{{ route('challans.show', $quotation->challan->id) }}"
+                        class="inline-flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                        Show Challan
 
-                    <svg class="w-6 h-6 text-gray-800 dark:text-white ml-1" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                        viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 12H5m14 0-4 4m4-4-4-4" />
-                    </svg>
-                </a>
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white ml-1" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                            viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 12H5m14 0-4 4m4-4-4-4" />
+                        </svg>
+                    </a>
+                @endif
+
             @endif
 
         </div>
@@ -204,19 +207,25 @@
                                 <table class="w-full border-collapse text-sm">
                                     <thead>
                                         <tr>
-                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-xs">SL</th>
-                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-left text-xs">
+                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-xs">SL
+                                            </th>
+                                            <th
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-left text-xs">
                                                 ITEM NAME</th>
                                             <th colspan="2"
                                                 class="bg-blue-900 text-white p-2 border border-gray-500 text-left text-xs">
                                                 SPECIFICATIONS</th>
-                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-right text-xs">
+                                            <th
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-right text-xs">
                                                 UNIT PRICE</th>
-                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-right text-xs">
+                                            <th
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-right text-xs">
                                                 QTY</th>
-                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-center text-xs">
+                                            <th
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-center text-xs">
                                                 Unit</th>
-                                            <th class="bg-blue-900 text-white p-2 border border-gray-500 text-right text-xs">
+                                            <th
+                                                class="bg-blue-900 text-white p-2 border border-gray-500 text-right text-xs">
                                                 AMOUNT</th>
                                         </tr>
                                     </thead>
@@ -236,28 +245,39 @@
                                                     {{ $product->quantity }}</td>
                                                 <td class="border border-gray-400 p-2 text-center align-top text-xs">
                                                     {{ $product->unit }}</td>
-                                                <td class="border border-gray-400 p-2 text-right align-top font-bold text-xs">
+                                                <td
+                                                    class="border border-gray-400 p-2 text-right align-top font-bold text-xs">
                                                     {{ number_format($product->amount, 2) }}</td>
                                             </tr>
                                         @endforeach
                                         <tr>
-                                            <td colspan="6" class="font-bold p-2 text-right border border-gray-400 text-xs">SUBTOTAL</td>
+                                            <td colspan="6"
+                                                class="font-bold p-2 text-right border border-gray-400 text-xs">
+                                                SUBTOTAL</td>
                                             {{-- <td class="font-bold p-2 text-right border border-gray-400 text-xs">SUBTOTAL</td> --}}
-                                            <td colspan="2" class="text-right p-2 font-semibold border border-gray-400 text-xs">
+                                            <td colspan="2"
+                                                class="text-right p-2 font-semibold border border-gray-400 text-xs">
                                                 {{ number_format($quotation->subtotal, 2) }} &#2547;
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="6" class="font-bold p-2 text-right border border-gray-400 text-xs">VAT ({{ (int) $quotation->vat }}%)</td>
+                                            <td colspan="6"
+                                                class="font-bold p-2 text-right border border-gray-400 text-xs">VAT
+                                                ({{ (int) $quotation->vat }}%)</td>
                                             {{-- <td class="font-bold p-2 text-right border border-gray-400 text-xs"></td> --}}
-                                            <td colspan="2" class="text-right p-2 font-semibold border border-gray-400 text-xs">
-                                                {{ number_format($quotation->subtotal * ($quotation->vat / 100), 2) }} &#2547;
+                                            <td colspan="2"
+                                                class="text-right p-2 font-semibold border border-gray-400 text-xs">
+                                                {{ $quotation->vat > 0 ? number_format($quotation->subtotal * ($quotation->vat / 100), 2) : '0.00' }}
+                                                &#2547;
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="6" class="font-bold p-2 text-right border border-gray-400 text-xs">GRAND TOTAL</td>
+                                            <td colspan="6"
+                                                class="font-bold p-2 text-right border border-gray-400 text-xs">GRAND
+                                                TOTAL</td>
                                             {{-- <td class="font-bold p-2 text-right border border-gray-400 bg-gray-200 text-xs"></td> --}}
-                                            <td colspan="2" class="text-right p-2 font-bold border border-gray-400 bg-gray-200 text-xs">
+                                            <td colspan="2"
+                                                class="text-right p-2 font-bold border border-gray-400 bg-gray-200 text-xs">
                                                 {{ number_format($quotation->total, 2) }} &#2547;
                                             </td>
                                         </tr>
@@ -268,7 +288,8 @@
                             <section class="avoid-break">
                                 <section class="flex mt-8 text-sm place-content-between">
                                     <div class="w-1/3 text-center place-content-end">
-                                        <img src="{{ asset('assets/images/wesum-sign.jpeg') }}" style="width: 80%" class="mx-auto">
+                                        <img src="{{ asset('assets/images/wesum-sign.jpeg') }}" style="width: 80%"
+                                            class="mx-auto">
                                         <div class="border-t border-gray-600 mt-1">
                                             <p class="text-sm font-semibold">Authorized Signature</p>
                                         </div>

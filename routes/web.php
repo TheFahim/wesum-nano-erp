@@ -60,6 +60,7 @@ Route::middleware(['auth',CheckUserIsActive::class])
 
 
         Route::get('/customers/search', [QuotationController::class, 'searchCustomer'])->name('customers.search');
+        Route::get('/pre-quotation', [QuotationController::class, 'preQuotation'])->name('pre.quotation');
 
         Route::resource('quotations', QuotationController::class);
         Route::resource('customers', CustomerController::class);

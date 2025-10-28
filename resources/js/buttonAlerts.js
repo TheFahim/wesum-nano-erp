@@ -63,7 +63,27 @@ document.addEventListener('DOMContentLoaded', function() {
                         formTextArea.value = editorContent;
                     }
 
+
                     const form = button.closest('form');
+
+                    if (button.classList.contains('pre-quote')) {
+                        //create a hidden input element
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'quotation[type]';
+                        hiddenInput.value = '2';
+                        form.appendChild(hiddenInput);
+                    }
+
+                    if (button.classList.contains('pre-qt-change-status')) {
+                        //create a hidden input element
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'quotation[type]';
+                        hiddenInput.value = '1';
+                        form.appendChild(hiddenInput);
+                    }
+
                     if (form && form.checkValidity()) {
                         form.submit();
                     }else{

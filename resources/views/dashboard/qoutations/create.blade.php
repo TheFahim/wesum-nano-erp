@@ -1,17 +1,17 @@
 <x-dashboard.layout.default title="New Quotation">
     <x-dashboard.ui.bread-crumb>
         <li class="inline-flex items-center">
-            <a href="{{ route('quotations.index') }}"
+            <a href="{{  $type == 2 ? route('pre.quotation') : route('quotations.index') }}"
                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
                 <x-ui.svg.book class="h-3 w-3 me-2" />
-                Quotations
+                {{ $type == 2 ? 'Pre-Quotations' : 'Quotations' }}
             </a>
         </li>
         <x-dashboard.ui.bread-crumb-list name="Create" />
     </x-dashboard.ui.bread-crumb>
 
     <div>
-        <h2 class="mx-5 text-xl font-extrabold dark:text-white">Add New Quotation</h2>
+        <h2 class="mx-5 text-xl font-extrabold dark:text-white">Add New {{ $type == 2 ? 'Pre' : '' }} Quotation</h2>
 
         {{-- The main Alpine component is initialized on the form tag --}}
         <form class="space-y-3" x-data="quotationForm"
@@ -24,7 +24,7 @@
                 <div>
                     <div class="mx-2 grid grid-cols-3">
                         <div class="mx-2">
-                            <x-ui.form.input x-model="quotation_no" name="quotation[quotation_no]" label="Quotation No."
+                            <x-ui.form.input name="quotation[quotation_no]" label="Quotation No." value="{{ $nextQuotationNumber }}"
                                 placeholder="Ex. WC-03029" class="w-full p-2 text-lg" required />
                         </div>
 
@@ -249,6 +249,7 @@
                     <div class="mx-2">
                         <x-ui.form.simple-select name="quotation[vat]" label="VAT" x-model.number="vat"
                             class="w-full p-2 text-lg" required>
+                            <option value="0">0%</option>
                             <option value="10">10%</option>
                             <option value="15">15%</option>
                         </x-ui.form.simple-select>
@@ -265,23 +266,39 @@
                             {!! old(
                                 'quotation.terms_conditions',
                                 '<h3 class="bg-blue-900 text-white font-bold p-2 mb-4 text-sm">Terms & Conditions</h3>
-                                                                                                                                                                                    <ul class="list-disc list-inside text-xs space-y-2 text-gray-700">
-                                                                                                                                                                                        <li>Mushuk 6.3 will be provided with a bill Copy.</li>
-                                                                                                                                                                                        <li>Payment will be due prior to delivery of service and goods.</li>
-                                                                                                                                                                                        <li>The Quotation Value Including VAT, AIT & Transportation.</li>
-                                                                                                                                                                                        <li>BEFTN / Cheque in favor of Wesum corporation.</li>
-                                                                                                                                                                                        <li>Delivery Time 3-4 weeks after getting PO. </li>
-                                                                                                                                                                                        <li>The Quotation value valid 12 days after submission.</li>
-                                                                                                                                                                                    </ul>',
+                                                                                                                                                                                                                                                                        <ul class="list-disc list-inside text-xs space-y-2 text-gray-700">
+                                                                                                                                                                                                                                                                            <li>Mushuk 6.3 will be provided with a bill Copy.</li>
+                                                                                                                                                                                                                                                                            <li>Payment will be due prior to delivery of service and goods.</li>
+                                                                                                                                                                                                                                                                            <li>The Quotation Value Including VAT, AIT & Transportation.</li>
+                                                                                                                                                                                                                                                                            <li>BEFTN / Cheque in favor of Wesum corporation.</li>
+                                                                                                                                                                                                                                                                            <li>Delivery Time 3-4 weeks after getting PO. </li>
+                                                                                                                                                                                                                                                                            <li>The Quotation value valid 12 days after submission.</li>
+                                                                                                                                                                                                                                                                        </ul>',
                             ) !!}
                         </textarea>
                     </div>
                 </div>
             </x-ui.card>
 
-            <x-ui.card>
+            <x-ui.card class="flex justify-between">
+                @if ($type == 1)
+                    <button type="submit"
+                        class="text-white bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mx-5 dark:from-blue-600 dark:to-blue-800 dark:hover:from-blue-700 dark:hover:to-blue-900 focus:outline-none dark:focus:ring-blue-800 save-button flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 13l4 4L19 7" />
+                        </svg>
+                        Save
+                    </button>
+                @endif
                 <button type="submit"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mx-5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 save-button">Save</button>
+                    class="text-white bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 mx-5 dark:from-yellow-500 dark:to-yellow-700 dark:hover:from-yellow-600 dark:hover:to-yellow-800 focus:outline-none dark:focus:ring-yellow-800 save-button pre-quote flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    {{ $type == 1 ? 'Pre Quotation' : 'save' }}
+                </button>
             </x-ui.card>
 
         </form>
@@ -299,28 +316,37 @@
     document.addEventListener('alpine:init', () => {
 
         Alpine.data('quotationForm', () => ({
-
             // NEW: State to control UI
-            isCustomerSelected: '{{ old('customer.id') }}' !==
+            isCustomerSelected: '{{ old('customer.id ') }}' !==
                 '', // Default to true if validation fails with a customer selected
 
             // NEW: Object to hold details of the selected customer for display purposes
             selectedCustomerDetails: {},
 
             // This model is ONLY for the selected customer's ID
-            customerId: '{{ old('customer.id') }}',
+            customerId: '{{ old('
+                                                customer.id ') }}',
 
             // These models are ONLY for the new customer form fields
-            customerNo: '{{ old('customer.customer_no') }}',
-            customerName: '{{ old('customer.customer_name') }}',
-            customerDesignation: '{{ old('customer.designation') }}',
-            customerCompanyName: '{{ old('customer.company_name') }}',
-            customerAddess: '{{ old('customer.address') }}',
-            customerPhone: '{{ old('customer.phone') }}',
-            customerBIN: '{{ old('customer.bin_no') }}',
+            customerNo: '{{ old('
+                                                customer.customer_no ') }}',
+            customerName: '{{ old('
+                                                customer.customer_name ') }}',
+            customerDesignation: '{{ old('
+                                                customer.designation ') }}',
+            customerCompanyName: '{{ old('
+                                                customer.company_name ') }}',
+            customerAddess: '{{ old('
+                                                customer.address ') }}',
+            customerPhone: '{{ old('
+                                                customer.phone ') }}',
+            customerBIN: '{{ old('
+                                                customer.bin_no ') }}',
 
-            quotation_no: '{{ old('quotation.quotation_no') }}',
-            dueDate: '{{ old('quotation.due_date') }}',
+            // quotation_no: '{{ old('
+            //                                     quotation.quotation_no ') }}',
+            dueDate: '{{ old('
+                                                quotation.due_date ') }}',
 
             // UPDATED: This function is called when a customer is selected from the search results
             populateCustomer(customer) {
@@ -357,7 +383,7 @@
 
             // --- Product and Total logic remains the same ---
             rows: {!! json_encode(
-                old('product', [['name' => '', 'unit' => 'pcs', 'price' => '', 'quantity' => '', 'specs' => '', 'remarks' => '']]),
+                old('product', [['name' => '', 'unit' => 'pcs', 'price' => '0', 'quantity' => '1', 'specs' => '', 'remarks' => '']]),
             ) !!},
             vat: {{ old('quotation.vat', 10) }},
 
@@ -365,8 +391,8 @@
                 this.rows.push({
                     name: '',
                     unit: 'pcs',
-                    price: '',
-                    quantity: '',
+                    price: '0',
+                    quantity: '1',
                     specs: '',
                     remarks: ''
                 });

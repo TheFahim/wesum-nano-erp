@@ -57,15 +57,16 @@
                                 </x-ui.form.simple-select>
 
                                 {{-- This input only appears if "Others" is selected --}}
-                                <template x-if="row.type === 'others'">
-                                    <x-ui.form.input
-                                        label="Please Specify"
-                                        {{-- This input's name is 'type', so its value is submitted as the expense type --}}
-                                        name="type"
-                                        x-model="otherTypeName"
-                                        type="text"
-                                        placeholder="Specify other type"
-                                        required />
+                                <template x-if="selectedType === 'others'">
+                                    <div class="mt-2">
+                                        <x-ui.form.input
+                                            name="type"
+                                            x-model="otherTypeName"
+                                            type="text"
+                                            placeholder="Specify other type"
+                                            class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100"
+                                            required />
+                                    </div>
                                 </template>
                             </div>
 
@@ -75,8 +76,14 @@
                             </div>
 
                             <div class="relative max-w-sm">
-                                <x-ui.form.input label="Remarks" name="remarks" value="{{ $expense->remarks }}"
-                                    type="Text" />
+                                <label for="remarks" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Remarks
+                                </label>
+                                <textarea id="remarks"
+                                    name="remarks"
+                                    rows="4"
+                                    class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Add your remarks here...">{{ old('remarks', $expense->remarks) }}</textarea>
                             </div>
 
                             <div class="relative max-w-sm">

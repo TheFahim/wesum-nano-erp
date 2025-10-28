@@ -87,7 +87,7 @@
                                                 x-bind:name="'expense[' + index + '][voucher]'">
                                         </div>
 
-                                        <div class=" col-span-3">
+                                        <div class=" col-span-4">
                                             <x-ui.form.input x-bind:name="'expense[' + index + '][remarks]'"
                                                 x-model="row.remarks" type="text" placeholder="Remarks"
                                                 class="px-4 py-2 border rounded bg-gray-50 dark:bg-gray-800 dark:text-gray-100" />

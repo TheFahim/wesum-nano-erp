@@ -7,6 +7,7 @@
     <script src="{{ asset('js/printThis.js') }}"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ asset('assets/images/app-logo.jpeg') }}" type="image/png">
 
     <title>{{ $title ?? 'Wesum Corporation' }}</title>
     @vite(['resources/js/app.js', 'resources/css/app.css'])

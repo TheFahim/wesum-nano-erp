@@ -44,7 +44,7 @@ class ChallanController extends Controller
 
         $quotation = Quotation::find($quotationId);
 
-        if (!$quotation) {
+        if (!$quotation || $quotation->type != 1) {
             abort(404, 'Quotation not found');
         }
 

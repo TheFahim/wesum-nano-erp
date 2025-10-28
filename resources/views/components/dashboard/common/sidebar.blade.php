@@ -64,6 +64,12 @@
         </li>
 
         <li>
+            <x-dashboard.common.sidebar-link url="{{ route('pre.quotation') }}">
+                <x-ui.svg.envelope class="h-6 w-6" />
+                <span class="flex-1 ms-3 whitespace-nowrap">Pre Quotations</span>
+            </x-dashboard.common.sidebar-link>
+        </li>
+        <li>
             <x-dashboard.common.sidebar-link url="{{ route('quotations.index') }}">
 
                 <x-ui.svg.qutation class="h-6 w-6" />

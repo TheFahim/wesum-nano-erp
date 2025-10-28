@@ -12,7 +12,7 @@
     <x-ui.card class="mx-auto">
         <hr class="border-t border-gray-300 w-full">
 
-        <div class="relative overflow-x-auto sm:rounded-lg py-3 px-2">
+        <div class="relative  sm:rounded-lg py-3 px-2">
             <table id="team-members"
                 class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-white datatable">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-500 dark:text-gray-400">

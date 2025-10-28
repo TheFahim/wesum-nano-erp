@@ -1,10 +1,10 @@
 <x-dashboard.layout.default title="Edit Quotation ">
     <x-dashboard.ui.bread-crumb>
         <li class="inline-flex items-center">
-            <a href="{{ route('quotations.index') }}"
+            <a href="{{  $quotation->type == 2 ? route('pre.quotation') : route('quotations.index') }}"
                 class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
                 <x-ui.svg.book class="h-3 w-3 me-2" />
-                Quotations
+                {{ $quotation->type == 2 ? 'Pre-Quotations' : 'Quotations' }}
             </a>
         </li>
         <x-dashboard.ui.bread-crumb-list name="Edit" />
@@ -12,7 +12,7 @@
 
     <div>
 
-        <h2 class="mx-5 text-xl font-extrabold dark:text-white">Edit Quotation - {{ $quotation->quotation_no }}</h2>
+        <h2 class="mx-5 text-xl font-extrabold dark:text-white">Edit {{ $quotation->type == 2 ? 'Pre-Quotation' : 'Quotation' }} - {{ $quotation->quotation_no }}</h2>
 
         {{-- The main Alpine component is initialized on the form tag --}}
         <form class="space-y-3" x-data="quotationForm"
@@ -61,7 +61,7 @@
                                     </svg>
                                 </div>
                                 <input type="text" id="simple-search" x-model.debounce.300ms="searchQuery"
-                                   @focus="getInitialSuggestions()" @keydown.escape.prevent="showSuggestions = false"
+                                    @focus="getInitialSuggestions()" @keydown.escape.prevent="showSuggestions = false"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="Search to change customer..." autocomplete="off" />
                             </div>
@@ -270,6 +270,7 @@
                     <div class="mx-2">
                         <x-ui.form.simple-select name="quotation[vat]" label="VAT" x-model.number="vat"
                             class="w-full p-2 text-lg" required>
+                            <option value="0">0%</option>
                             <option value="10">10%</option>
                             <option value="15">15%</option>
                         </x-ui.form.simple-select>
@@ -290,16 +291,29 @@
             </x-ui.card>
 
             <x-ui.card>
-                <div class="grid grid-cols-12">
+                <div class="flex items-center justify-between">
+                    {{-- Left side: Update button --}}
                     <button type="submit"
-                        class="col-span-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 my-2 mx-5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 save-button">
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 m-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 save-button">
                         Update Quotation
                     </button>
 
-                    @if (!$hasChallan)
-                        <button form="delete-form" type="button"
-                            class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 m-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 delete-button">Delete</button>
-                    @endif
+                    {{-- Right side: Delete & Change Status buttons --}}
+                    <div class="flex items-center">
+                        @if (!$hasChallan)
+                            <button form="delete-form" type="button"
+                                class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 m-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 delete-button">
+                                Delete
+                            </button>
+                        @endif
+
+                        @if ($quotation->type == 2)
+                            <button type="button"
+                                class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 m-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none dark:focus:ring-indigo-800 pre-qt-change-status save-button">
+                                Change to Quotation
+                            </button>
+                        @endif
+                    </div>
                 </div>
             </x-ui.card>
 
@@ -437,7 +451,7 @@
 
             // --- Product and Total logic is pre-populated from the model ---
             rows: {!! json_encode(old('product', $quotation->products)) !!},
-            vat: {{ old('quotation.vat', $quotation->vat) }},
+            vat: {{ old('quotation.vat', $quotation->vat ?? 0) }},
 
             addRow() {
                 this.rows.push({
@@ -462,7 +476,7 @@
 
             get total() {
                 const subtotal = parseFloat(this.subtotal) || 0;
-                const vatAmount = subtotal * (this.vat / 100);
+                const vatAmount = this.vat > 0 ? subtotal * (this.vat / 100) : 0;
                 const finalTotal = subtotal + vatAmount;
                 return finalTotal.toFixed(2);
             }

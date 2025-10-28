@@ -44,7 +44,7 @@ class QuotationRequest extends FormRequest
             ],
 
             'quotation.subtotal' => ['required', 'numeric', 'min:0'],
-            'quotation.vat' => ['required', 'numeric', Rule::in([10, 15])],
+            'quotation.vat' => ['required', 'numeric', Rule::in([0,10, 15])],
             'quotation.total' => ['required', 'numeric', 'min:0'],
             'quotation.terms_conditions' => ['nullable', 'string', 'max:10000'],
 
